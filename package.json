@@ -1,0 +1,18 @@
+{
+  "name": "spotify-twitter-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:spotify": "node src/testSpotify.js",
+    "test:twitter": "node src/testTwitter.js",
+    "buffer:channels": "node src/bufferChannels.js",
+    "buffer:post": "node src/bufferPost.js",
+    "check": "node src/checkNewReleases.js",
+    "check:chart": "node src/postDailyChart.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "twitter-api-v2": "^1.18.2"
+  }
+}

@@ -84,10 +84,13 @@ function render(date, entries, topN) {
 
 // X'in 280 karakter siniri gunden gune isim uzunluguna gore degisebildigi
 // icin, sigacak en fazla satir sayisini geriye dogru deneyerek buluyoruz.
-export function formatChartPost(date, entries, maxTopN = 10) {
+export function pickFittingTopN(date, entries, maxTopN = 10) {
   for (let n = Math.min(maxTopN, entries.length); n >= 1; n--) {
-    const text = render(date, entries, n);
-    if (text.length <= MAX_LENGTH) return text;
+    if (render(date, entries, n).length <= MAX_LENGTH) return n;
   }
-  return render(date, entries, 1);
+  return 1;
+}
+
+export function formatChartPost(date, entries, maxTopN = 10) {
+  return render(date, entries, pickFittingTopN(date, entries, maxTopN));
 }

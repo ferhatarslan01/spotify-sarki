@@ -1,7 +1,9 @@
-import { fetchWeeklyChart, formatWeeklyChartPost } from './weeklyChart.js';
-import { getTrackThumbnail } from './dailyChart.js';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { fetchWeeklyChart, formatWeeklyChartPost, pickFittingTopNWeekly } from './weeklyChart.js';
 import { loadChartState, saveChartState } from './chartState.js';
 import { publishPost } from './bufferPost.js';
+import { generateChartCollage } from './collage.js';
+import { pushFile, getRawUrl } from './gitPublish.js';
 
 const STATE_FILE = 'weeklyChartState.json';
 
@@ -21,10 +23,22 @@ async function main() {
     return;
   }
 
+  const topN = pickFittingTopNWeekly(date, entries, 10);
   const text = formatWeeklyChartPost(date, entries, 10);
   console.log(text);
 
-  const imageUrl = await getTrackThumbnail(entries[0].trackUrl).catch(() => null);
+  console.log('\nCollage olusturuluyor...');
+  const collageBuffer = await generateChartCollage(entries.slice(0, topN));
+
+  const safeDate = date.replace(/\./g, '-');
+  const filePath = `public/charts/weekly-${safeDate}.png`;
+  await mkdir('public/charts', { recursive: true });
+  await writeFile(filePath, collageBuffer);
+
+  console.log('Collage repoya push ediliyor...');
+  pushFile(filePath, `Add weekly chart collage ${date} [skip ci]`);
+  const imageUrl = getRawUrl(filePath);
+  console.log('Gorsel URL:', imageUrl);
 
   console.log('\nPaylasiliyor...');
 

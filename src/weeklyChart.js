@@ -64,10 +64,13 @@ function render(date, entries, topN) {
   return lines.join('\n');
 }
 
-export function formatWeeklyChartPost(date, entries, maxTopN = 10) {
+export function pickFittingTopNWeekly(date, entries, maxTopN = 10) {
   for (let n = Math.min(maxTopN, entries.length); n >= 1; n--) {
-    const text = render(date, entries, n);
-    if (text.length <= MAX_LENGTH) return text;
+    if (render(date, entries, n).length <= MAX_LENGTH) return n;
   }
-  return render(date, entries, 1);
+  return 1;
+}
+
+export function formatWeeklyChartPost(date, entries, maxTopN = 10) {
+  return render(date, entries, pickFittingTopNWeekly(date, entries, maxTopN));
 }

@@ -1,10 +1,12 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
-const STATE_PATH = new URL('../data/chartState.json', import.meta.url);
+function statePath(fileName) {
+  return new URL(`../data/${fileName}`, import.meta.url);
+}
 
-export async function loadChartState() {
+export async function loadChartState(fileName = 'chartState.json') {
   try {
-    const raw = await readFile(STATE_PATH, 'utf-8');
+    const raw = await readFile(statePath(fileName), 'utf-8');
     return JSON.parse(raw);
   } catch (err) {
     if (err.code === 'ENOENT') return { lastPostedDate: null };
@@ -12,6 +14,6 @@ export async function loadChartState() {
   }
 }
 
-export async function saveChartState(state) {
-  await writeFile(STATE_PATH, JSON.stringify(state, null, 2), 'utf-8');
+export async function saveChartState(state, fileName = 'chartState.json') {
+  await writeFile(statePath(fileName), JSON.stringify(state, null, 2), 'utf-8');
 }

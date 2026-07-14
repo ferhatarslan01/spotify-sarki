@@ -9,7 +9,8 @@
     "buffer:channels": "node src/bufferChannels.js",
     "buffer:post": "node src/bufferPost.js",
     "check": "node src/checkNewReleases.js",
-    "check:chart": "node src/postDailyChart.js"
+    "check:chart": "node src/postDailyChart.js",
+    "check:weekly": "node src/postWeeklyChart.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

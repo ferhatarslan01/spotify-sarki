@@ -10,7 +10,8 @@
     "buffer:post": "node src/bufferPost.js",
     "check": "node src/checkNewReleases.js",
     "check:chart": "node src/postDailyChart.js",
-    "check:weekly": "node src/postWeeklyChart.js"
+    "check:weekly": "node src/postWeeklyChart.js",
+    "check:global": "node src/postGlobalChart.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

@@ -15,7 +15,14 @@ export function pushFile(filePath, message) {
     return false;
   }
 
-  run('git push');
+  try {
+    run('git push');
+  } catch {
+    // Uzak repo ilerlemis olabilir (paralel calisan baska bir workflow/test).
+    // Rebase edip tekrar dene.
+    run('git pull --rebase');
+    run('git push');
+  }
   return true;
 }
 

@@ -56,7 +56,7 @@ async function main() {
       console.log(`- ${artist.name}: değişiklik yok (son: ${latest.name}, ${latest.releaseDate})`);
     }
 
-    await sleep(1500);
+    await sleep(5000);
   }
 
   if (hadErrors) {

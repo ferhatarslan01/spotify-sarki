@@ -37,9 +37,9 @@ async function fetchWithRetry(url, options, retries = 3) {
   return fetch(url, { ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
 }
 
-// En son yayini bulmak icin son 10 yayini cekip tarihe gore sirala
+// Son 10 yayini cekip tarihe gore sirali dondurur
 // (Spotify'in varsayilan siralamasi kronolojik degil).
-export async function getLatestRelease(token, artistId) {
+export async function getRecentReleases(token, artistId) {
   const url = `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single&market=TR&limit=10`;
   const res = await fetchWithRetry(url, { headers: { Authorization: `Bearer ${token}` } });
 
@@ -49,17 +49,19 @@ export async function getLatestRelease(token, artistId) {
 
   const data = await res.json();
   const items = data.items ?? [];
-  if (items.length === 0) return null;
-
   items.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
-  const latest = items[0];
 
-  return {
-    id: latest.id,
-    name: latest.name,
-    releaseDate: latest.release_date,
-    albumType: latest.album_type,
-    url: latest.external_urls.spotify,
-    imageUrl: latest.images?.[0]?.url,
-  };
+  return items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    releaseDate: item.release_date,
+    albumType: item.album_type,
+    url: item.external_urls.spotify,
+    imageUrl: item.images?.[0]?.url,
+  }));
+}
+
+export async function getLatestRelease(token, artistId) {
+  const releases = await getRecentReleases(token, artistId);
+  return releases[0] ?? null;
 }

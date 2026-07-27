@@ -49,6 +49,12 @@ export async function fetchDailyChart() {
     if (!trackMatch || artists.length === 0) continue;
 
     const streams = Number(cells[6].replace(/[^\d-]/g, ''));
+    const totalStreams = Number(cells[10].replace(/[^\d-]/g, ''));
+
+    const posChangeRaw = cells[1].trim();
+    let positionChange = null;
+    if (posChangeRaw === 'NEW') positionChange = 'NEW';
+    else if (/^[+-]?\d+$/.test(posChangeRaw)) positionChange = Number(posChangeRaw);
 
     entries.push({
       rank,
@@ -56,6 +62,8 @@ export async function fetchDailyChart() {
       trackId: trackMatch[1],
       trackName: trackMatch[2],
       streams,
+      totalStreams,
+      positionChange,
       trackUrl: `https://open.spotify.com/track/${trackMatch[1]}`,
     });
   }
@@ -63,7 +71,7 @@ export async function fetchDailyChart() {
   return { date, entries };
 }
 
-function formatStreams(n) {
+export function formatStreams(n) {
   if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2).replace(/\.00$/, '')}M`;
   if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
   return String(n);

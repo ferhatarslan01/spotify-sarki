@@ -3,6 +3,7 @@ import { getAccessToken, getLatestRelease } from './spotify.js';
 import { loadState, saveState } from './state.js';
 import { publishPost } from './bufferPost.js';
 import { buildPostText } from './postText.js';
+import { appendToWeeklyLog } from './weeklyLog.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -48,6 +49,13 @@ async function main() {
           console.error(`  Buffer hatası: ${result.message}`);
         } else {
           console.log(`  Paylaşıldı (post id: ${result.post.id})`);
+          await appendToWeeklyLog({
+            artistName: artist.name,
+            songName: latest.name,
+            releaseDate: latest.releaseDate,
+            url: latest.url,
+            imageUrl: latest.imageUrl,
+          });
         }
       } catch (err) {
         console.error(`  Buffer hatası: ${err.message}`);

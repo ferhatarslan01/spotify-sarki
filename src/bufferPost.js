@@ -60,6 +60,51 @@ export async function publishPost(text, imageUrl) {
   return data.createPost;
 }
 
+// items: [{ text, imageUrl? }, ...] - ilk eleman kok (root) tweet, digerleri sirayla yanit olarak zincirlenir
+export async function publishThread(items) {
+  const toAssets = (imageUrl) => (imageUrl ? [{ image: { url: imageUrl } }] : []);
+
+  const data = await graphql(
+    `
+      mutation CreateThread(
+        $text: String!
+        $channelId: ChannelId!
+        $assets: [AssetInput!]
+        $thread: [ThreadedPostInput!]!
+      ) {
+        createPost(
+          input: {
+            text: $text
+            channelId: $channelId
+            schedulingType: automatic
+            mode: shareNow
+            assets: $assets
+            metadata: { twitter: { thread: $thread } }
+          }
+        ) {
+          ... on PostActionSuccess {
+            post {
+              id
+              text
+            }
+          }
+          ... on MutationError {
+            message
+          }
+        }
+      }
+    `,
+    {
+      text: items[0].text,
+      channelId: BUFFER_CHANNEL_ID,
+      assets: toAssets(items[0].imageUrl),
+      thread: items.map((item) => ({ text: item.text, assets: toAssets(item.imageUrl) })),
+    }
+  );
+
+  return data.createPost;
+}
+
 if (fileURLToPath(import.meta.url) === process.argv[1]) {
   const testImageUrl = process.argv[2];
   const text = `Test paylasimi (gorselli) - bot kurulumu calisiyor ✅ (${new Date().toLocaleTimeString('tr-TR')})`;

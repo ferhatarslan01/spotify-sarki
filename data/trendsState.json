@@ -1,13 +1,8 @@
 {
-  "date": "31.07.2026",
+  "date": "01.08.2026",
   "jumpsAnnounced": [
-    "4uFIhAOi62bRG1OhmQfDB9",
-    "5uiLK7FAZIObaJEMNAHPy3",
-    "5zUWw3yj83bZVkkCMa11Eu",
-    "6uJHn8HeSrglMQSZ7stMIB",
-    "4SJjMPowhsrYSWgxM61yxm",
-    "4X9NLFpBdwWWruSSMjkzia",
-    "69dbmLAqR6BTHOvMpZ7XK3"
+    "4g2ixRBtPKBQA8TkKfB0JZ",
+    "1uqJRzjN2AOwAkT2sBO3Xv"
   ],
   "topTenSeen": [
     "24CSPGkF9QB1zW07dgtZhr",
@@ -88,7 +83,7 @@
     "0WlBjF1DLEw8jg3i8nPm5N": 10000000,
     "3USULTYXtx9vdFAgG6KfnY": 5000000,
     "65txmqjijZoGYs1irX6tBU": 100000000,
-    "67AMcEV9GTOlxs1NAvUDiU": 10000000,
+    "67AMcEV9GTOlxs1NAvUDiU": 50000000,
     "0MKjkTpnPt1OI1YFV1N1ZO": 1000000,
     "7wZRlmI91BOt7JF7rMOrej": 50000000,
     "0nLCr2HyRIAMyDbFnYQjnG": 50000000,
@@ -241,7 +236,9 @@
     "28wSrbbf6vnix8F6vcHGFZ": 5000000,
     "0kosUz0jePvjiz4ctmR6wL": 1000000,
     "5mk2arJsRrZ9KIxrh5tmTn": 1000000,
-    "3b6DyYG5UWO1Tmq2Plx3e7": 5000000
+    "3b6DyYG5UWO1Tmq2Plx3e7": 5000000,
+    "1lNcnIU4jtqD69Qtfjh8EJ": 100000000,
+    "7hU3H2id2pBVawD7e3zd8N": 100000000
   },
   "crossoverSeen": [
     "0kosUz0jePvjiz4ctmR6wL"

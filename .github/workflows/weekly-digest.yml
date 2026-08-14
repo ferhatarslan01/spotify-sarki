@@ -31,4 +31,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/weeklyReleaseLog.json
           git diff --staged --quiet || git commit -m "Clear weekly release log [skip ci]"
-          git push
+          git push || (git pull --rebase && git push)

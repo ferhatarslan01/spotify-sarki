@@ -31,4 +31,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/weeklyChartState.json
           git diff --staged --quiet || git commit -m "Update weekly chart state [skip ci]"
-          git push
+          git push || (git pull --rebase && git push)

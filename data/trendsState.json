@@ -1,10 +1,8 @@
 {
-  "date": "17.09.2026",
+  "date": "18.09.2026",
   "jumpsAnnounced": [
-    "4tl7cLzKxFAE3lCp41Nkk4",
-    "50SocgmOJdl1UPjOcFLSCm",
-    "6p17lQApoPFY2vBGccMzFH",
-    "2OCqhgRAssguuVopUMfGL8"
+    "1mSZ4fTnzsufo1CSImKXqL",
+    "2OEalqENC2jUcS227aYabQ"
   ],
   "topTenSeen": [
     "1gd1TicErR4bwjR3CYxyra",
@@ -24,7 +22,8 @@
     "3e0XM5ARlFVbWLfdR7zZvp",
     "3pPPDBOwb5F9drPF09wthF",
     "5PW7h2o6qYWUmwAultwZdf",
-    "2pc1hu3tfc90Ito191MM9J"
+    "2pc1hu3tfc90Ito191MM9J",
+    "3SkE3kqg6PJvT9TkzXPXru"
   ],
   "milestonesSeen": {
     "1gd1TicErR4bwjR3CYxyra": 50000000,
@@ -310,7 +309,7 @@
     "7M9KPD0b04Z1rxJNGERuAe": 50000000,
     "65dKYQvIz5eTTy4fqv19Ji": 10000000,
     "257FRDatWz1V90vKJP2mwV": 1000000,
-    "5PW7h2o6qYWUmwAultwZdf": 1000000,
+    "5PW7h2o6qYWUmwAultwZdf": 5000000,
     "6afIJDjgq6YLjwHoWLD9zc": 1000000,
     "0E21vFmhXTOrx2dfStBodo": 1000000,
     "3mS3robDVwBRrk2R2ef6zA": 1000000,
@@ -322,7 +321,8 @@
     "0C1EzLDBUfTlQD95FxVWx1": 10000000,
     "3kD2fBvNR5xvbJxO1MW6HT": 10000000,
     "1PsqSWjHUSCVlr3XHQKnXs": 5000000,
-    "1Rivqj8NT6A37CMGSZywXA": 1000000
+    "1Rivqj8NT6A37CMGSZywXA": 1000000,
+    "4tl7cLzKxFAE3lCp41Nkk4": 1000000
   },
   "crossoverSeen": [
     "7bxaFZ1O3cHkgLKMsdC3xR",

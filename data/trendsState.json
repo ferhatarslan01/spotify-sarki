@@ -1,15 +1,7 @@
 {
-  "date": "21.09.2026",
+  "date": "22.09.2026",
   "jumpsAnnounced": [
-    "7KglDqFffEIOzF1mkx1N0o",
-    "0g5PQ6iQKufImz6HZPwEdz",
-    "7ndejYcYfmvkbImaXiYf9C",
-    "7bxaFZ1O3cHkgLKMsdC3xR",
-    "257FRDatWz1V90vKJP2mwV",
-    "2OEalqENC2jUcS227aYabQ",
-    "4W445XWByCeN8CH6uexxLW",
-    "6ZB2MjZFsNukr71joHmwQd",
-    "6p17lQApoPFY2vBGccMzFH",
+    "2PaQb8AtQqIxawPA2O7Vaw",
     "69dbmLAqR6BTHOvMpZ7XK3"
   ],
   "topTenSeen": [
@@ -117,7 +109,7 @@
     "1uqJRzjN2AOwAkT2sBO3Xv": 10000000,
     "2HjJTdEdEApv1QrKcMXKqo": 50000000,
     "4g2ixRBtPKBQA8TkKfB0JZ": 10000000,
-    "5LAEpESzf1svMqWmpcu66c": 5000000,
+    "5LAEpESzf1svMqWmpcu66c": 10000000,
     "3zXcj2N8bLNRXwYHLaSjrL": 10000000,
     "2GJ2xsbWkrQNOgy45RRKU4": 10000000,
     "71rwEX50AtpDKdGTRguRLs": 10000000,
@@ -276,7 +268,7 @@
     "43Kpm3kz8904r3DCvrCx5h": 10000000,
     "1oPLRm2lgwzW4IiUmYI27Q": 10000000,
     "3b6DyYG5UWO1Tmq2Plx3e7": 5000000,
-    "4g8phMgjFb2RecauuBJXmZ": 1000000,
+    "4g8phMgjFb2RecauuBJXmZ": 5000000,
     "1LKBi9ndlps5iNqfoLhQJF": 1000000,
     "6omqxqWZX4sCmQ7Iz4BxvM": 1000000,
     "4nmGipl4hRBing7os8hAVM": 10000000,
@@ -339,7 +331,8 @@
     "3SkE3kqg6PJvT9TkzXPXru": 1000000,
     "5s0NsfcDicif5VsZdI8lY5": 1000000,
     "2OEalqENC2jUcS227aYabQ": 1000000,
-    "43wgyQXc2M9KmTDUqVzugM": 1000000
+    "43wgyQXc2M9KmTDUqVzugM": 1000000,
+    "09jOIuHj9xZMJxk0opiqRg": 5000000
   },
   "crossoverSeen": [
     "7bxaFZ1O3cHkgLKMsdC3xR",

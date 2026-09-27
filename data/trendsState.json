@@ -1,10 +1,9 @@
 {
-  "date": "24.09.2026",
+  "date": "25.09.2026",
   "jumpsAnnounced": [
-    "4j2rg6pHWZJVpJy1AwRpdl",
-    "04d7aMynHFsfWOhJo4gFIf",
-    "0pqAT0vxp4HEpYtyKa3ke9",
-    "7FlPrQB6Bd8ioCGQDFQBJg"
+    "2OEalqENC2jUcS227aYabQ",
+    "1yBuBLIsoFymv9KKSHcqxN",
+    "0Yhn2lIPjySylxMkmHuBIW"
   ],
   "topTenSeen": [
     "1gd1TicErR4bwjR3CYxyra",
@@ -304,7 +303,7 @@
     "00DYeStetEusr97dG9ACUF": 1000000,
     "3z0Zv4lVKHMkdOJpd0ExzB": 1000000,
     "3pPPDBOwb5F9drPF09wthF": 5000000,
-    "2pc1hu3tfc90Ito191MM9J": 5000000,
+    "2pc1hu3tfc90Ito191MM9J": 10000000,
     "7qo7nHMapvL6q0MCwjbSNI": 1000000,
     "2AkNL74DBrtk8kezS12dei": 1000000,
     "0F7e5Ot8PrsdHBW0SmeXi7": 50000000,
@@ -349,6 +348,7 @@
   "crossoverSeen": [
     "7bxaFZ1O3cHkgLKMsdC3xR",
     "5b5cPscqVEMChvDqscVw26",
-    "1VWiDyYTrqQhhmnWANWkFa"
+    "1VWiDyYTrqQhhmnWANWkFa",
+    "11hcBLPtbMp4aQI6zGQLub"
   ]
 }

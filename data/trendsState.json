@@ -5,7 +5,8 @@
     "0xB1twgXnL1hEwLRWdRUIe",
     "14xSndBPmB5bsYmKbwkhnB",
     "4W445XWByCeN8CH6uexxLW",
-    "5sf3QtTTvilIFH5L7K6Bzl"
+    "5sf3QtTTvilIFH5L7K6Bzl",
+    "5ZxZl0C2RwBeFKh8xb2bkK"
   ],
   "topTenSeen": [
     "1gd1TicErR4bwjR3CYxyra",
@@ -125,7 +126,7 @@
     "6zQZla6Gu8FBPUVpWHGQdX": 10000000,
     "4TvgcJPNmAThMDplXHic7i": 10000000,
     "1yBuBLIsoFymv9KKSHcqxN": 10000000,
-    "14xSndBPmB5bsYmKbwkhnB": 5000000,
+    "14xSndBPmB5bsYmKbwkhnB": 10000000,
     "663HntpOWFwkoIQroRttFu": 5000000,
     "6naElV4AFSUQfwb84K7TB4": 50000000,
     "1nRhCshF9nYpTZr0yM4mKS": 10000000,
@@ -248,7 +249,7 @@
     "4ESbfEerBQgdWFHtSoF7Sv": 50000000,
     "2dTMlaRJPRMDUbPHdn5AzC": 50000000,
     "7s4j3L5z2qU6ferYLOmFz9": 10000000,
-    "75WVsYxlIGjuTiCl2roWlQ": 5000000,
+    "75WVsYxlIGjuTiCl2roWlQ": 10000000,
     "2D7ug4cz4Kt0Sys1h4gzDg": 1000000,
     "5mUPKnEYPQh3IItoJVBeS7": 10000000,
     "6wrijPgcUcXFBdpCOlHEfX": 10000000,
@@ -332,7 +333,7 @@
     "4yrIO5r0yw9MBKJ1nrHcF7": 1000000,
     "18Neffq5r4SIyg0q9L0UBb": 1000000,
     "0g5PQ6iQKufImz6HZPwEdz": 1000000,
-    "3SkE3kqg6PJvT9TkzXPXru": 1000000,
+    "3SkE3kqg6PJvT9TkzXPXru": 5000000,
     "5s0NsfcDicif5VsZdI8lY5": 1000000,
     "2OEalqENC2jUcS227aYabQ": 1000000,
     "43wgyQXc2M9KmTDUqVzugM": 1000000,
@@ -352,7 +353,8 @@
     "2cFuJ5YRtCKWldHc3h2gVf": 1000000,
     "4z55r3PNUzlEroiJTFF137": 10000000,
     "1zMcj4YDWun0XN0BCzZc4P": 50000000,
-    "4nCjL15kmLv68gO5Cvvgnz": 1000000
+    "4nCjL15kmLv68gO5Cvvgnz": 1000000,
+    "0IZ2qKKg9xwYrur7N4kjyT": 1000000
   },
   "crossoverSeen": [
     "7bxaFZ1O3cHkgLKMsdC3xR",

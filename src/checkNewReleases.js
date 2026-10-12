@@ -5,8 +5,14 @@ import { publishPost } from './bufferPost.js';
 import { buildPostText } from './postText.js';
 import { appendToWeeklyLog } from './weeklyLog.js';
 import { loadAnniversaryState, saveAnniversaryState } from './anniversaryState.js';
+import { tiktokFeaturePost } from './tiktok.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function formatDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso ?? '');
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : iso ?? '';
+}
 
 function checkAnniversary(release, today) {
   const releaseDate = new Date(release.releaseDate);
@@ -75,6 +81,15 @@ async function main() {
             url: latest.url,
             imageUrl: latest.imageUrl,
           });
+          await tiktokFeaturePost({
+            kind: 'release',
+            label: latest.albumType === 'album' ? 'YENİ ALBÜM' : 'YENİ ŞARKI',
+            headline: artist.name,
+            title: latest.name,
+            subtitle: formatDate(latest.releaseDate),
+            coverUrl: latest.imageUrl,
+            caption: text,
+          });
         }
       } catch (err) {
         console.error(`  Buffer hatası: ${err.message}`);
@@ -100,6 +115,15 @@ async function main() {
           } else {
             console.log(`  Paylaşıldı (post id: ${result.post.id})`);
             anniversaryState.announced.push(key);
+            await tiktokFeaturePost({
+              kind: 'anniversary',
+              label: 'YIL DÖNÜMÜ',
+              headline: `${yearsAgo}. YIL`,
+              title: release.name,
+              subtitle: artist.name,
+              coverUrl: release.imageUrl,
+              caption: annText,
+            });
           }
         } catch (err) {
           console.error(`  Buffer hatası: ${err.message}`);

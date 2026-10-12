@@ -1,5 +1,6 @@
 import { loadWeeklyLog, clearWeeklyLog } from './weeklyLog.js';
 import { publishThread } from './bufferPost.js';
+import { tiktokListPost } from './tiktok.js';
 
 async function main() {
   const log = await loadWeeklyLog();
@@ -30,6 +31,24 @@ async function main() {
   }
 
   console.log(`Thread paylaşıldı (kök post id: ${result.post.id})`);
+
+  const rows = log.slice(0, 8).map((entry) => ({
+    coverUrl: entry.imageUrl,
+    line1: entry.artistName,
+    line2: entry.songName,
+  }));
+  await tiktokListPost({
+    kind: 'weekly-digest',
+    header: 'BU HAFTA ÇIKAN ŞARKILAR',
+    subheader: `${log.length} yeni yayın`,
+    rows: rows.filter((r) => r.coverUrl),
+    description: [
+      `Bu hafta çıkan şarkılar (${log.length} yeni yayın)`,
+      '',
+      ...log.map((e) => `${e.artistName} - ${e.songName}`),
+    ].join('\n'),
+  });
+
   await clearWeeklyLog();
 }
 

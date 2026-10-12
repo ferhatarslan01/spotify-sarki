@@ -4,6 +4,7 @@ import { loadChartState, saveChartState } from './chartState.js';
 import { publishPost } from './bufferPost.js';
 import { generateChartCollage } from './collage.js';
 import { pushFile, getRawUrl } from './gitPublish.js';
+import { tiktokChartPost } from './tiktok.js';
 
 const STATE_FILE = 'globalChartState.json';
 
@@ -50,6 +51,7 @@ async function main() {
   }
 
   console.log(`Paylasildi (post id: ${result.post.id})`);
+  await tiktokChartPost({ kind: 'daily-global', header: 'DÜNYA GÜNLÜK SPOTIFY', date, entries });
   await saveChartState({ lastPostedDate: date }, STATE_FILE);
 }
 

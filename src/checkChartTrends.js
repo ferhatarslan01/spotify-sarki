@@ -2,6 +2,7 @@ import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.
 import { fetchGlobalChart } from './globalChart.js';
 import { loadTrendsState, saveTrendsState, emptyTrendsState, highestMilestone } from './trendsState.js';
 import { publishPost } from './bufferPost.js';
+import { tiktokFeaturePost } from './tiktok.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -9,9 +10,12 @@ const JUMP_THRESHOLD = 10;
 const MAX_POSTS_PER_RUN = 5;
 const RELEVANT_RANK_LIMIT = 100;
 
+function artistNames(entry) {
+  return entry.artists.map((a) => a.name).join(' & ');
+}
+
 function trackLabel(entry) {
-  const artistNames = entry.artists.map((a) => a.name).join(' & ');
-  return `${artistNames} - ${entry.trackName}`;
+  return `${artistNames(entry)} - ${entry.trackName}`;
 }
 
 async function postEvent(text, trackUrl) {
@@ -68,6 +72,13 @@ async function main() {
         priority: entry.positionChange,
         trackUrl: entry.trackUrl,
         text: `🚀 ${label}\n\n${entry.positionChange} sıra birden yükseldi! Şu an Türkiye ${entry.rank}. sırada 🔥\n${entry.trackUrl}`,
+        card: {
+          kind: 'trend-jump',
+          label: 'SIRA ATLADI',
+          headline: `+${entry.positionChange} SIRA`,
+          title: entry.trackName,
+          subtitle: artistNames(entry),
+        },
         onCommit: () => state.jumpsAnnounced.push(entry.trackId),
       });
     }
@@ -79,6 +90,13 @@ async function main() {
           priority: 11 - entry.rank + 100,
           trackUrl: entry.trackUrl,
           text: `🎉 ${label}\n\nİlk kez Türkiye Top 10'a girdi! (${entry.rank}. sıra)\n${entry.trackUrl}`,
+          card: {
+            kind: 'trend-top10',
+            label: 'İLK KEZ TOP 10',
+            headline: `${entry.rank}. SIRA`,
+            title: entry.trackName,
+            subtitle: artistNames(entry),
+          },
           onCommit: () => state.topTenSeen.push(entry.trackId),
         });
       } else {
@@ -96,6 +114,13 @@ async function main() {
             priority: milestone / 1_000_000,
             trackUrl: entry.trackUrl,
             text: `🎊 ${label}\n\n${formatStreams(milestone)} stream'i geçti! 🎧\n${entry.trackUrl}`,
+            card: {
+              kind: 'trend-milestone',
+              label: 'STREAM REKORU',
+              headline: `${formatStreams(milestone)} STREAM`,
+              title: entry.trackName,
+              subtitle: artistNames(entry),
+            },
             onCommit: () => {
               state.milestonesSeen[entry.trackId] = milestone;
             },
@@ -113,6 +138,13 @@ async function main() {
           priority: 200,
           trackUrl: entry.trackUrl,
           text: `🌍 ${label}\n\nBizden bir şarkı şu anda Dünya Günlük Top 200'de de yer alıyor! 🇹🇷➡️🌍\n${entry.trackUrl}`,
+          card: {
+            kind: 'trend-global',
+            label: 'DÜNYA LİSTESİNDE',
+            headline: 'TÜRKİYE → DÜNYA',
+            title: entry.trackName,
+            subtitle: artistNames(entry),
+          },
           onCommit: () => state.crossoverSeen.push(entry.trackId),
         });
       } else {
@@ -140,7 +172,10 @@ async function main() {
   for (const event of toPost) {
     console.log(`- ${event.text.split('\n')[0]}`);
     const ok = await postEvent(event.text, event.trackUrl);
-    if (ok) event.onCommit();
+    if (ok) {
+      event.onCommit();
+      await tiktokFeaturePost({ ...event.card, trackUrl: event.trackUrl, caption: event.text });
+    }
     await sleep(2000);
   }
 

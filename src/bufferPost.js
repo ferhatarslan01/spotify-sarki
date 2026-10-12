@@ -60,6 +60,49 @@ export async function publishPost(text, imageUrl) {
   return data.createPost;
 }
 
+// TikTok foto gonderisi: 1-10 gorsel + baslik (title) + aciklama (text)
+export async function publishTikTokPhoto(channelId, { text, imageUrls, title }) {
+  const data = await graphql(
+    `
+      mutation CreateTikTokPost(
+        $text: String!
+        $channelId: ChannelId!
+        $assets: [AssetInput!]
+        $title: String
+      ) {
+        createPost(
+          input: {
+            text: $text
+            channelId: $channelId
+            schedulingType: automatic
+            mode: shareNow
+            assets: $assets
+            metadata: { tiktok: { title: $title } }
+          }
+        ) {
+          ... on PostActionSuccess {
+            post {
+              id
+              text
+            }
+          }
+          ... on MutationError {
+            message
+          }
+        }
+      }
+    `,
+    {
+      text,
+      channelId,
+      assets: imageUrls.map((url) => ({ image: { url } })),
+      title,
+    }
+  );
+
+  return data.createPost;
+}
+
 // items: [{ text, imageUrl? }, ...] - ilk eleman kok (root) tweet, digerleri sirayla yanit olarak zincirlenir
 export async function publishThread(items) {
   const toAssets = (imageUrl) => (imageUrl ? [{ image: { url: imageUrl } }] : []);

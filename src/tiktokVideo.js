@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { renderFeatureCard, renderListCard } from './tiktokCard.js';
 import { hostMedia } from './mediaHost.js';
 import { publishTikTokVideo } from './bufferPost.js';
-import { getTrackThumbnail } from './dailyChart.js';
+import { getTrackThumbnail, formatStreams } from './dailyChart.js';
 import {
   tiktokEnabled,
   stripUrls,
@@ -113,8 +113,7 @@ export async function makeVideo({ cardJpeg, audioUrl, seconds = CLIP_SECONDS }) 
   }
 }
 
-async function publishVideo({ kind, cardJpeg, audioUrl, caption, source }) {
-  const video = await makeVideo({ cardJpeg, audioUrl });
+async function publishVideoBuffer({ kind, video, caption, note }) {
   const videoUrl = hostMedia(video, mediaName(kind, 'mp4'));
 
   const result = await publishTikTokVideo(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
@@ -124,9 +123,134 @@ async function publishVideo({ kind, cardJpeg, audioUrl, caption, source }) {
   if (result.message) throw new Error(result.message);
 
   console.log(
-    `  TikTok videosu gönderildi (post id: ${result.post.id}, ses: ${source}, ${(video.length / 1024).toFixed(0)} KB)`
+    `  TikTok videosu gönderildi (post id: ${result.post.id}, ${note}, ${(video.length / 1024).toFixed(0)} KB)`
   );
   return true;
+}
+
+async function publishVideo({ kind, cardJpeg, audioUrl, caption, source }) {
+  const video = await makeVideo({ cardJpeg, audioUrl });
+  return publishVideoBuffer({ kind, video, caption, note: `ses: ${source}` });
+}
+
+const INTRO_SECONDS = 3.5;
+const SLIDE_SECONDS = 5;
+
+// Slayt videosu: giris karti (liste) + her sira icin kendi sesiyle bir slayt.
+// slides: [{ cardJpeg, audioUrl|null }]. Giris, 1. siradaki sarkinin sesiyle baslar ve
+// 1. slayta kesintisiz devam eder; sonraki slaytlar kendi sarkilarini calar.
+export async function makeSlideshowVideo({ introCard, slides }) {
+  const dir = await mkdtemp(join(tmpdir(), 'ttslides-'));
+  try {
+    const out = join(dir, 'out.mp4');
+    const inputs = [];
+    const filters = [];
+
+    // Gorseller: giris + slaytlar
+    const images = [introCard, ...slides.map((s) => s.cardJpeg)];
+    const durations = [INTRO_SECONDS, ...slides.map(() => SLIDE_SECONDS)];
+    for (let i = 0; i < images.length; i++) {
+      const file = join(dir, `img${i}.jpg`);
+      await writeFile(file, images[i]);
+      inputs.push('-loop', '1', '-framerate', '30', '-t', String(durations[i]), '-i', file);
+      filters.push(`[${i}:v]scale=1080:1920,setsar=1,format=yuv420p[v${i}]`);
+    }
+    filters.push(
+      `${images.map((_, i) => `[v${i}]`).join('')}concat=n=${images.length}:v=1:a=0[vout]`
+    );
+
+    // Sesler: her slayt icin bir parca (1. siradaki giris suresini de kapsar)
+    let nextInput = images.length;
+    for (let k = 0; k < slides.length; k++) {
+      const duration = SLIDE_SECONDS + (k === 0 ? INTRO_SECONDS : 0);
+      const common = 'aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo';
+      const fades = `afade=t=in:st=0:d=0.15,afade=t=out:st=${duration - 0.35}:d=0.35`;
+
+      let audioFile = null;
+      if (slides[k].audioUrl) {
+        try {
+          const res = await fetch(slides[k].audioUrl, { signal: AbortSignal.timeout(20_000) });
+          if (res.ok) {
+            audioFile = join(dir, `aud${k}.mp3`);
+            await writeFile(audioFile, Buffer.from(await res.arrayBuffer()));
+          }
+        } catch {
+          audioFile = null;
+        }
+      }
+
+      if (audioFile) {
+        inputs.push('-i', audioFile);
+        filters.push(
+          `[${nextInput}:a]${common},atrim=start=0:duration=${duration},asetpts=PTS-STARTPTS,` +
+            `loudnorm=I=-16:TP=-1.5:LRA=11,${common},${fades}[a${k}]`
+        );
+        nextInput += 1;
+      } else {
+        filters.push(
+          `anullsrc=r=44100:cl=stereo,atrim=duration=${duration},asetpts=PTS-STARTPTS,${common}[a${k}]`
+        );
+      }
+    }
+    filters.push(
+      `${slides.map((_, k) => `[a${k}]`).join('')}concat=n=${slides.length}:v=0:a=1[aout]`
+    );
+
+    await execFileP('ffmpeg', [
+      '-y',
+      ...inputs,
+      '-filter_complex', filters.join(';'),
+      '-map', '[vout]',
+      '-map', '[aout]',
+      '-c:v', 'libx264',
+      '-crf', '28',
+      '-pix_fmt', 'yuv420p',
+      '-r', '30',
+      '-c:a', 'aac',
+      '-b:a', '128k',
+      '-movflags', '+faststart',
+      out,
+    ]);
+
+    return await readFile(out);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+// Top N slayt videosunu uretir (yayinlamaz). En az bir sarkinin onizlemesi yoksa null doner.
+export async function buildChartSlideshow({ header, date, entries, n = 5 }) {
+  const top = entries.slice(0, n);
+  const label = header.replace(/ SPOTIFY$/, '');
+  const fullHeader = `${header} TOP ${top.length}`;
+
+  const rows = await buildChartRows(top);
+  const introCard = await renderListCard({ header: fullHeader, subheader: date, rows });
+
+  const slides = [];
+  let withAudio = 0;
+  for (const e of top) {
+    const cover = await getTrackThumbnail(e.trackUrl);
+    if (!cover) continue;
+
+    const names = e.artists.map((a) => a.name).join(' & ');
+    const cardJpeg = await renderFeatureCard({
+      label,
+      headline: `${e.rank}. SIRA`,
+      title: e.trackName,
+      subtitle: `${names} · ${formatStreams(e.streams)} stream`,
+      coverUrl: cover,
+    });
+
+    const preview = await findPreview(e.artists[0].name, e.trackName);
+    if (preview) withAudio += 1;
+    slides.push({ cardJpeg, audioUrl: preview?.url ?? null });
+  }
+
+  if (withAudio === 0 || slides.length === 0) return null;
+
+  const video = await makeSlideshowVideo({ introCard, slides });
+  return { video, withAudio, slideCount: slides.length, caption: chartDescription(fullHeader, date, top) };
 }
 
 // Tek sarki/olay icin sesli video. Onizleme yoksa veya hata olursa false doner, asla throw etmez.
@@ -169,6 +293,22 @@ export async function tiktokChartSmartPost({ kind, header, date, entries, maxRow
   if (!tiktokEnabled()) return false;
 
   if (videoEnabled()) {
+    // 1) Tercih: Top 5 slayt videosu (giris listesi + her sira kendi sarkisiyla)
+    try {
+      const show = await buildChartSlideshow({ header, date, entries, n: 5 });
+      if (show) {
+        return await publishVideoBuffer({
+          kind,
+          video: show.video,
+          caption: show.caption,
+          note: `slayt: ${show.slideCount}, sesli: ${show.withAudio}`,
+        });
+      }
+    } catch (err) {
+      console.error(`  TikTok slayt hatası (${kind}): ${err.message}`);
+    }
+
+    // 2) Yedek: liste karti + en ustteki sarkinin sesi
     try {
       const top = entries.slice(0, maxRows);
 

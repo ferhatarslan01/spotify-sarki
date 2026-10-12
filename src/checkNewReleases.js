@@ -9,6 +9,9 @@ import { tiktokSmartPost } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+const BATCH_COUNT = 2;
+const BATCH_WINDOW_MS = 3 * 60 * 60 * 1000; // workflow her 3 saatte bir calisir
+
 function formatDate(iso) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso ?? '');
   return m ? `${m[3]}.${m[2]}.${m[1]}` : iso ?? '';
@@ -40,10 +43,20 @@ async function main() {
   const today = new Date();
   const currentYear = today.getUTCFullYear();
 
+  // Spotify kotasini (QUOTA_EXCEEDED) zorlamamak icin sanatcilar iki gruba bolunur,
+  // her calistirma siradaki grubu kontrol eder (her sanatci yine ~6 saatte bir kontrol edilir).
+  // CHECK_ALL=1 ile hepsi tek seferde kontrol edilir.
+  const slot = Math.floor(Date.now() / BATCH_WINDOW_MS) % BATCH_COUNT;
+  const batch =
+    process.env.CHECK_ALL === '1' ? artists : artists.filter((_, i) => i % BATCH_COUNT === slot);
+  console.log(
+    `Bu çalıştırmada ${batch.length}/${artists.length} sanatçı kontrol ediliyor (grup ${slot + 1}/${BATCH_COUNT}).\n`
+  );
+
   const token = await getAccessToken();
   let hadErrors = false;
 
-  for (const artist of artists) {
+  for (const artist of batch) {
     let releases;
     try {
       releases = await getRecentReleases(token, artist.id);
@@ -62,7 +75,9 @@ async function main() {
 
     newState[artist.id] = latest.id;
 
-    const isNew = !isFirstRun && oldState[artist.id] !== latest.id;
+    // Durumda kaydi olmayan sanatci (ilk tarama veya listeye yeni eklenen) sessizce kaydedilir.
+    const known = oldState[artist.id] !== undefined;
+    const isNew = !isFirstRun && known && oldState[artist.id] !== latest.id;
 
     if (isNew) {
       const text = buildPostText(artist.name, latest);
@@ -137,15 +152,20 @@ async function main() {
     await sleep(5000);
   }
 
-  if (hadErrors) {
-    console.log('\nBazı sanatçılarda hata oluştu, durum dosyası güncellenmedi (eksik veriyle karışıklık olmasın diye). Tekrar çalıştır.');
-    process.exitCode = 1;
-    return;
+  // Kontrol edilemeyen sanatcilarin eski kaydi korunur; basarili olanlar kaydedilir.
+  // Boylece kota hatasi olsa bile ilerleme kaybolmaz, sadece hatalilar sonraki turda tekrar denenir.
+  const succeeded = Object.keys(newState).length;
+  if (succeeded > 0) {
+    await saveState({ ...oldState, ...newState });
+    await saveAnniversaryState(anniversaryState);
+    console.log(`\nDurum dosyası güncellendi (${succeeded} sanatçı).`);
   }
 
-  await saveState(newState);
-  await saveAnniversaryState(anniversaryState);
-  console.log('\nDurum dosyası güncellendi.');
+  if (hadErrors) {
+    console.log('\nBazı sanatçılarda hata oluştu; hatalı olanlar sonraki turda tekrar denenecek.');
+    // Hic ilerleme yoksa (hepsi basarisiz) calistirmayi basarisiz say ki bildirim gelsin.
+    if (succeeded === 0) process.exitCode = 1;
+  }
 }
 
 main();

@@ -5,7 +5,7 @@ import { publishPost } from './bufferPost.js';
 import { buildPostText } from './postText.js';
 import { appendToWeeklyLog } from './weeklyLog.js';
 import { loadAnniversaryState, saveAnniversaryState } from './anniversaryState.js';
-import { tiktokFeaturePost } from './tiktok.js';
+import { tiktokSmartPost } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -81,8 +81,9 @@ async function main() {
             url: latest.url,
             imageUrl: latest.imageUrl,
           });
-          await tiktokFeaturePost({
+          await tiktokSmartPost({
             kind: 'release',
+            artist: artist.name,
             label: latest.albumType === 'album' ? 'YENİ ALBÜM' : 'YENİ ŞARKI',
             headline: artist.name,
             title: latest.name,
@@ -115,8 +116,9 @@ async function main() {
           } else {
             console.log(`  Paylaşıldı (post id: ${result.post.id})`);
             anniversaryState.announced.push(key);
-            await tiktokFeaturePost({
+            await tiktokSmartPost({
               kind: 'anniversary',
+              artist: artist.name,
               label: 'YIL DÖNÜMÜ',
               headline: `${yearsAgo}. YIL`,
               title: release.name,

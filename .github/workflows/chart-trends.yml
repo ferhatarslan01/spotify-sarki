@@ -20,6 +20,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Ensure ffmpeg
+        run: which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+
       - run: npm run check:trends
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}

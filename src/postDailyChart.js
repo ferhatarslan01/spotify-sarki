@@ -4,7 +4,7 @@ import { loadChartState, saveChartState } from './chartState.js';
 import { publishPost } from './bufferPost.js';
 import { generateChartCollage } from './collage.js';
 import { pushFile, getRawUrl } from './gitPublish.js';
-import { tiktokChartPost } from './tiktok.js';
+import { tiktokChartSmartPost } from './tiktokVideo.js';
 
 async function main() {
   const { date, entries } = await fetchDailyChart();
@@ -49,7 +49,7 @@ async function main() {
   }
 
   console.log(`Paylasildi (post id: ${result.post.id})`);
-  await tiktokChartPost({ kind: 'daily-tr', header: 'TÜRKİYE GÜNLÜK SPOTIFY', date, entries });
+  await tiktokChartSmartPost({ kind: 'daily-tr', header: 'TÜRKİYE GÜNLÜK SPOTIFY', date, entries });
   await saveChartState({ lastPostedDate: date });
 }
 

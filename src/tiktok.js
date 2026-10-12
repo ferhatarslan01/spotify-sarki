@@ -1,11 +1,8 @@
-import { mkdir, writeFile, readdir, unlink } from 'node:fs/promises';
-import { pushPaths, getRawUrl } from './gitPublish.js';
 import { publishTikTokPhoto } from './bufferPost.js';
+import { hostMedia } from './mediaHost.js';
 import { renderFeatureCard, renderListCard } from './tiktokCard.js';
 import { getTrackThumbnail, formatStreams } from './dailyChart.js';
 
-const DIR = 'public/tiktok';
-const KEEP_DAYS = 3;
 const TITLE_MAX = 90;
 
 // BUFFER_TIKTOK_CHANNEL_ID tanimli degilse TikTok tarafi tamamen devre disi kalir.
@@ -26,28 +23,13 @@ export function stripUrls(text) {
     .trim();
 }
 
-async function pruneOld() {
-  const files = await readdir(DIR).catch(() => []);
-  const cutoff = Date.now() - KEEP_DAYS * 24 * 60 * 60 * 1000;
-  for (const file of files) {
-    const m = file.match(/^(\d{4})(\d{2})(\d{2})/);
-    if (m && Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) < cutoff) {
-      await unlink(`${DIR}/${file}`);
-    }
-  }
+export function mediaName(kind, ext) {
+  const stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12);
+  return `${stamp}-${kind}-${Math.random().toString(36).slice(2, 6)}.${ext}`;
 }
 
 async function publishCard({ kind, cardBuffer, title, description }) {
-  const stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12);
-  const name = `${stamp}-${kind}-${Math.random().toString(36).slice(2, 6)}.jpg`;
-  const filePath = `${DIR}/${name}`;
-
-  await mkdir(DIR, { recursive: true });
-  await writeFile(filePath, cardBuffer);
-  await pruneOld();
-  pushPaths([DIR], `Add TikTok card ${kind} [skip ci]`);
-
-  const imageUrl = getRawUrl(filePath);
+  const imageUrl = hostMedia(cardBuffer, mediaName(kind, 'jpg'));
   const result = await publishTikTokPhoto(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
     text: description,
     imageUrls: [imageUrl],
@@ -79,31 +61,44 @@ export async function tiktokFeaturePost({ kind, label, headline, title, subtitle
   }
 }
 
+// Chart kartinin satirlari (kapak + sanatci/sarki + stream)
+export async function buildChartRows(top) {
+  const rows = [];
+  for (const e of top) {
+    rows.push({
+      rank: e.rank,
+      coverUrl: await getTrackThumbnail(e.trackUrl),
+      line1: e.artists.map((a) => a.name).join(' & '),
+      line2: e.trackName,
+      line3: `${formatStreams(e.streams)} stream`,
+    });
+  }
+  return rows;
+}
+
+export function chartDescription(fullHeader, date, top) {
+  return [
+    `${fullHeader} (${date})`,
+    '',
+    ...top.map((e) => `${e.rank}. ${e.artists.map((a) => a.name).join(' & ')} - ${e.trackName}`),
+  ].join('\n');
+}
+
 // Chart karti: entries = fetchDailyChart/fetchGlobalChart/fetchWeeklyChart ciktisi
 export async function tiktokChartPost({ kind, header, date, entries, maxRows = 8 }) {
   if (!tiktokEnabled()) return false;
   try {
     const top = entries.slice(0, maxRows);
-    const rows = [];
-    for (const e of top) {
-      rows.push({
-        rank: e.rank,
-        coverUrl: await getTrackThumbnail(e.trackUrl),
-        line1: e.artists.map((a) => a.name).join(' & '),
-        line2: e.trackName,
-        line3: `${formatStreams(e.streams)} stream`,
-      });
-    }
-
+    const rows = await buildChartRows(top);
     const fullHeader = `${header} TOP ${top.length}`;
     const cardBuffer = await renderListCard({ header: fullHeader, subheader: date, rows });
-    const description = [
-      `${fullHeader} (${date})`,
-      '',
-      ...top.map((e) => `${e.rank}. ${e.artists.map((a) => a.name).join(' & ')} - ${e.trackName}`),
-    ].join('\n');
 
-    return await publishCard({ kind, cardBuffer, title: `${fullHeader} (${date})`, description });
+    return await publishCard({
+      kind,
+      cardBuffer,
+      title: `${fullHeader} (${date})`,
+      description: chartDescription(fullHeader, date, top),
+    });
   } catch (err) {
     console.error(`  TikTok hatası (${kind}): ${err.message}`);
     return false;

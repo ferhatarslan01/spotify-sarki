@@ -4,7 +4,7 @@ import { loadChartState, saveChartState } from './chartState.js';
 import { publishPost } from './bufferPost.js';
 import { generateChartCollage } from './collage.js';
 import { pushFile, getRawUrl } from './gitPublish.js';
-import { tiktokChartPost } from './tiktok.js';
+import { tiktokChartSmartPost } from './tiktokVideo.js';
 
 const STATE_FILE = 'weeklyChartState.json';
 
@@ -51,7 +51,7 @@ async function main() {
   }
 
   console.log(`Paylasildi (post id: ${result.post.id})`);
-  await tiktokChartPost({ kind: 'weekly-tr', header: 'TÜRKİYE HAFTALIK SPOTIFY', date, entries });
+  await tiktokChartSmartPost({ kind: 'weekly-tr', header: 'TÜRKİYE HAFTALIK SPOTIFY', date, entries });
   await saveChartState({ lastPostedDate: date }, STATE_FILE);
 }
 

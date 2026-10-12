@@ -2,12 +2,13 @@ import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.
 import { fetchGlobalChart } from './globalChart.js';
 import { loadTrendsState, saveTrendsState, emptyTrendsState, highestMilestone } from './trendsState.js';
 import { publishPost } from './bufferPost.js';
-import { tiktokFeaturePost } from './tiktok.js';
+import { tiktokSmartPost } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const JUMP_THRESHOLD = 10;
 const MAX_POSTS_PER_RUN = 5;
+const MAX_TIKTOK_PER_RUN = 2;
 const RELEVANT_RANK_LIMIT = 100;
 
 function artistNames(entry) {
@@ -169,12 +170,22 @@ async function main() {
   const toPost = events.slice(0, MAX_POSTS_PER_RUN);
   console.log(`${events.length} olay bulundu, ${toPost.length} tanesi paylaşılacak.`);
 
+  let tiktokSent = 0;
   for (const event of toPost) {
     console.log(`- ${event.text.split('\n')[0]}`);
     const ok = await postEvent(event.text, event.trackUrl);
     if (ok) {
       event.onCommit();
-      await tiktokFeaturePost({ ...event.card, trackUrl: event.trackUrl, caption: event.text });
+      // TikTok gunluk gonderi limiti icin calistirma basina en fazla 2 olay
+      if (tiktokSent < MAX_TIKTOK_PER_RUN) {
+        const sent = await tiktokSmartPost({
+          ...event.card,
+          artist: event.card.subtitle,
+          trackUrl: event.trackUrl,
+          caption: event.text,
+        });
+        if (sent) tiktokSent += 1;
+      }
     }
     await sleep(2000);
   }

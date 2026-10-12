@@ -103,6 +103,38 @@ export async function publishTikTokPhoto(channelId, { text, imageUrls, title }) 
   return data.createPost;
 }
 
+// TikTok video gonderisi: tek MP4 (herkese acik URL) + aciklama (text)
+export async function publishTikTokVideo(channelId, { text, videoUrl }) {
+  const data = await graphql(
+    `
+      mutation CreateTikTokVideo($text: String!, $channelId: ChannelId!, $assets: [AssetInput!]) {
+        createPost(
+          input: {
+            text: $text
+            channelId: $channelId
+            schedulingType: automatic
+            mode: shareNow
+            assets: $assets
+          }
+        ) {
+          ... on PostActionSuccess {
+            post {
+              id
+              text
+            }
+          }
+          ... on MutationError {
+            message
+          }
+        }
+      }
+    `,
+    { text, channelId, assets: [{ video: { url: videoUrl } }] }
+  );
+
+  return data.createPost;
+}
+
 // items: [{ text, imageUrl? }, ...] - ilk eleman kok (root) tweet, digerleri sirayla yanit olarak zincirlenir
 export async function publishThread(items) {
   const toAssets = (imageUrl) => (imageUrl ? [{ image: { url: imageUrl } }] : []);

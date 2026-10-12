@@ -42,6 +42,7 @@ async function main() {
     header: 'BU HAFTA ÇIKAN ŞARKILAR',
     subheader: `${log.length} yeni yayın`,
     rows: rows.filter((r) => r.coverUrl),
+    artists: log.slice(0, 3).map((e) => e.artistName),
     description: [
       `Bu hafta çıkan şarkılar (${log.length} yeni yayın)`,
       '',

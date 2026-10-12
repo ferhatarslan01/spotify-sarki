@@ -2,6 +2,7 @@ import { publishTikTokPhoto } from './bufferPost.js';
 import { hostMedia } from './mediaHost.js';
 import { renderFeatureCard, renderListCard } from './tiktokCard.js';
 import { getTrackThumbnail, formatStreams } from './dailyChart.js';
+import { withHashtags } from './hashtags.js';
 
 const TITLE_MAX = 90;
 
@@ -28,10 +29,10 @@ export function mediaName(kind, ext) {
   return `${stamp}-${kind}-${Math.random().toString(36).slice(2, 6)}.${ext}`;
 }
 
-async function publishCard({ kind, cardBuffer, title, description }) {
+async function publishCard({ kind, cardBuffer, title, description, artists = [] }) {
   const imageUrl = hostMedia(cardBuffer, mediaName(kind, 'jpg'));
   const result = await publishTikTokPhoto(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
-    text: description,
+    text: withHashtags(description, { kind, artists }),
     imageUrls: [imageUrl],
     title: truncate(title, TITLE_MAX),
   });
@@ -42,7 +43,17 @@ async function publishCard({ kind, cardBuffer, title, description }) {
 }
 
 // Tek sarki/olay karti. Hata verirse X akisini bozmamak icin asla throw etmez.
-export async function tiktokFeaturePost({ kind, label, headline, title, subtitle, coverUrl, trackUrl, caption }) {
+export async function tiktokFeaturePost({
+  kind,
+  artist,
+  label,
+  headline,
+  title,
+  subtitle,
+  coverUrl,
+  trackUrl,
+  caption,
+}) {
   if (!tiktokEnabled()) return false;
   try {
     const cover = coverUrl ?? (await getTrackThumbnail(trackUrl));
@@ -54,6 +65,7 @@ export async function tiktokFeaturePost({ kind, label, headline, title, subtitle
       cardBuffer,
       title: description.split('\n')[0] || `${subtitle} - ${title}`,
       description,
+      artists: [artist ?? subtitle],
     });
   } catch (err) {
     console.error(`  TikTok hatası (${kind}): ${err.message}`);
@@ -74,6 +86,17 @@ export async function buildChartRows(top) {
     });
   }
   return rows;
+}
+
+// Hashtag icin: listenin en ustundeki sanatcilar (benzersiz, ilk 3)
+export function chartArtists(top) {
+  const names = [];
+  for (const e of top) {
+    const name = e.artists[0]?.name;
+    if (name && !names.includes(name)) names.push(name);
+    if (names.length >= 3) break;
+  }
+  return names;
 }
 
 export function chartDescription(fullHeader, date, top) {
@@ -98,6 +121,7 @@ export async function tiktokChartPost({ kind, header, date, entries, maxRows = 8
       cardBuffer,
       title: `${fullHeader} (${date})`,
       description: chartDescription(fullHeader, date, top),
+      artists: chartArtists(top),
     });
   } catch (err) {
     console.error(`  TikTok hatası (${kind}): ${err.message}`);
@@ -106,11 +130,11 @@ export async function tiktokChartPost({ kind, header, date, entries, maxRows = 8
 }
 
 // Haftalik ozet gibi siralamasiz liste kartlari: rows = [{ coverUrl, line1, line2 }]
-export async function tiktokListPost({ kind, header, subheader, rows, description }) {
+export async function tiktokListPost({ kind, header, subheader, rows, description, artists = [] }) {
   if (!tiktokEnabled()) return false;
   try {
     const cardBuffer = await renderListCard({ header, subheader, rows });
-    return await publishCard({ kind, cardBuffer, title: header, description });
+    return await publishCard({ kind, cardBuffer, title: header, description, artists });
   } catch (err) {
     console.error(`  TikTok hatası (${kind}): ${err.message}`);
     return false;

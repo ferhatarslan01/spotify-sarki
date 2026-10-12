@@ -79,25 +79,22 @@ function wrapSvg(inner) {
   );
 }
 
-// Tek bir sarki/olay karti: { label, headline, title, subtitle, coverUrl }
-export async function renderFeatureCard({ label, headline, title, subtitle, coverUrl }) {
-  const coverBuffer = await fetchBuffer(coverUrl);
-  const bg = await background(coverBuffer);
-  const cover = await rounded(coverBuffer, 840, 48);
-
+// Tek sarki/olay kartinin parcalari (ayri SVG'ler). Statik kart hepsini birlestirir,
+// animasyonlu videoda ise ayri katmanlar olarak sirayla belirir.
+function featureParts({ label, headline, title, subtitle }) {
   const pillW = Math.min(960, label.length * 34 + 110);
   let y = 1215;
-  let svg = '';
+  const parts = { pill: '', headline: '', title: '', subtitle: '', footer: footerSvg() };
 
-  svg += `<rect x="${(W - pillW) / 2}" y="130" width="${pillW}" height="96" rx="48" fill="${ACCENT}"/>`;
-  svg += `<text x="${W / 2}" y="196" font-size="46" font-weight="700" fill="#000000"
+  parts.pill += `<rect x="${(W - pillW) / 2}" y="130" width="${pillW}" height="96" rx="48" fill="${ACCENT}"/>`;
+  parts.pill += `<text x="${W / 2}" y="196" font-size="46" font-weight="700" fill="#000000"
     text-anchor="middle" letter-spacing="3" font-family="${FONT}">${esc(label)}</text>`;
 
   if (headline) {
     const h = fitText(headline, 940, 150, 70, 2);
     for (const line of h.lines) {
       y += h.size;
-      svg += `<text x="${W / 2}" y="${y}" font-size="${h.size}" font-weight="800" fill="${ACCENT}"
+      parts.headline += `<text x="${W / 2}" y="${y}" font-size="${h.size}" font-weight="800" fill="${ACCENT}"
         text-anchor="middle" font-family="${FONT}">${esc(line)}</text>`;
       y += h.size * 0.12;
     }
@@ -108,7 +105,7 @@ export async function renderFeatureCard({ label, headline, title, subtitle, cove
     const t = fitText(title, 940, 66, 40, 2);
     for (const line of t.lines) {
       y += t.size;
-      svg += `<text x="${W / 2}" y="${y}" font-size="${t.size}" font-weight="700" fill="#ffffff"
+      parts.title += `<text x="${W / 2}" y="${y}" font-size="${t.size}" font-weight="700" fill="#ffffff"
         text-anchor="middle" font-family="${FONT}">${esc(line)}</text>`;
       y += t.size * 0.15;
     }
@@ -119,13 +116,47 @@ export async function renderFeatureCard({ label, headline, title, subtitle, cove
     const s = fitText(subtitle, 940, 52, 34, 2);
     for (const line of s.lines) {
       y += s.size;
-      svg += `<text x="${W / 2}" y="${y}" font-size="${s.size}" fill="#ffffff" fill-opacity="0.8"
+      parts.subtitle += `<text x="${W / 2}" y="${y}" font-size="${s.size}" fill="#ffffff" fill-opacity="0.8"
         text-anchor="middle" font-family="${FONT}">${esc(line)}</text>`;
       y += s.size * 0.15;
     }
   }
 
-  svg += footerSvg();
+  return parts;
+}
+
+// Animasyonlu video icin katmanlar: sabit taban (bulanik arka plan + etiket + imza) ve
+// sirayla belirecek parcalar (kapak, sira, sarki adi, sanatci/stream).
+// Kapak (840x840) taban uzerinde left:120, top:290 konumundadir.
+export async function renderFeatureLayers({ label, headline, title, subtitle, coverUrl }) {
+  const coverBuffer = await fetchBuffer(coverUrl);
+  const bg = await background(coverBuffer);
+  const cover = await rounded(coverBuffer, 840, 48);
+  const parts = featureParts({ label, headline, title, subtitle });
+
+  const base = await sharp(bg)
+    .composite([{ input: wrapSvg(parts.pill + parts.footer), left: 0, top: 0 }])
+    .jpeg({ quality: 88 })
+    .toBuffer();
+
+  const layer = (inner) => sharp(wrapSvg(inner)).png().toBuffer();
+  return {
+    base,
+    cover,
+    headline: await layer(parts.headline),
+    title: await layer(parts.title),
+    subtitle: await layer(parts.subtitle),
+  };
+}
+
+// Tek bir sarki/olay karti: { label, headline, title, subtitle, coverUrl }
+export async function renderFeatureCard({ label, headline, title, subtitle, coverUrl }) {
+  const coverBuffer = await fetchBuffer(coverUrl);
+  const bg = await background(coverBuffer);
+  const cover = await rounded(coverBuffer, 840, 48);
+
+  const parts = featureParts({ label, headline, title, subtitle });
+  const svg = parts.pill + parts.headline + parts.title + parts.subtitle + parts.footer;
 
   return sharp(bg)
     .composite([
@@ -199,4 +230,62 @@ export async function renderListCard({ header, subheader, rows }) {
   composites.push({ input: wrapSvg(svg), left: 0, top: 0 });
 
   return sharp(bg).composite(composites).jpeg({ quality: 88 }).toBuffer();
+}
+
+// Acilis/baslik karti: ortada buyuk baslik. { label, headline, subtitle, coverUrl }
+export async function renderTitleCard({ label, headline, subtitle, coverUrl }) {
+  const coverBuffer = await fetchBuffer(coverUrl);
+  const bg = await background(coverBuffer);
+
+  // Basliktaki \n satir sonlarina uyulur; yoksa otomatik bolunur.
+  let h;
+  if (headline.includes('\n')) {
+    const lines = headline.split('\n');
+    const longest = Math.max(...lines.map((l) => l.length));
+    const size = Math.max(72, Math.min(132, Math.floor(880 / (longest * 0.66))));
+    h = { lines, size };
+  } else {
+    h = fitText(headline, 940, 132, 72, 3);
+  }
+  const s = subtitle ? fitText(subtitle, 940, 50, 34, 2) : null;
+
+  const PILL_H = 96;
+  const GAP_PILL = 80;
+  const GAP_SUB = 56;
+  const headlineH = h.lines.length * h.size * 1.12;
+  const subtitleH = s ? s.lines.length * s.size * 1.2 : 0;
+  const blockH = PILL_H + GAP_PILL + headlineH + (s ? GAP_SUB + subtitleH : 0);
+  let y = (H - blockH) / 2;
+
+  const pillW = Math.min(960, label.length * 34 + 110);
+  let svg = '';
+
+  svg += `<rect x="${(W - pillW) / 2}" y="${y}" width="${pillW}" height="${PILL_H}" rx="48" fill="${ACCENT}"/>`;
+  svg += `<text x="${W / 2}" y="${y + 66}" font-size="46" font-weight="700" fill="#000000"
+    text-anchor="middle" letter-spacing="3" font-family="${FONT}">${esc(label)}</text>`;
+  y += PILL_H + GAP_PILL;
+
+  for (const line of h.lines) {
+    y += h.size;
+    svg += `<text x="${W / 2}" y="${y}" font-size="${h.size}" font-weight="800" fill="#ffffff"
+      text-anchor="middle" font-family="${FONT}">${esc(line)}</text>`;
+    y += h.size * 0.12;
+  }
+
+  if (s) {
+    y += GAP_SUB;
+    for (const line of s.lines) {
+      y += s.size;
+      svg += `<text x="${W / 2}" y="${y}" font-size="${s.size}" font-weight="700" fill="${ACCENT}"
+        text-anchor="middle" font-family="${FONT}">${esc(line)}</text>`;
+      y += s.size * 0.2;
+    }
+  }
+
+  svg += footerSvg();
+
+  return sharp(bg)
+    .composite([{ input: wrapSvg(svg), left: 0, top: 0 }])
+    .jpeg({ quality: 88 })
+    .toBuffer();
 }

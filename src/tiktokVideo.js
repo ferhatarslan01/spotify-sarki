@@ -137,8 +137,8 @@ const INTRO_SECONDS = 3.5;
 const SLIDE_SECONDS = 5;
 
 // Slayt videosu: giris karti (liste) + her sira icin kendi sesiyle bir slayt.
-// slides: [{ cardJpeg, audioUrl|null }]. Giris, 1. siradaki sarkinin sesiyle baslar ve
-// 1. slayta kesintisiz devam eder; sonraki slaytlar kendi sarkilarini calar.
+// slides: [{ cardJpeg, audioUrl|null }] (gosterim sirasiyla). Giris, ilk slaytin sarkisinin
+// sesiyle baslar ve ilk slayta kesintisiz devam eder; sonraki slaytlar kendi sarkilarini calar.
 export async function makeSlideshowVideo({ introCard, slides }) {
   const dir = await mkdtemp(join(tmpdir(), 'ttslides-'));
   try {
@@ -248,6 +248,9 @@ export async function buildChartSlideshow({ header, date, entries, n = 5 }) {
   }
 
   if (withAudio === 0 || slides.length === 0) return null;
+
+  // Geri sayim: 5. siradan baslayip 1. sirada bitir (en iyi an sona kalir)
+  slides.reverse();
 
   const video = await makeSlideshowVideo({ introCard, slides });
   return { video, withAudio, slideCount: slides.length, caption: chartDescription(fullHeader, date, top) };

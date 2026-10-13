@@ -1,7 +1,9 @@
 // TikTok aciklamalarina eklenen hashtag'ler. TIKTOK_HASHTAGS=0 ile kapatilir.
 // Amac: az sayida, ilgili ve gonderi turune gore degisen etiket (hepsi ayni olursa spam gibi gorunur).
 
-const DISCOVERY = ['#keşfet', '#fyp', '#keşfetteyiz', '#keşfetbeniöneçıkar'];
+// Hesap Turkiye kitlesini hedefliyor: uluslararasi etiketler (#fyp, #foryou) yurt disi trafigi cektigi icin kullanilmaz.
+const ALWAYS = ['#keşfet', '#türkiye'];
+const DISCOVERY = ['#keşfetteyiz', '#keşfetbeniöneçıkar', '#tiktokturkiye', '#müzik', '#şarkı', '#trend'];
 
 const KIND_TAGS = {
   release: ['#yenişarkı', '#yeniçıkanlar', '#türkçemüzik'],
@@ -50,10 +52,10 @@ function artistTags(artists, limit) {
 
 export function buildHashtags({ kind, artists = [] }) {
   const base = KIND_TAGS[kind] ?? FALLBACK_TAGS;
-  const all = [...base.slice(0, 3), ...artistTags(artists, 2), ...pickRandom(DISCOVERY, 2)];
+  const all = [...ALWAYS, ...base.slice(0, 3), ...artistTags(artists, 2), ...pickRandom(DISCOVERY, 2)];
 
   const seen = new Set();
-  return all.filter((t) => !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase())).slice(0, 7);
+  return all.filter((t) => !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase())).slice(0, 8);
 }
 
 export function withHashtags(description, { kind, artists = [] }) {

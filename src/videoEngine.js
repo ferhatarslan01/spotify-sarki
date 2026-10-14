@@ -561,7 +561,7 @@ async function sceneAnniv(D, assets, P) {
           const dt = t - (1.9 + i * 0.12);
           if (dt > 0 && t < ex) {
             const x = [150, 930, 170, 900][i];
-            const y = [330, 380, 1560, 1520][i] - 16 * Math.sin(t * 3 + i);
+            const y = [280, 320, 1590, 1550][i] - 16 * Math.sin(t * 3 + i);
             L.push(layer(q, { cx: x, cy: y, scale: easeOutBack(dt / 0.4), rot: [-14, 12, 10, -10][i] + 6 * Math.sin(t * 4 + i), opacity: clamp(dt / 0.15) * 0.9 }));
           }
         });
@@ -579,8 +579,8 @@ async function sceneAnniv(D, assets, P) {
         L.push(fadeIn(label, t, NUM_T1 - 0.2, W / 2, 1290, { dur: 0.4 }));
         L.push(fadeIn(artistT, t, NUM_T1 + 0.25, W / 2, 1385, { dur: 0.4 }));
         L.push(popIn(titleT, t, NUM_T1 + 0.45, W / 2, 1475, { dur: 0.5 }));
-        if (dateT) L.push(fadeIn(dateT, t, NUM_T1 + 0.8, W / 2, 1545, { dur: 0.4 }));
-        L.push(popIn(cta, t, 8.2, W / 2, 1625, { dur: 0.5, scale: 1 + 0.03 * Math.sin(t * 5) }));
+        if (dateT) L.push(fadeIn(dateT, t, NUM_T1 + 0.8, W / 2, 1570, { dur: 0.4 }));
+        L.push(popIn(cta, t, 8.2, W / 2, 1660, { dur: 0.5, scale: 1 + 0.03 * Math.sin(t * 5) }));
       }
       L.push(burstLayer(t, [{ t0: NUM_T1, x: W / 2, y: 1000, n: 90, seed: 5 }, { t0: HOOK_END, x: W / 2, y: 560, n: 50, seed: 9 }], P));
       L.push(flashLayer(0.8 * Math.exp(-9 * Math.max(0, t - HOOK_END)) * (t >= HOOK_END ? 1 : 0)));
@@ -635,7 +635,7 @@ async function sceneRise(D, assets, P) {
         L.push(fadeIn(jump, t, T1 + 0.2, W / 2, 1290, { dur: 0.4 }));
         L.push(fadeIn(artistT, t, T1 + 0.5, W / 2, 1385, { dur: 0.4 }));
         L.push(popIn(titleT, t, T1 + 0.7, W / 2, 1475, { dur: 0.5 }));
-        L.push(popIn(cta, t, 8.4, W / 2, 1625, { dur: 0.5, scale: 1 + 0.03 * Math.sin(t * 5) }));
+        L.push(popIn(cta, t, 8.4, W / 2, 1660, { dur: 0.5, scale: 1 + 0.03 * Math.sin(t * 5) }));
       }
       L.push(burstLayer(t, [{ t0: T1, x: W / 2, y: 1000, n: 90, seed: 4 }], P));
       L.push(flashLayer(0.8 * Math.exp(-9 * Math.max(0, t - HOOK_END)) * (t >= HOOK_END ? 1 : 0)));
@@ -682,8 +682,8 @@ async function sceneNew(D, assets, P) {
         L.push(slam(artistT, t, HOOK_END + 0.55, W / 2, 1215, { from: 1.8, shake: 12 }));
         L.push(fadeIn(subT, t, HOOK_END + 0.9, W / 2, 1335, { dur: 0.4 }));
         L.push(popIn(titleT, t, HOOK_END + 1.15, W / 2, 1435, { dur: 0.5 }));
-        if (dateT) L.push(fadeIn(dateT, t, HOOK_END + 1.5, W / 2, 1510, { dur: 0.4 }));
-        L.push(popIn(cta, t, 8.6, W / 2, 1625, { dur: 0.5, scale: 1 + 0.03 * Math.sin(t * 5) }));
+        if (dateT) L.push(fadeIn(dateT, t, HOOK_END + 1.5, W / 2, 1532, { dur: 0.4 }));
+        L.push(popIn(cta, t, 8.6, W / 2, 1660, { dur: 0.5, scale: 1 + 0.03 * Math.sin(t * 5) }));
       }
       L.push(burstLayer(t, [{ t0: HOOK_END + 0.1, x: W / 2, y: 700, n: 110, seed: 8 }], P));
       L.push(flashLayer(0.85 * Math.exp(-9 * Math.max(0, t - HOOK_END)) * (t >= HOOK_END ? 1 : 0)));
@@ -712,8 +712,8 @@ async function sceneTop5(D, P) {
   }
   const l1 = await textImg({ lines: D.intro.l1, size: 120, fill: '#fff' });
   const l2 = await textImg({ lines: D.intro.l2, size: 150, fill: P.accent });
-  const big = await textImg({ lines: D.intro.big, size: 520, fill: '#fff', stroke: 'rgba(0,0,0,0.3)' });
-  const small = await textImg({ lines: D.intro.small, size: 140, fill: P.accent });
+  const big = await textImg({ lines: D.intro.big, size: 460, fill: '#fff', stroke: 'rgba(0,0,0,0.3)' });
+  const small = await textImg({ lines: D.intro.small, size: 112, fill: P.accent });
   const pillTop = await pillImg({ text: D.pill, size: 40, fill: P.badgeText, bg: P.badge });
   const newBadge = await pillImg({ text: 'YENİ', size: 70, fill: '#fff', bg: '#E8174B', padX: 46, padY: 22 });
   const dot = Buffer.from('<svg width="40" height="40"><circle cx="20" cy="20" r="12" fill="#fff"/></svg>');
@@ -762,8 +762,8 @@ async function sceneTop5(D, P) {
         L.push(popIn(pillTop, t, 0.0, W / 2, 190, { dur: 0.4, rise: -40 }));
         L.push(slam(l1, t, 0.15, W / 2, 560, { exit: INTRO - 0.3 }));
         L.push(slam(l2, t, 0.45, W / 2, 740, { exit: INTRO - 0.3, from: 3 }));
-        L.push(slam(big, t, 0.8, 380, 1170, { exit: INTRO - 0.3, from: 3.4, shake: 18 }));
-        L.push(slam(small, t, 1.1, 720, 1230, { exit: INTRO - 0.3, from: 3 }));
+        L.push(slam(big, t, 0.8, 330, 1170, { exit: INTRO - 0.3, from: 3.4, shake: 18 }));
+        L.push(slam(small, t, 1.1, 770, 1230, { exit: INTRO - 0.3, from: 3 }));
       } else if (!inOutro) {
         const s = slides[idx];
         const st = slideStart(idx);

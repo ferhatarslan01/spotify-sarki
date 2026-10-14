@@ -21,6 +21,10 @@ jobs:
 
       - name: Render sample videos
         run: node src/tiktokPreview.js preview
+        env:
+          # Modul yuklenirken kontrol ediliyor; onizleme Buffer'a hicbir sey gondermez.
+          BUFFER_API_KEY: preview-only
+          BUFFER_CHANNEL_ID: preview-only
 
       - uses: actions/upload-artifact@v4
         with:

@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { publishTikTokPhoto } from './bufferPost.js';
 import { hostMedia } from './mediaHost.js';
 import { renderFeatureCard, renderListCard } from './tiktokCard.js';
@@ -7,7 +8,9 @@ import { withHashtags } from './hashtags.js';
 const TITLE_MAX = 90;
 
 // BUFFER_TIKTOK_CHANNEL_ID tanimli degilse TikTok tarafi tamamen devre disi kalir.
+// data/TIKTOK_PAUSED dosyasi varsa otomatik TikTok gonderisi duraklatilir (dosyayi silince devam eder).
 export function tiktokEnabled() {
+  if (existsSync('data/TIKTOK_PAUSED')) return false;
   return Boolean(process.env.BUFFER_TIKTOK_CHANNEL_ID);
 }
 

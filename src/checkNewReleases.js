@@ -105,6 +105,17 @@ async function main() {
             subtitle: formatDate(latest.releaseDate),
             coverUrl: latest.imageUrl,
             caption: text,
+            scene: 'new',
+            palette: 'studio',
+            sceneData: {
+              dateText: formatDate(latest.releaseDate),
+              pill: 'ÇIKTI, ŞİMDİ DİNLE',
+              hook1: latest.albumType === 'album' ? 'YENİ ALBÜMÜ' : 'YENİ ŞARKISI',
+              hook2: 'GELDİ!!!',
+              sub: latest.albumType === 'album' ? 'yeni albümü çıktı!' : 'yeni şarkısı çıktı!',
+              badge: 'YENİ',
+              cta: 'Dinledin mi? Yorumlara yaz!',
+            },
           });
         }
       } catch (err) {
@@ -140,6 +151,19 @@ async function main() {
               subtitle: artist.name,
               coverUrl: release.imageUrl,
               caption: annText,
+              scene: 'anniv',
+              palette: 'altin',
+              sceneData: {
+                number: yearsAgo,
+                suffix: '',
+                pill: 'YIL DÖNÜMÜ',
+                small: 'şarkısı çıkalı',
+                l1: 'KAÇ YIL',
+                l2: 'OLDU?',
+                label: 'YIL ÖNCE ÇIKTI',
+                dateText: formatDate(release.releaseDate),
+                cta: 'Sen hâlâ dinliyor musun?',
+              },
             });
           }
         } catch (err) {

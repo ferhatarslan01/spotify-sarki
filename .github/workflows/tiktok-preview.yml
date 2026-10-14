@@ -1,0 +1,29 @@
+name: TikTok preview
+
+# Elle calistirilir. Hicbir yerde paylasim YAPMAZ; ornek videolari artifact olarak yukler.
+on:
+  workflow_dispatch: {}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Ensure ffmpeg
+        run: which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+
+      - name: Render sample videos
+        run: node src/tiktokPreview.js preview
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tiktok-preview
+          path: preview/*.mp4
+          retention-days: 3

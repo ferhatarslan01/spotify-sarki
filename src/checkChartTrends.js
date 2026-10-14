@@ -8,7 +8,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const JUMP_THRESHOLD = 10;
 const MAX_POSTS_PER_RUN = 5;
-const MAX_TIKTOK_PER_RUN = 2;
+const MAX_TIKTOK_PER_RUN = 1;
 const RELEVANT_RANK_LIMIT = 100;
 
 function artistNames(entry) {
@@ -79,6 +79,14 @@ async function main() {
           headline: `+${entry.positionChange} SIRA`,
           title: entry.trackName,
           subtitle: artistNames(entry),
+          scene: 'rise',
+          palette: 'altin',
+          sceneData: {
+            from: entry.rank + entry.positionChange,
+            to: entry.rank,
+            pill: 'TÜRKİYE GÜNLÜK LİSTE',
+            cta: 'Sence zirveye çıkar mı?',
+          },
         },
         onCommit: () => state.jumpsAnnounced.push(entry.trackId),
       });
@@ -97,6 +105,17 @@ async function main() {
             headline: `${entry.rank}. SIRA`,
             title: entry.trackName,
             subtitle: artistNames(entry),
+            scene: 'new',
+            palette: 'studio',
+            sceneData: {
+              dateText: `Türkiye günlük listesi · ${entry.rank}. sıra`,
+              pill: 'İLK KEZ TOP 10',
+              hook1: "TÜRKİYE TOP 10'A",
+              hook2: 'GİRDİ!!!',
+              sub: `${entry.rank}. sıraya yerleşti!`,
+              badge: `#${entry.rank}`,
+              cta: 'Sence kaçıncı olur?',
+            },
           },
           onCommit: () => state.topTenSeen.push(entry.trackId),
         });
@@ -121,6 +140,19 @@ async function main() {
               headline: `${formatStreams(milestone)} STREAM`,
               title: entry.trackName,
               subtitle: artistNames(entry),
+              scene: 'anniv',
+              palette: 'altin',
+              sceneData: {
+                number: milestone >= 1_000_000 ? Math.round(milestone / 1_000_000) : Math.round(milestone / 1_000),
+                suffix: milestone >= 1_000_000 ? 'M' : 'K',
+                pill: 'STREAM REKORU',
+                small: 'şarkısı',
+                l1: 'REKOR',
+                l2: 'KIRDI!',
+                label: "STREAM'İ GEÇTİ",
+                dateText: 'Türkiye günlük listesi',
+                cta: 'Sen kaç kere dinledin?',
+              },
             },
             onCommit: () => {
               state.milestonesSeen[entry.trackId] = milestone;
@@ -145,6 +177,17 @@ async function main() {
             headline: 'TÜRKİYE → DÜNYA',
             title: entry.trackName,
             subtitle: artistNames(entry),
+            scene: 'new',
+            palette: 'studio',
+            sceneData: {
+              dateText: 'Dünya günlük listesi',
+              pill: 'DÜNYA LİSTESİNDE',
+              hook1: 'DÜNYA LİSTESİNE',
+              hook2: 'GİRDİ!!!',
+              sub: 'dünyada da dinleniyor!',
+              badge: 'DÜNYA',
+              cta: 'Gurur duydun mu?',
+            },
           },
           onCommit: () => state.crossoverSeen.push(entry.trackId),
         });

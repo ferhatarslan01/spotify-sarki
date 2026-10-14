@@ -1,6 +1,6 @@
 import { loadWeeklyLog, clearWeeklyLog } from './weeklyLog.js';
 import { publishThread } from './bufferPost.js';
-import { tiktokListPost } from './tiktok.js';
+import { tiktokDigestPost } from './tiktokVideo.js';
 
 async function main() {
   const log = await loadWeeklyLog();
@@ -37,8 +37,8 @@ async function main() {
     line1: entry.artistName,
     line2: entry.songName,
   }));
-  await tiktokListPost({
-    kind: 'weekly-digest',
+  await tiktokDigestPost({
+    log,
     header: 'BU HAFTA ÇIKAN ŞARKILAR',
     subheader: `${log.length} yeni yayın`,
     rows: rows.filter((r) => r.coverUrl),

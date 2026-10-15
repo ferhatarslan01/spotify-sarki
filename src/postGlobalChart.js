@@ -45,7 +45,8 @@ async function main() {
 
   // TikTok: dikey Top 5 videosu. X: 5 ayri kare "kapak + oynatici" videosu thread olarak (ilk tweet liste metnini tasir).
   const chartParams = { kind: 'daily-global', header: 'DÜNYA GÜNLÜK SPOTIFY', date, entries };
-  const handle = await makeChartVideo(chartParams);
+  // Dikey TikTok videosu sadece TIKTOK_GLOBAL=1 iken uretilir (gereksiz render olmasin).
+  const handle = process.env.TIKTOK_GLOBAL === '1' ? await makeChartVideo(chartParams) : null;
   const thread = await makeChartThread(chartParams);
   const result = thread
     ? await publishThreadWithVideo(buildChartThreadItems(thread, text), () => publishPost(text, imageUrl))

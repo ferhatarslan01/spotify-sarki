@@ -1,5 +1,5 @@
 import { artists } from './artists.js';
-import { getAccessToken, getRecentReleases } from './spotify.js';
+import { getAccessToken, getRecentReleases, QuotaError } from './spotify.js';
 import { loadState, saveState } from './state.js';
 import { publishPost } from './bufferPost.js';
 import { buildPostText } from './postText.js';
@@ -55,6 +55,7 @@ async function main() {
 
   const token = await getAccessToken();
   let hadErrors = false;
+  let quotaStopped = false;
 
   for (const artist of batch) {
     let releases;
@@ -63,6 +64,12 @@ async function main() {
     } catch (err) {
       console.error(`[HATA] ${artist.name}: ${err.message}`);
       hadErrors = true;
+      if (err instanceof QuotaError) {
+        // Kota doldu: kalan sanatcilari bosuna denemeyip turu burada birakiyoruz (ilerleme asagida kaydedilir).
+        console.error('Spotify kotası doldu, tur erken bitiriliyor; kalan sanatçılar sonraki turda kontrol edilecek.');
+        quotaStopped = true;
+        break;
+      }
       continue;
     }
 
@@ -194,7 +201,7 @@ async function main() {
   if (hadErrors) {
     console.log('\nBazı sanatçılarda hata oluştu; hatalı olanlar sonraki turda tekrar denenecek.');
     // Hic ilerleme yoksa (hepsi basarisiz) calistirmayi basarisiz say ki bildirim gelsin.
-    if (succeeded === 0) process.exitCode = 1;
+    if (succeeded === 0 && !quotaStopped) process.exitCode = 1;
   }
 }
 

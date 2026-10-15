@@ -26,15 +26,26 @@ export async function getAccessToken() {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function fetchWithRetry(url, options, retries = 3) {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    const res = await fetch(url, { ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
-    if (res.status !== 429) return res;
-
-    const retryAfter = Number(res.headers.get('retry-after')) || 2;
-    await sleep(Math.min(retryAfter + 1, 10) * 1000);
+export class QuotaError extends Error {
+  constructor(message, retryAfter) {
+    super(message);
+    this.name = 'QuotaError';
+    this.retryAfter = retryAfter;
   }
-  return fetch(url, { ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+}
+
+// 429'da Retry-After kisaysa (<= 10 sn) bir kez bekleyip tekrar dener; uzunsa (kota doldu) beklemeden QuotaError atar.
+async function fetchWithRetry(url, options) {
+  const res = await fetch(url, { ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+  if (res.status !== 429) return res;
+
+  const retryAfter = Number(res.headers.get('retry-after')) || 0;
+  if (retryAfter > 0 && retryAfter <= 10) {
+    await sleep((retryAfter + 1) * 1000);
+    const again = await fetch(url, { ...options, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+    if (again.status !== 429) return again;
+  }
+  throw new QuotaError(`Spotify kotasi doldu (429, retry-after: ${retryAfter || '?'} sn)`, retryAfter);
 }
 
 // Son 10 yayini cekip tarihe gore sirali dondurur

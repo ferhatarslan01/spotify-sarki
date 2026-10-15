@@ -1,5 +1,6 @@
 import { artists } from './artists.js';
 import { getAccessToken, getRecentReleases, QuotaError } from './spotify.js';
+import { loadSpotifyBlock, saveSpotifyBlock } from './spotifyBlock.js';
 import { loadState, saveState } from './state.js';
 import { publishPostWithVideo } from './bufferPost.js';
 import { buildPostText } from './postText.js';
@@ -30,6 +31,12 @@ function checkAnniversary(release, today) {
 }
 
 async function main() {
+  const block = await loadSpotifyBlock();
+  if (block) {
+    console.log(`Spotify kotası dolu; engel ${block.until} tarihine kadar sürüyor (~${Math.round(block.remainingSeconds / 3600)} saat), bu tur atlanıyor.`);
+    return;
+  }
+
   const previousState = await loadState();
   const isFirstRun = previousState === null;
   const oldState = previousState ?? {};
@@ -68,6 +75,10 @@ async function main() {
         // Kota doldu: kalan sanatcilari bosuna denemeyip turu burada birakiyoruz (ilerleme asagida kaydedilir).
         console.error('Spotify kotası doldu, tur erken bitiriliyor; kalan sanatçılar sonraki turda kontrol edilecek.');
         quotaStopped = true;
+        if (err.retryAfter >= 60) {
+          const until = await saveSpotifyBlock(err.retryAfter);
+          console.error(`Spotify engeli ${until} tarihine kadar kaydedildi.`);
+        }
         break;
       }
       continue;

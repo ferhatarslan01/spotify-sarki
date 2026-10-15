@@ -18,6 +18,12 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Cache Remotion dependencies
+        uses: actions/cache@v4
+        with:
+          path: video/node_modules
+          key: remotion-${{ runner.os }}-${{ hashFiles('video/package-lock.json') }}
+
       - run: npm ci
 
       - run: npm run weekly:digest

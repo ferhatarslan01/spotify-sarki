@@ -1,14 +1,16 @@
-// Onizleme: gercek verilerle her TikTok sahnesinden bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,rise,new,top10,milestone,top5,digest]
+// Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,rise,new,top10,board,digest]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { renderVideo } from './videoEngine.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard } from './videoPrep.js';
+import { renderPrepared } from './remotionRender.js';
 
 const args = process.argv.slice(2);
 const onlyIdx = args.indexOf('--only');
 const only = onlyIdx >= 0 ? args[onlyIdx + 1].split(',') : null;
 const outDir = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--only') ?? 'preview';
+const want = (n) => !only || only.includes(n);
 
 async function buf(url) {
   const res = await fetch(url, { signal: AbortSignal.timeout(20_000) });
@@ -18,178 +20,137 @@ async function buf(url) {
 
 const names = (e) => e.artists.map((a) => a.name).join(' & ');
 
-async function trackData(e) {
+async function trackInput(e) {
   const pv = await findPreview(e.artists[0].name, e.trackName);
+  if (!pv) throw new Error(`onizleme yok: ${e.trackName}`);
   return {
     artist: names(e),
     title: e.trackName,
     cover: await buf(await getTrackThumbnail(e.trackUrl)),
-    audioUrl: pv?.url ?? null,
+    audioUrl: pv.url,
   };
 }
 
+const today = () => {
+  const n = new Date();
+  return `${String(n.getDate()).padStart(2, '0')}.${String(n.getMonth() + 1).padStart(2, '0')}.${n.getFullYear()}`;
+};
+
 async function main() {
   await mkdir(outDir, { recursive: true });
-  const { entries } = await fetchDailyChart();
+  const { date, entries } = await fetchDailyChart();
   const jobs = [];
-  const want = (n) => !only || only.includes(n);
 
-  if (want('anniv')) {
-    jobs.push(async () => {
-      const r = await (await fetch('https://itunes.apple.com/search?term=Tarkan+Kuzu+Kuzu&country=TR&entity=song&limit=1')).json();
-      const s = r.results[0];
-      const rd = new Date(s.releaseDate);
-      return {
-        name: 'yildonumu',
-        scene: 'anniv',
-        palette: 'altin',
-        data: {
-          artist: s.artistName,
-          title: s.trackName,
-          cover: await buf(s.artworkUrl100.replace('100x100bb', '640x640bb')),
-          audioUrl: s.previewUrl,
-          number: new Date().getUTCFullYear() - rd.getUTCFullYear(),
-          suffix: '',
-          pill: 'YIL DÖNÜMÜ',
-          small: 'şarkısı çıkalı',
-          l1: 'KAÇ YIL',
-          l2: 'OLDU?',
-          label: 'YIL ÖNCE ÇIKTI',
-          dateText: `${String(rd.getUTCDate()).padStart(2, '0')}.${String(rd.getUTCMonth() + 1).padStart(2, '0')}.${rd.getUTCFullYear()}`,
-          cta: 'Sen hâlâ dinliyor musun?',
-        },
-      };
-    });
-  }
-  if (want('rise')) {
-    jobs.push(async () => {
-      const e = entries.find((x) => x.rank > 3 && typeof x.positionChange === 'number' && x.positionChange > 0) ?? entries[7];
-      const ch = typeof e.positionChange === 'number' && e.positionChange > 0 ? e.positionChange : 6;
-      return {
-        name: 'sira-yukseldi',
-        scene: 'rise',
-        palette: 'altin',
-        data: { ...(await trackData(e)), from: e.rank + ch, to: e.rank, pill: 'TÜRKİYE GÜNLÜK LİSTE', cta: 'Sence zirveye çıkar mı?' },
-      };
-    });
-  }
   if (want('new')) {
-    jobs.push(async () => {
-      const e = entries[3];
-      const n = new Date();
-      return {
-        name: 'yeni-sarki',
-        scene: 'new',
-        palette: 'studio',
-        data: {
-          ...(await trackData(e)),
-          dateText: `${String(n.getDate()).padStart(2, '0')}.${String(n.getMonth() + 1).padStart(2, '0')}.${n.getFullYear()}`,
-          pill: 'ÇIKTI, ŞİMDİ DİNLE',
-          hook1: 'YENİ ŞARKISI',
-          hook2: 'GELDİ!!!',
-          sub: 'yeni şarkısı çıktı!',
-          badge: 'YENİ',
-          cta: 'Dinledin mi? Yorumlara yaz!',
-        },
-      };
-    });
+    jobs.push(['yeni-sarki', async () => prepNewRelease({ ...(await trackInput(entries[3])), dateText: today() })]);
   }
   if (want('top10')) {
-    jobs.push(async () => {
-      const e = entries[8];
-      return {
-        name: 'top10-giris',
-        scene: 'new',
-        palette: 'studio',
-        data: {
-          ...(await trackData(e)),
-          dateText: `Türkiye günlük listesi · ${e.rank}. sıra`,
-          pill: 'İLK KEZ TOP 10',
-          hook1: "TÜRKİYE TOP 10'A",
-          hook2: 'GİRDİ!!!',
-          sub: `${e.rank}. sıraya yerleşti!`,
-          badge: `#${e.rank}`,
-          cta: 'Sence kaçıncı olur?',
-        },
-      };
-    });
-  }
-  if (want('milestone')) {
-    jobs.push(async () => {
-      const e = entries[1];
-      return {
-        name: 'stream-rekoru',
-        scene: 'anniv',
-        palette: 'altin',
-        data: {
-          ...(await trackData(e)),
-          number: 10,
-          suffix: 'M',
-          pill: 'STREAM REKORU',
-          small: 'şarkısı',
-          l1: 'REKOR',
-          l2: 'KIRDI!',
-          label: "STREAM'İ GEÇTİ",
+    jobs.push([
+      'top10-giris',
+      async () =>
+        prepNewRelease({
+          ...(await trackInput(entries[8])),
           dateText: 'Türkiye günlük listesi',
-          cta: 'Sen kaç kere dinledin?',
-        },
-      };
-    });
+          pill: `İLK KEZ TOP 10 · #${entries[8].rank}`,
+          loadingLabel: 'TOP 10 YÜKLENİYOR',
+          radarLabel: 'TÜRKİYE · TOP 10 RADARI',
+        }),
+    ]);
   }
-  if (want('top5')) {
-    jobs.push(async () => {
-      const items = [];
-      for (const e of [...entries.slice(0, 5)].reverse()) {
-        const td = await trackData(e);
-        items.push({ rank: e.rank, title: td.title, artist: td.artist, sub: `${formatStreams(e.streams)} stream`, cover: td.cover, audioUrl: td.audioUrl });
-      }
-      return {
-        name: 'top5',
-        scene: 'top5',
-        palette: 'studio',
-        data: {
+  if (want('anniv')) {
+    jobs.push([
+      'yildonumu',
+      async () => {
+        const r = await (await fetch('https://itunes.apple.com/search?term=Duman+Her+%C5%9Eeyi+Yak&country=TR&entity=song&limit=5')).json();
+        const s = r.results.find((x) => x.trackName === 'Her Şeyi Yak' && x.artistName === 'Duman');
+        return prepAnniversary({
+          artist: s.artistName,
+          title: s.trackName,
+          releaseDate: s.releaseDate.slice(0, 10),
+          cover: await buf(s.artworkUrl100.replace('100x100bb', '600x600bb')),
+          audioUrl: s.previewUrl,
+        });
+      },
+    ]);
+  }
+  if (want('rise')) {
+    jobs.push([
+      'yukselis',
+      async () => {
+        const featured =
+          [...entries].filter((e) => typeof e.positionChange === 'number' && e.positionChange > 0).sort((a, b) => b.positionChange - a.positionChange)[0] ??
+          null;
+        if (!featured) throw new Error('bugun yukselen sarki yok');
+        const pv = await findPreview(featured.artists[0].name, featured.trackName);
+        return prepRankRise({ entries, featured, date, audioUrl: pv.url });
+      },
+    ]);
+  }
+  if (want('board')) {
+    jobs.push([
+      'top5',
+      async () => {
+        const items = [];
+        for (const e of entries.slice(0, 5)) {
+          const ti = await trackInput(e);
+          items.push({ rank: e.rank, title: ti.title, artist: ti.artist, streams: formatStreams(e.streams), change: e.positionChange ?? null, cover: ti.cover, audioUrl: ti.audioUrl });
+        }
+        const [dd, mm, yyyy] = date.split('.');
+        return prepTopBoard({
           items,
-          intro: { l1: 'BUGÜN EN ÇOK', l2: 'DİNLENEN', big: '5', small: 'ŞARKI' },
-          pill: 'TÜRKİYE GÜNLÜK LİSTE',
-          outroHead: "BUGÜNÜN TOP 5'İ",
-          showRank: true,
-          cta: 'Sence sıralama doğru mu? Yaz!',
-        },
-      };
-    });
+          header: {
+            hookTop: '1 NUMARAYI',
+            hookBottom: 'TAHMİN ET',
+            midTop: 'TÜRKİYE GÜNLÜK',
+            midBottom: `TOP 5 · ${dd}.${mm}.${yyyy.slice(2)}`,
+            heroTop: 'ZİRVEDE BUGÜN',
+            closeTop: 'YARIN YENİ LİSTE',
+            closeBottom: '@YENISARKILARIM',
+          },
+          heroLabel: 'ZİRVE · BİRİNCİ SIRA',
+          date,
+          dateShort: `${dd}.${mm}.${yyyy.slice(2)}`,
+        });
+      },
+    ]);
   }
   if (want('digest')) {
-    jobs.push(async () => {
-      const items = [];
-      for (const [i, e] of entries.slice(5, 9).entries()) {
-        const td = await trackData(e);
-        items.push({ rank: i + 1, title: td.title, artist: td.artist, sub: '14.10.2026', cover: td.cover, audioUrl: td.audioUrl });
-      }
-      return {
-        name: 'haftalik-ozet',
-        scene: 'top5',
-        palette: 'studio',
-        data: {
+    jobs.push([
+      'haftalik-ozet',
+      async () => {
+        const items = [];
+        for (const [i, e] of entries.slice(5, 9).entries()) {
+          const ti = await trackInput(e);
+          items.push({ rank: i + 1, title: ti.title, artist: ti.artist, streams: `0${i + 6}.10`, change: null, cover: ti.cover, audioUrl: ti.audioUrl });
+        }
+        return prepTopBoard({
           items,
-          intro: { l1: 'BU HAFTA ÇIKAN', l2: 'YENİ ŞARKILAR', big: String(items.length), small: 'ŞARKI' },
-          pill: 'HAFTANIN YENİLERİ',
-          outroHead: 'BU HAFTANIN YENİLERİ',
-          showRank: false,
-          cta: 'En çok hangisini beğendin?',
-        },
-      };
-    });
+          header: {
+            hookTop: 'BU HAFTA KİM',
+            hookBottom: 'ŞARKI ÇIKARDI?',
+            midTop: 'HAFTANIN',
+            midBottom: 'YENİ ŞARKILARI',
+            heroTop: 'SON ÇIKAN',
+            closeTop: 'PAZAR GECELERİ',
+            closeBottom: '@YENISARKILARIM',
+          },
+          heroLabel: 'SON ÇIKAN',
+          date: today(),
+          dateShort: today().slice(0, 5),
+        });
+      },
+    ]);
   }
 
-  for (const job of jobs) {
-    const spec = await job();
+  for (const [name, make] of jobs) {
     const t0 = Date.now();
     try {
-      const video = await renderVideo({ scene: spec.scene, palette: spec.palette, data: spec.data });
-      await writeFile(`${outDir}/${spec.name}.mp4`, video);
-      console.log(`${spec.name}: tamam (${Math.round((Date.now() - t0) / 1000)} sn, ${(video.length / 1024).toFixed(0)} KB)`);
+      const prepared = await make();
+      const video = await renderPrepared(prepared);
+      await writeFile(`${outDir}/${name}.mp4`, video);
+      console.log(`${name}: tamam (${Math.round((Date.now() - t0) / 1000)} sn, ${(video.length / 1024).toFixed(0)} KB)`);
     } catch (err) {
-      console.error(`${spec.name}: HATA ${err.message}`);
+      console.error(`${name}: HATA ${err.message}`);
       process.exitCode = 1;
     }
   }

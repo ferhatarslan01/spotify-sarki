@@ -51,7 +51,10 @@ async function main() {
   }
 
   console.log(`Paylasildi (post id: ${result.post.id})`);
-  await tiktokChartSmartPost({ kind: 'daily-global', header: 'DÜNYA GÜNLÜK SPOTIFY', date, entries });
+  // Hesap yeni oldugu icin dunya listesi videosu varsayilan olarak kapali (TIKTOK_GLOBAL=1 ile acilir).
+  if (process.env.TIKTOK_GLOBAL === '1') {
+    await tiktokChartSmartPost({ kind: 'daily-global', header: 'DÜNYA GÜNLÜK SPOTIFY', date, entries });
+  }
   await saveChartState({ lastPostedDate: date }, STATE_FILE);
 }
 

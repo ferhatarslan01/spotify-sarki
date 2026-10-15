@@ -105,6 +105,10 @@ async function main() {
             subtitle: formatDate(latest.releaseDate),
             coverUrl: latest.imageUrl,
             caption: text,
+            template: 'NewRelease',
+            templateData: {
+              dateText: formatDate(latest.releaseDate),
+            },
             scene: 'new',
             palette: 'studio',
             sceneData: {
@@ -151,6 +155,8 @@ async function main() {
               subtitle: artist.name,
               coverUrl: release.imageUrl,
               caption: annText,
+              template: 'Anniversary',
+              templateData: { releaseDate: release.releaseDate },
               scene: 'anniv',
               palette: 'altin',
               sceneData: {

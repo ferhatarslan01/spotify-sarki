@@ -3,3 +3,8 @@ node_modules/
 logs/
 samples/
 preview/
+video/node_modules/
+video/out/
+video/public/*
+!video/public/.gitkeep
+video/src/data-*.json

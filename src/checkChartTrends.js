@@ -79,6 +79,8 @@ async function main() {
           headline: `+${entry.positionChange} SIRA`,
           title: entry.trackName,
           subtitle: artistNames(entry),
+          template: 'RankRise',
+          templateData: { entries, featured: entry, date },
           scene: 'rise',
           palette: 'altin',
           sceneData: {
@@ -105,6 +107,13 @@ async function main() {
             headline: `${entry.rank}. SIRA`,
             title: entry.trackName,
             subtitle: artistNames(entry),
+            template: 'NewRelease',
+            templateData: {
+              dateText: 'Türkiye günlük listesi',
+              pill: `İLK KEZ TOP 10 · #${entry.rank}`,
+              loadingLabel: 'TOP 10 YÜKLENİYOR',
+              radarLabel: 'TÜRKİYE · TOP 10 RADARI',
+            },
             scene: 'new',
             palette: 'studio',
             sceneData: {
@@ -140,6 +149,13 @@ async function main() {
               headline: `${formatStreams(milestone)} STREAM`,
               title: entry.trackName,
               subtitle: artistNames(entry),
+              template: 'NewRelease',
+              templateData: {
+                dateText: 'Türkiye günlük listesi',
+                pill: `STREAM REKORU · ${formatStreams(milestone)}`,
+                loadingLabel: 'REKOR YÜKLENİYOR',
+                radarLabel: 'STREAM REKORLARI RADARI',
+              },
               scene: 'anniv',
               palette: 'altin',
               sceneData: {
@@ -177,6 +193,13 @@ async function main() {
             headline: 'TÜRKİYE → DÜNYA',
             title: entry.trackName,
             subtitle: artistNames(entry),
+            template: 'NewRelease',
+            templateData: {
+              dateText: 'Dünya günlük listesi',
+              pill: 'DÜNYA LİSTESİNDE',
+              loadingLabel: 'DÜNYA LİSTESİ YÜKLENİYOR',
+              radarLabel: 'TÜRKİYE > DÜNYA',
+            },
             scene: 'new',
             palette: 'studio',
             sceneData: {

@@ -195,6 +195,35 @@ export async function prepAnniversary({ artist, title, releaseDate, cover, audio
   });
 }
 
+// ---------------------------------------------------------------- Kare kapak + oynatici (X icin)
+export async function prepCoverPlayer({ artist, title, cover, audioUrl, seconds = 20 }) {
+  const cover1080 = await squareJpeg(cover, 1080, 92);
+  const hue = await hueOf(sharp, cover1080);
+
+  return withTmp(async (dir) => {
+    const prev = join(dir, 'prev.bin');
+    await writeFile(prev, await fetchBuf(audioUrl));
+    const hookSS = await findHookStart(prev, seconds);
+    await run('ffmpeg', [
+      '-y', '-v', 'error', '-i', prev,
+      '-filter_complex',
+      `[0:a]atrim=start=${hookSS}:duration=${seconds},asetpts=PTS-STARTPTS,afade=t=in:d=0.25,afade=t=out:st=${seconds - 1.3}:d=1.3,aformat=sample_rates=44100:channel_layouts=stereo[m]`,
+      '-map', '[m]', '-ar', '44100', '-ac', '2', join(dir, 'music.wav'),
+    ]);
+    const bands = await analyzeBands(join(dir, 'music.wav'), seconds);
+
+    return {
+      composition: 'CoverPlayer',
+      dataKey: 'player',
+      data: { artist, title, hue, fps: FPS, durationSeconds: seconds, hookStart: hookSS, bands },
+      assets: [
+        { name: 'player-cover.jpg', buffer: cover1080 },
+        { name: 'player-soundtrack.wav', buffer: await readFileBuf(join(dir, 'music.wav')) },
+      ],
+    };
+  });
+}
+
 // ---------------------------------------------------------------- Siralamada yukselis ("siralama yarisi")
 const easeInOut = (x) => {
   x = Math.min(1, Math.max(0, x));

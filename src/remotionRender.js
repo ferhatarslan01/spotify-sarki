@@ -45,6 +45,7 @@ const STUBS = {
     durationSeconds: 17,
     bands: [],
   },
+  player: { artist: '', title: '', hue: 30, fps: 30, durationSeconds: 20, hookStart: 0, bands: [] },
   anniv: { artist: '', title: '', dateText: '', day: 1, monthAbbr: 'OCA', releaseYear: 2000, yearNow: 2026, years: 26, hue: 30, fps: 30, durationSeconds: 18, rewindStart: 1.8, rewindEnd: 6.6, off: 16.4, bands: [] },
 };
 

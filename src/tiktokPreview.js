@@ -3,7 +3,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer } from './videoPrep.js';
 import { renderPrepared } from './remotionRender.js';
 
 const args = process.argv.slice(2);
@@ -43,6 +43,9 @@ async function main() {
 
   if (want('new')) {
     jobs.push(['yeni-sarki', async () => prepNewRelease({ ...(await trackInput(entries[3])), dateText: today() })]);
+  }
+  if (want('player')) {
+    jobs.push(['kare-oynatici', async () => prepCoverPlayer(await trackInput(entries[3]))]);
   }
   if (want('top10')) {
     jobs.push([

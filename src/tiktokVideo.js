@@ -90,24 +90,45 @@ async function fetchBuffer(url) {
   return Buffer.from(await res.arrayBuffer());
 }
 
-async function publishVideoBuffer({ kind, video, caption, note, artists = [] }) {
-  const videoUrl = hostMedia(video, mediaName(kind, 'mp4'));
-
-  const result = await publishTikTokVideo(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
-    text: withHashtags(stripUrls(caption), { kind, artists }),
-    videoUrl,
-  });
-  if (result.message) throw new Error(result.message);
-
-  console.log(
-    `  TikTok videosu gönderildi (post id: ${result.post.id}, ${note}, ${(video.length / 1024).toFixed(0)} KB)`
-  );
-  return true;
+// ---------------------------------------------------------------- video uretimi (X ve TikTok ortak)
+// X_VIDEO=0 ise X'e video gonderilmez (sadece gorselli tweet).
+function xVideoEnabled() {
+  return process.env.X_VIDEO !== '0';
 }
 
-// Tek sarki/olay icin hareketli sahne videosu. Hata verirse false doner, asla throw etmez.
-// params: { kind, scene, palette, artist, title, coverUrl|trackUrl, caption, sceneData }
-export async function tiktokSceneVideoPost({
+// Hareketli video aciksa ve X ya da TikTok kullanacaksa uretilir.
+function wantVideo() {
+  return videoEnabled() && (xVideoEnabled() || tiktokEnabled());
+}
+
+// Videonun herkese acik URL'si; ilk cagride barindirilir, sonra tekrar kullanilir.
+export function hostVideo(handle) {
+  if (!handle.url) handle.url = hostMedia(handle.video, mediaName(handle.kind, 'mp4'));
+  return handle.url;
+}
+
+// TikTok'a gonder. Hata verirse false doner.
+export async function postVideoToTikTok(handle) {
+  if (!handle || !tiktokEnabled()) return false;
+  try {
+    const result = await publishTikTokVideo(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
+      text: withHashtags(stripUrls(handle.caption), { kind: handle.kind, artists: handle.artists }),
+      videoUrl: hostVideo(handle),
+    });
+    if (result.message) throw new Error(result.message);
+    console.log(
+      `  TikTok videosu gönderildi (post id: ${result.post.id}, ${handle.note}, ${(handle.video.length / 1024).toFixed(0)} KB)`
+    );
+    return true;
+  } catch (err) {
+    console.error(`  TikTok video hatası (${handle.kind}): ${err.message}`);
+    return false;
+  }
+}
+
+// Tek sarki/olay icin hareketli sahne videosu uretir (paylasmaz). Yoksa/hata olursa null doner.
+// params: { kind, scene, palette, template, templateData, artist, title, coverUrl|trackUrl, caption, sceneData }
+export async function makeEventVideo({
   kind,
   scene,
   palette,
@@ -120,12 +141,12 @@ export async function tiktokSceneVideoPost({
   caption,
   sceneData,
 }) {
-  if (!tiktokEnabled() || !videoEnabled()) return false;
+  if (!wantVideo() || !(scene || template)) return null;
   try {
     const preview = await findPreview(artist, title);
     if (!preview) {
       console.log(`  Ses önizlemesi bulunamadı (${artist} - ${title}).`);
-      return false;
+      return null;
     }
 
     const coverSrc = coverUrl ?? (await getTrackThumbnail(trackUrl));
@@ -150,18 +171,24 @@ export async function tiktokSceneVideoPost({
       });
       engine = `sahne:${scene}`;
     }
-    if (!video) return false;
-    return await publishVideoBuffer({
+    if (!video) return null;
+    return {
       kind,
       video,
       caption: caption ?? `${artist} - ${title}`,
-      note: `${engine}, ses: ${preview.source}`,
       artists: [artist],
-    });
+      note: `${engine}, ses: ${preview.source}`,
+    };
   } catch (err) {
-    console.error(`  TikTok video hatası (${kind}): ${err.message}`);
-    return false;
+    console.error(`  Video üretilemedi (${kind}): ${err.message}`);
+    return null;
   }
+}
+
+// Eski API: uret + TikTok'a gonder.
+export async function tiktokSceneVideoPost(params) {
+  if (!tiktokEnabled() || !videoEnabled()) return false;
+  return postVideoToTikTok(await makeEventVideo(params));
 }
 
 // Yeni sarki/yil donumu/trend olaylari bunu kullanir.
@@ -172,16 +199,23 @@ export async function tiktokSmartPost(params) {
   return tiktokFeaturePost(params);
 }
 
+// Video onceden uretildiyse (X ile ortak) TikTok'a onu gonderir; uretilemediyse foto karta duser.
+export async function tiktokPostPrepared(handle, params) {
+  if (!tiktokEnabled()) return false;
+  if (handle) return postVideoToTikTok(handle);
+  if (!videoEnabled() || !(params.scene || params.template)) return tiktokFeaturePost(params);
+  return false; // statik gonderi riskli: video yoksa TikTok'u atla
+}
+
 function headerParts(header) {
   const [region, period] = header.split(' ');
   const weekly = period === 'HAFTALIK';
   return { region, period, periodWord: weekly ? 'BU HAFTA' : 'BUGÜN', weekly };
 }
 
-// Chart icin: en ust 5 sarkiyla "geri sayim" videosu (5 -> 1), her sira kendi sesiyle.
-export async function tiktokChartSmartPost({ kind, header, date, entries, maxRows = 8 }) {
-  if (!tiktokEnabled()) return false;
-  if (!videoEnabled()) return tiktokChartPost({ kind, header, date, entries, maxRows });
+// Chart icin en ust 5 sarkiyla "geri sayim" videosu uretir (paylasmaz).
+export async function makeChartVideo({ kind, header, date, entries }) {
+  if (!wantVideo()) return null;
 
   try {
     const top = entries.slice(0, 5);
@@ -260,18 +294,32 @@ export async function tiktokChartSmartPost({ kind, header, date, entries, maxRow
       });
       engine = 'top5';
     }
-    const fullHeader = `${header} TOP ${top.length}`;
-    return await publishVideoBuffer({
+    return {
       kind,
       video,
-      caption: chartDescription(fullHeader, date, top),
-      note: `${engine}, ${items.filter((i) => i.audioUrl).length} sesli`,
+      caption: chartDescription(`${header} TOP ${top.length}`, date, top),
       artists: chartArtists(top),
-    });
+      note: `${engine}, ${items.filter((i) => i.audioUrl).length} sesli`,
+    };
   } catch (err) {
-    console.error(`  TikTok video hatası (${kind}): ${err.message}`);
-    return false;
+    console.error(`  Video üretilemedi (${kind}): ${err.message}`);
+    return null;
   }
+}
+
+// Eski API: chart videosu uret + TikTok'a gonder (video kapaliysa foto kart).
+export async function tiktokChartSmartPost({ kind, header, date, entries, maxRows = 8 }) {
+  if (!tiktokEnabled()) return false;
+  if (!videoEnabled()) return tiktokChartPost({ kind, header, date, entries, maxRows });
+  return postVideoToTikTok(await makeChartVideo({ kind, header, date, entries }));
+}
+
+// Chart videosu onceden uretildiyse (X ile ortak) onu gonderir.
+export async function tiktokChartPostPrepared(handle, { kind, header, date, entries, maxRows = 8 }) {
+  if (!tiktokEnabled()) return false;
+  if (handle) return postVideoToTikTok(handle);
+  if (!videoEnabled()) return tiktokChartPost({ kind, header, date, entries, maxRows });
+  return false;
 }
 
 function formatDate(iso) {
@@ -279,11 +327,9 @@ function formatDate(iso) {
   return m ? `${m[3]}.${m[2]}.${m[1]}` : iso ?? '';
 }
 
-// Haftalik ozet: en son 5 yeni cikis, her biri kendi sesiyle.
-// log: [{ artistName, songName, releaseDate, imageUrl }]; rows/description/artists foto kart yedegi icin.
-export async function tiktokDigestPost({ log, header, subheader, rows, description, artists = [] }) {
-  if (!tiktokEnabled()) return false;
-  if (!videoEnabled()) return tiktokListPost({ kind: 'weekly-digest', header, subheader, rows, description, artists });
+// Haftalik ozet videosu: en son 5 yeni cikis, her biri kendi sesiyle (paylasmaz).
+export async function makeDigestVideo({ log, description, artists = [] }) {
+  if (!wantVideo()) return null;
 
   try {
     const picked = log.filter((e) => e.imageUrl).slice(-5);
@@ -351,15 +397,24 @@ export async function tiktokDigestPost({ log, header, subheader, rows, descripti
       });
       engine = 'ozet';
     }
-    return await publishVideoBuffer({
-      kind: 'weekly-digest',
-      video,
-      caption: description,
-      note: `${engine}, ${items.length} şarkı`,
-      artists,
-    });
+    return { kind: 'weekly-digest', video, caption: description, artists, note: `${engine}, ${items.length} şarkı` };
   } catch (err) {
-    console.error(`  TikTok video hatası (weekly-digest): ${err.message}`);
-    return false;
+    console.error(`  Video üretilemedi (weekly-digest): ${err.message}`);
+    return null;
   }
+}
+
+// Haftalik ozet: video onceden uretildiyse (X ile ortak) onu, yoksa (video kapaliysa) liste kartini gonderir.
+export async function tiktokDigestPostPrepared(handle, { header, subheader, rows, description, artists = [] }) {
+  if (!tiktokEnabled()) return false;
+  if (handle) return postVideoToTikTok(handle);
+  if (!videoEnabled()) return tiktokListPost({ kind: 'weekly-digest', header, subheader, rows, description, artists });
+  return false;
+}
+
+// Eski API: uret + TikTok'a gonder.
+export async function tiktokDigestPost(args) {
+  if (!tiktokEnabled()) return false;
+  if (!videoEnabled()) return tiktokDigestPostPrepared(null, args);
+  return postVideoToTikTok(await makeDigestVideo(args));
 }

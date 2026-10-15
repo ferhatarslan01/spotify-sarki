@@ -1,6 +1,6 @@
 import { loadWeeklyLog, clearWeeklyLog } from './weeklyLog.js';
-import { publishThread } from './bufferPost.js';
-import { tiktokDigestPost } from './tiktokVideo.js';
+import { publishThread, publishThreadWithVideo } from './bufferPost.js';
+import { makeDigestVideo, hostVideo, tiktokDigestPostPrepared } from './tiktokVideo.js';
 
 async function main() {
   const log = await loadWeeklyLog();
@@ -23,7 +23,27 @@ async function main() {
     })),
   ];
 
-  const result = await publishThread(items);
+  const digestArgs = {
+    log,
+    header: 'BU HAFTA ÇIKAN ŞARKILAR',
+    subheader: `${log.length} yeni yayın`,
+    rows: log
+      .slice(0, 8)
+      .map((entry) => ({ coverUrl: entry.imageUrl, line1: entry.artistName, line2: entry.songName }))
+      .filter((r) => r.coverUrl),
+    artists: log.slice(0, 3).map((e) => e.artistName),
+    description: [
+      `Bu hafta çıkan şarkılar (${log.length} yeni yayın)`,
+      '',
+      ...log.map((e) => `${e.artistName} - ${e.songName}`),
+    ].join('\n'),
+  };
+
+  // Video (X ve TikTok ortak): thread'in ilk tweeti video olur, uretilemezse gorsel kalir.
+  const handle = await makeDigestVideo(digestArgs);
+  const videoItems = handle ? [{ ...items[0], imageUrl: undefined, videoUrl: hostVideo(handle) }, ...items.slice(1)] : items;
+
+  const result = await publishThreadWithVideo(videoItems, () => publishThread(items));
   if (result.message) {
     console.error(`Buffer hatası: ${result.message}`);
     process.exitCode = 1;
@@ -32,23 +52,7 @@ async function main() {
 
   console.log(`Thread paylaşıldı (kök post id: ${result.post.id})`);
 
-  const rows = log.slice(0, 8).map((entry) => ({
-    coverUrl: entry.imageUrl,
-    line1: entry.artistName,
-    line2: entry.songName,
-  }));
-  await tiktokDigestPost({
-    log,
-    header: 'BU HAFTA ÇIKAN ŞARKILAR',
-    subheader: `${log.length} yeni yayın`,
-    rows: rows.filter((r) => r.coverUrl),
-    artists: log.slice(0, 3).map((e) => e.artistName),
-    description: [
-      `Bu hafta çıkan şarkılar (${log.length} yeni yayın)`,
-      '',
-      ...log.map((e) => `${e.artistName} - ${e.songName}`),
-    ].join('\n'),
-  });
+  await tiktokDigestPostPrepared(handle, digestArgs);
 
   await clearWeeklyLog();
 }

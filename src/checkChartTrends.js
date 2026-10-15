@@ -1,8 +1,8 @@
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { fetchGlobalChart } from './globalChart.js';
 import { loadTrendsState, saveTrendsState, emptyTrendsState, highestMilestone } from './trendsState.js';
-import { publishPost } from './bufferPost.js';
-import { tiktokSmartPost } from './tiktokVideo.js';
+import { publishPostWithVideo } from './bufferPost.js';
+import { makeEventVideo, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -19,9 +19,9 @@ function trackLabel(entry) {
   return `${artistNames(entry)} - ${entry.trackName}`;
 }
 
-async function postEvent(text, trackUrl) {
+async function postEvent(text, trackUrl, handle) {
   const imageUrl = await getTrackThumbnail(trackUrl).catch(() => null);
-  const result = await publishPost(text, imageUrl);
+  const result = await publishPostWithVideo(text, imageUrl, handle ? hostVideo(handle) : null);
   if (result.message) {
     console.error(`  Buffer hatası: ${result.message}`);
     return false;
@@ -237,19 +237,23 @@ async function main() {
   console.log(`${events.length} olay bulundu, ${toPost.length} tanesi paylaşılacak.`);
 
   let tiktokSent = 0;
+  let videosMade = 0;
   for (const event of toPost) {
     console.log(`- ${event.text.split('\n')[0]}`);
-    const ok = await postEvent(event.text, event.trackUrl);
+    // Video (X + TikTok ortak) calistirma basina en fazla MAX_TIKTOK_PER_RUN olay icin uretilir.
+    const params = {
+      ...event.card,
+      artist: event.card.subtitle,
+      trackUrl: event.trackUrl,
+      caption: event.text,
+    };
+    const handle = videosMade < MAX_TIKTOK_PER_RUN ? await makeEventVideo(params) : null;
+    const ok = await postEvent(event.text, event.trackUrl, handle);
     if (ok) {
       event.onCommit();
-      // TikTok gunluk gonderi limiti icin calistirma basina en fazla 2 olay
+      if (handle) videosMade += 1;
       if (tiktokSent < MAX_TIKTOK_PER_RUN) {
-        const sent = await tiktokSmartPost({
-          ...event.card,
-          artist: event.card.subtitle,
-          trackUrl: event.trackUrl,
-          caption: event.text,
-        });
+        const sent = await tiktokPostPrepared(handle, params);
         if (sent) tiktokSent += 1;
       }
     }

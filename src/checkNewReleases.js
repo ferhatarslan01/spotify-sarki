@@ -1,11 +1,11 @@
 import { artists } from './artists.js';
 import { getAccessToken, getRecentReleases, QuotaError } from './spotify.js';
 import { loadState, saveState } from './state.js';
-import { publishPost } from './bufferPost.js';
+import { publishPostWithVideo } from './bufferPost.js';
 import { buildPostText } from './postText.js';
 import { appendToWeeklyLog } from './weeklyLog.js';
 import { loadAnniversaryState, saveAnniversaryState } from './anniversaryState.js';
-import { tiktokSmartPost } from './tiktokVideo.js';
+import { makeEventVideo, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -91,19 +91,7 @@ async function main() {
 
       console.log(`[YENİ] ${artist.name}: ${latest.name} (${latest.releaseDate}) -> paylaşılıyor...`);
       try {
-        const result = await publishPost(text, latest.imageUrl);
-        if (result.message) {
-          console.error(`  Buffer hatası: ${result.message}`);
-        } else {
-          console.log(`  Paylaşıldı (post id: ${result.post.id})`);
-          await appendToWeeklyLog({
-            artistName: artist.name,
-            songName: latest.name,
-            releaseDate: latest.releaseDate,
-            url: latest.url,
-            imageUrl: latest.imageUrl,
-          });
-          await tiktokSmartPost({
+        const tiktokParams = {
             kind: 'release',
             artist: artist.name,
             label: latest.albumType === 'album' ? 'YENİ ALBÜM' : 'YENİ ŞARKI',
@@ -127,7 +115,21 @@ async function main() {
               badge: 'YENİ',
               cta: 'Dinledin mi? Yorumlara yaz!',
             },
+          };
+        const handle = await makeEventVideo(tiktokParams);
+        const result = await publishPostWithVideo(text, latest.imageUrl, handle ? hostVideo(handle) : null);
+        if (result.message) {
+          console.error(`  Buffer hatası: ${result.message}`);
+        } else {
+          console.log(`  Paylaşıldı (post id: ${result.post.id})`);
+          await appendToWeeklyLog({
+            artistName: artist.name,
+            songName: latest.name,
+            releaseDate: latest.releaseDate,
+            url: latest.url,
+            imageUrl: latest.imageUrl,
           });
+          await tiktokPostPrepared(handle, tiktokParams);
         }
       } catch (err) {
         console.error(`  Buffer hatası: ${err.message}`);
@@ -147,13 +149,7 @@ async function main() {
         const annText = `📅 ${artist.name} - ${release.name}\n\nÜzerinden tam ${yearsAgo} yıl geçti! 🎂\n${release.url}`;
         console.log(`[YIL DÖNÜMÜ] ${artist.name}: ${release.name} (${yearsAgo} yıl) -> paylaşılıyor...`);
         try {
-          const result = await publishPost(annText, release.imageUrl);
-          if (result.message) {
-            console.error(`  Buffer hatası: ${result.message}`);
-          } else {
-            console.log(`  Paylaşıldı (post id: ${result.post.id})`);
-            anniversaryState.announced.push(key);
-            await tiktokSmartPost({
+          const tiktokParams = {
               kind: 'anniversary',
               artist: artist.name,
               label: 'YIL DÖNÜMÜ',
@@ -177,7 +173,15 @@ async function main() {
                 dateText: formatDate(release.releaseDate),
                 cta: 'Sen hâlâ dinliyor musun?',
               },
-            });
+            };
+          const handle = await makeEventVideo(tiktokParams);
+          const result = await publishPostWithVideo(annText, release.imageUrl, handle ? hostVideo(handle) : null);
+          if (result.message) {
+            console.error(`  Buffer hatası: ${result.message}`);
+          } else {
+            console.log(`  Paylaşıldı (post id: ${result.post.id})`);
+            anniversaryState.announced.push(key);
+            await tiktokPostPrepared(handle, tiktokParams);
           }
         } catch (err) {
           console.error(`  Buffer hatası: ${err.message}`);

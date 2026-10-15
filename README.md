@@ -15,7 +15,11 @@ Her şey GitHub Actions üzerinde çalışır (bilgisayar açık olmak zorunda d
 | Pazar gecesi haftalık özet | thread | **TopBoard** (haftanın yeni şarkıları) |
 | Dünya günlük Top 5 | kolajlı tweet | kapalı (açmak için `TIKTOK_GLOBAL=1`) |
 
-TikTok videosu, trend olayları için çalıştırma başına en fazla 1 adettir.
+Aynı video hem **X'e** (tweetin medyası olarak) hem **TikTok'a** gider. X'te video tweet'i Buffer'da hata verirse
+otomatik olarak eski görselli tweet'e düşülür. Günlük/haftalık Top 5'te ana tweet video, kolaj yanıt olarak eklenir;
+haftalık özet thread'inin ilk tweeti videodur.
+
+Trend olayları için çalıştırma başına en fazla 1 video üretilir (X ve TikTok ortak).
 
 ## Klasörler
 
@@ -31,7 +35,8 @@ TikTok videosu, trend olayları için çalıştırma başına en fazla 1 adettir
 ## Anahtarlar (davranış)
 
 - `data/TIKTOK_PAUSED` dosyası varsa TikTok gönderisi duraklar (dosyayı silince devam eder).
-- `TIKTOK_VIDEO=0` hareketli video yerine sadece foto kart.
+- `TIKTOK_VIDEO=0` hareketli video yerine sadece foto kart (X: görselli tweet).
+- `X_VIDEO=0` X'e video göndermez (TikTok etkilenmez).
 - `TIKTOK_REMOTION=0` Remotion yerine yedek (Node) video motoru.
 - `TIKTOK_HASHTAGS=0` hashtag eklemeyi kapatır.
 - `TIKTOK_GLOBAL=1` dünya günlük listesi videosunu açar.

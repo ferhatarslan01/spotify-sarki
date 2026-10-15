@@ -1,10 +1,10 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, formatChartPost, pickFittingTopN } from './dailyChart.js';
 import { loadChartState, saveChartState } from './chartState.js';
-import { publishPost } from './bufferPost.js';
+import { publishPost, publishThreadWithVideo } from './bufferPost.js';
 import { generateChartCollage } from './collage.js';
 import { pushFile, getRawUrl } from './gitPublish.js';
-import { tiktokChartSmartPost } from './tiktokVideo.js';
+import { makeChartVideo, hostVideo, tiktokChartPostPrepared } from './tiktokVideo.js';
 
 async function main() {
   const { date, entries } = await fetchDailyChart();
@@ -41,7 +41,18 @@ async function main() {
 
   console.log('\nPaylasiliyor...');
 
-  const result = await publishPost(text, imageUrl);
+  // Video (X ve TikTok ortak): ana tweet video, kolaj yanit olarak eklenir. Video yoksa eski gorselli tweet.
+  const chartParams = { kind: 'daily-tr', header: 'TÜRKİYE GÜNLÜK SPOTIFY', date, entries };
+  const handle = await makeChartVideo(chartParams);
+  const result = handle
+    ? await publishThreadWithVideo(
+        [
+          { text, videoUrl: hostVideo(handle) },
+          { text: 'Tam liste 👇', imageUrl },
+        ],
+        () => publishPost(text, imageUrl)
+      )
+    : await publishPost(text, imageUrl);
   if (result.message) {
     console.error(`Buffer hatasi: ${result.message}`);
     process.exitCode = 1;
@@ -49,7 +60,7 @@ async function main() {
   }
 
   console.log(`Paylasildi (post id: ${result.post.id})`);
-  await tiktokChartSmartPost({ kind: 'daily-tr', header: 'TÜRKİYE GÜNLÜK SPOTIFY', date, entries });
+  await tiktokChartPostPrepared(handle, chartParams);
   await saveChartState({ lastPostedDate: date });
 }
 

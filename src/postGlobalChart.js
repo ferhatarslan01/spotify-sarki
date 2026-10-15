@@ -4,7 +4,7 @@ import { loadChartState, saveChartState } from './chartState.js';
 import { publishPost, publishThreadWithVideo } from './bufferPost.js';
 import { generateChartCollage } from './collage.js';
 import { pushFile, getRawUrl } from './gitPublish.js';
-import { makeChartVideo, hostVideo, tiktokChartPostPrepared } from './tiktokVideo.js';
+import { makeChartVideo, makeChartThread, buildChartThreadItems, tiktokChartPostPrepared } from './tiktokVideo.js';
 
 const STATE_FILE = 'globalChartState.json';
 
@@ -43,17 +43,12 @@ async function main() {
 
   console.log('\nPaylasiliyor...');
 
-  // Video (X ve TikTok ortak): ana tweet video, kolaj yanit olarak eklenir. Video yoksa eski gorselli tweet.
+  // TikTok: dikey Top 5 videosu. X: 5 ayri kare "kapak + oynatici" videosu thread olarak (ilk tweet liste metnini tasir).
   const chartParams = { kind: 'daily-global', header: 'DÜNYA GÜNLÜK SPOTIFY', date, entries };
   const handle = await makeChartVideo(chartParams);
-  const result = handle
-    ? await publishThreadWithVideo(
-        [
-          { text, videoUrl: hostVideo(handle) },
-          { text: 'Tam liste 👇', imageUrl },
-        ],
-        () => publishPost(text, imageUrl)
-      )
+  const thread = await makeChartThread(chartParams);
+  const result = thread
+    ? await publishThreadWithVideo(buildChartThreadItems(thread, text), () => publishPost(text, imageUrl))
     : await publishPost(text, imageUrl);
   if (result.message) {
     console.error(`Buffer hatasi: ${result.message}`);

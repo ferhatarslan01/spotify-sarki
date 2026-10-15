@@ -2,7 +2,7 @@ import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.
 import { fetchGlobalChart } from './globalChart.js';
 import { loadTrendsState, saveTrendsState, emptyTrendsState, highestMilestone } from './trendsState.js';
 import { publishPostWithVideo } from './bufferPost.js';
-import { makeEventVideo, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
+import { makeEventVideos, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -247,13 +247,13 @@ async function main() {
       trackUrl: event.trackUrl,
       caption: event.text,
     };
-    const handle = videosMade < MAX_TIKTOK_PER_RUN ? await makeEventVideo(params) : null;
-    const ok = await postEvent(event.text, event.trackUrl, handle);
+    const handles = videosMade < MAX_TIKTOK_PER_RUN ? await makeEventVideos(params) : { tiktok: null, x: null };
+    const ok = await postEvent(event.text, event.trackUrl, handles.x);
     if (ok) {
       event.onCommit();
-      if (handle) videosMade += 1;
+      if (handles.x || handles.tiktok) videosMade += 1;
       if (tiktokSent < MAX_TIKTOK_PER_RUN) {
-        const sent = await tiktokPostPrepared(handle, params);
+        const sent = await tiktokPostPrepared(handles.tiktok, params);
         if (sent) tiktokSent += 1;
       }
     }

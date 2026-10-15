@@ -13,7 +13,7 @@ import {
 } from './tiktok.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer } from './videoPrep.js';
 import { renderPrepared } from './remotionRender.js';
 
 // TIKTOK_VIDEO=0 ise hareketli video kapatilir, sadece foto kartlar gider.
@@ -185,6 +185,57 @@ export async function makeEventVideo({
   }
 }
 
+// X icin kare (1080x1080) "kapak + oynatici" videosu.
+async function renderSquare({ artist, title, cover, audioUrl }) {
+  const prepared = await prepCoverPlayer({ artist, title, cover, audioUrl, seconds: 20 });
+  return renderPrepared(prepared);
+}
+
+// Bir olay icin iki video: tiktok (dikey sahne) ve x (kare kapak+oynatici). Biri uretilemezse digeri yedek olur.
+// Hicbiri uretilemezse { tiktok: null, x: null }.
+export async function makeEventVideos(params) {
+  const none = { tiktok: null, x: null };
+  const needTikTok = videoEnabled() && tiktokEnabled();
+  const needX = videoEnabled() && xVideoEnabled();
+  if (!(needTikTok || needX) || !(params.scene || params.template)) return none;
+
+  const { kind, artist, title, caption } = params;
+  try {
+    const preview = await findPreview(artist, title);
+    if (!preview) {
+      console.log(`  Ses önizlemesi bulunamadı (${artist} - ${title}).`);
+      return none;
+    }
+    const coverSrc = params.coverUrl ?? (await getTrackThumbnail(params.trackUrl));
+    if (!coverSrc) throw new Error('Kapak gorseli bulunamadi');
+    const cover = await fetchBuffer(coverSrc);
+
+    let tiktok = null;
+    if (needTikTok) tiktok = await makeEventVideo(params);
+
+    let x = null;
+    if (needX && remotionEnabled()) {
+      try {
+        const video = await renderSquare({ artist, title, cover, audioUrl: preview.url });
+        x = {
+          kind: `${kind}-x`,
+          video,
+          caption: caption ?? `${artist} - ${title}`,
+          artists: [artist],
+          note: `remotion:CoverPlayer, ses: ${preview.source}`,
+        };
+      } catch (err) {
+        console.error(`  Kare video hatası (${kind}): ${err.message.split('\n')[0]}`);
+      }
+    }
+    if (!x && needX && !tiktok) x = await makeEventVideo(params); // kare olmadiysa dikey video X'e de gider
+    return { tiktok, x: x ?? tiktok };
+  } catch (err) {
+    console.error(`  Video üretilemedi (${kind}): ${err.message}`);
+    return none;
+  }
+}
+
 // Eski API: uret + TikTok'a gonder.
 export async function tiktokSceneVideoPost(params) {
   if (!tiktokEnabled() || !videoEnabled()) return false;
@@ -215,7 +266,7 @@ function headerParts(header) {
 
 // Chart icin en ust 5 sarkiyla "geri sayim" videosu uretir (paylasmaz).
 export async function makeChartVideo({ kind, header, date, entries }) {
-  if (!wantVideo()) return null;
+  if (!(videoEnabled() && tiktokEnabled())) return null;
 
   try {
     const top = entries.slice(0, 5);
@@ -305,6 +356,59 @@ export async function makeChartVideo({ kind, header, date, entries }) {
     console.error(`  Video üretilemedi (${kind}): ${err.message}`);
     return null;
   }
+}
+
+// X icin chart thread'i: ilk 5 sarkinin her biri ayri kare "kapak + oynatici" videosu.
+// Dondurur: [{ rank, entry, coverUrl, handle|null }] (en az 3 videolu degilse null)
+export async function makeChartThread({ kind, entries }) {
+  if (!(videoEnabled() && xVideoEnabled() && remotionEnabled())) return null;
+  try {
+    const out = [];
+    for (const e of entries.slice(0, 5)) {
+      const artist = e.artists.map((a) => a.name).join(' & ');
+      const coverUrl = await getTrackThumbnail(e.trackUrl).catch(() => null);
+      let handle = null;
+      if (coverUrl) {
+        try {
+          const preview = await findPreview(e.artists[0].name, e.trackName);
+          if (preview) {
+            const video = await renderSquare({
+              artist,
+              title: e.trackName,
+              cover: await fetchBuffer(coverUrl),
+              audioUrl: preview.url,
+            });
+            handle = {
+              kind: `${kind}-x${e.rank}`,
+              video,
+              caption: `${artist} - ${e.trackName}`,
+              artists: [artist],
+              note: `remotion:CoverPlayer, ses: ${preview.source}`,
+            };
+          }
+        } catch (err) {
+          console.error(`  Kare video hatası (${kind} #${e.rank}): ${err.message.split('\n')[0]}`);
+        }
+      }
+      out.push({ rank: e.rank, entry: e, coverUrl, handle });
+    }
+    if (out.filter((o) => o.handle).length < 3) return null;
+    return out;
+  } catch (err) {
+    console.error(`  Chart thread videoları üretilemedi (${kind}): ${err.message}`);
+    return null;
+  }
+}
+
+// makeChartThread sonucundan Buffer thread ogeleri (ilk oge rootText'i tasir).
+export function buildChartThreadItems(thread, rootText) {
+  return thread.map((o, i) => {
+    const e = o.entry;
+    const artist = e.artists.map((a) => a.name).join(' & ');
+    const ch = typeof e.positionChange === 'number' && e.positionChange !== 0 ? ` ${e.positionChange > 0 ? '▲' : '▼'}${Math.abs(e.positionChange)}` : '';
+    const text = i === 0 ? rootText : `${e.rank}. ${artist} - ${e.trackName}\n${formatStreams(e.streams)} stream${ch}\n${e.trackUrl}`;
+    return o.handle ? { text, videoUrl: hostVideo(o.handle) } : { text, imageUrl: o.coverUrl ?? undefined };
+  });
 }
 
 // Eski API: chart videosu uret + TikTok'a gonder (video kapaliysa foto kart).

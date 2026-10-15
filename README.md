@@ -5,27 +5,29 @@ Her şey GitHub Actions üzerinde çalışır (bilgisayar açık olmak zorunda d
 
 ## Ne zaman ne paylaşılır
 
-| Olay | X | TikTok videosu (Remotion şablonu) |
+TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kapak + oynatıcı" videoları gider.
+
+| Olay | X | TikTok (Remotion şablonu) |
 |---|---|---|
-| Yeni şarkı/albüm (3 saatte bir) | resimli tweet | **NewRelease**: "yükleniyor → DROP" |
-| Yıl dönümü | resimli tweet | **Anniversary**: VHS geri sarma, "kaç yıl oldu" |
-| Sırada +10 ve üstü yükseliş | tweet | **RankRise**: sıralama yarışı |
-| İlk kez Top 10 / stream rekoru / dünya listesine giriş | tweet | **NewRelease** (özel metinlerle) |
-| Günlük / haftalık Türkiye Top 5 | kolajlı tweet | **TopBoard**: kalkış tablosu |
-| Pazar gecesi haftalık özet | thread | **TopBoard** (haftanın yeni şarkıları) |
-| Dünya günlük Top 5 | kolajlı tweet | kapalı (açmak için `TIKTOK_GLOBAL=1`) |
+| Yeni şarkı/albüm (3 saatte bir) | kare oynatıcı videosu | **NewRelease**: "yükleniyor → DROP" |
+| Yıl dönümü | kare oynatıcı videosu | **Anniversary**: VHS geri sarma |
+| Sırada +10 ve üstü yükseliş | kare oynatıcı videosu | **RankRise**: sıralama yarışı |
+| İlk kez Top 10 / stream rekoru / dünya listesi | kare oynatıcı videosu | **NewRelease** (özel metinlerle) |
+| Günlük / haftalık Türkiye Top 5 | **5 tweetlik thread**: her şarkı kendi kare videosu | **TopBoard**: kalkış tablosu |
+| Pazar gecesi haftalık özet | thread (ilk tweet video) | **TopBoard** (haftanın yeni şarkıları) |
+| Dünya günlük Top 5 | 5 tweetlik thread | kapalı (açmak için `TIKTOK_GLOBAL=1`) |
 
-Aynı video hem **X'e** (tweetin medyası olarak) hem **TikTok'a** gider. X'te video tweet'i Buffer'da hata verirse
-otomatik olarak eski görselli tweet'e düşülür. Günlük/haftalık Top 5'te ana tweet video, kolaj yanıt olarak eklenir;
-haftalık özet thread'inin ilk tweeti videodur.
-
-Trend olayları için çalıştırma başına en fazla 1 video üretilir (X ve TikTok ortak).
+- **Kare oynatıcı** (`CoverPlayer`): kapak tüm karede, üstte "ŞİMDİ ÇALIYOR", altta şarkı/sanatçı, ilerleme çubuğu ve
+  oynatıcı düğmeleri; şarkının en enerjili 20 saniyesi çalar.
+- **Top 5 thread'i**: ilk tweet liste metnini + 1. şarkının videosunu taşır; 2-5. şarkılar yanıt olarak gelir.
+- X'te video tweet'i Buffer'da hata verirse otomatik olarak eski görselli tweet'e düşülür.
+- Trend olayları için çalıştırma başına en fazla 1 video üretilir.
 
 ## Klasörler
 
 - `src/` bot kodu. `videoPrep.js` (veri + ses), `remotionRender.js` (render), `tiktokVideo.js` (karar + paylaşım).
 - `src/videoEngine.js` Remotion çalışmazsa devreye giren yedek video motoru.
-- `video/` Remotion projesi (4 şablon: `TopBoard`, `NewRelease`, `RankRise`, `Anniversary`).
+- `video/` Remotion projesi (5 şablon: `TopBoard`, `NewRelease`, `RankRise`, `Anniversary`, `CoverPlayer`).
 - `data/` botun durum dosyaları (workflow'lar commit eder).
 
 ## Anahtarlar (ortam değişkenleri / GitHub secrets)

@@ -5,7 +5,7 @@ import { publishPostWithVideo } from './bufferPost.js';
 import { buildPostText } from './postText.js';
 import { appendToWeeklyLog } from './weeklyLog.js';
 import { loadAnniversaryState, saveAnniversaryState } from './anniversaryState.js';
-import { makeEventVideo, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
+import { makeEventVideos, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -116,8 +116,8 @@ async function main() {
               cta: 'Dinledin mi? Yorumlara yaz!',
             },
           };
-        const handle = await makeEventVideo(tiktokParams);
-        const result = await publishPostWithVideo(text, latest.imageUrl, handle ? hostVideo(handle) : null);
+        const handle = await makeEventVideos(tiktokParams);
+        const result = await publishPostWithVideo(text, latest.imageUrl, handle.x ? hostVideo(handle.x) : null);
         if (result.message) {
           console.error(`  Buffer hatası: ${result.message}`);
         } else {
@@ -129,7 +129,7 @@ async function main() {
             url: latest.url,
             imageUrl: latest.imageUrl,
           });
-          await tiktokPostPrepared(handle, tiktokParams);
+          await tiktokPostPrepared(handle.tiktok, tiktokParams);
         }
       } catch (err) {
         console.error(`  Buffer hatası: ${err.message}`);
@@ -174,14 +174,14 @@ async function main() {
                 cta: 'Sen hâlâ dinliyor musun?',
               },
             };
-          const handle = await makeEventVideo(tiktokParams);
-          const result = await publishPostWithVideo(annText, release.imageUrl, handle ? hostVideo(handle) : null);
+          const handle = await makeEventVideos(tiktokParams);
+          const result = await publishPostWithVideo(annText, release.imageUrl, handle.x ? hostVideo(handle.x) : null);
           if (result.message) {
             console.error(`  Buffer hatası: ${result.message}`);
           } else {
             console.log(`  Paylaşıldı (post id: ${result.post.id})`);
             anniversaryState.announced.push(key);
-            await tiktokPostPrepared(handle, tiktokParams);
+            await tiktokPostPrepared(handle.tiktok, tiktokParams);
           }
         } catch (err) {
           console.error(`  Buffer hatası: ${err.message}`);

@@ -2,6 +2,7 @@ import { loadWeeklyLog, clearWeeklyLog } from './weeklyLog.js';
 import { publishThread, publishThreadWithVideo } from './bufferPost.js';
 import { makeDigestVideo, hostVideo, tiktokDigestPostPrepared } from './tiktokVideo.js';
 import { tagText, trackedByName } from './artistHandles.js';
+import { ctaFor } from './cta.js';
 
 async function main() {
   const log = await loadWeeklyLog();
@@ -13,9 +14,10 @@ async function main() {
 
   console.log(`${log.length} yeni yayın bulundu, thread hazırlanıyor...`);
 
+  const question = ctaFor('weekly-digest');
   const items = [
     {
-      text: `🎵 Bu hafta çıkan yeni şarkılar 🎵\n\n${log.length} yeni yayın 👇`,
+      text: [`🎵 Bu hafta çıkan yeni şarkılar 🎵`, '', `${log.length} yeni yayın 👇`, ...(question ? ['', question] : [])].join('\n'),
       imageUrl: log[0].imageUrl,
     },
     ...(await Promise.all(
@@ -39,6 +41,7 @@ async function main() {
       `Bu hafta çıkan şarkılar (${log.length} yeni yayın)`,
       '',
       ...log.map((e) => `${e.artistName} - ${e.songName}`),
+      ...(question ? ['', question] : []),
     ].join('\n'),
   };
 

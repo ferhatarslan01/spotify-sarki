@@ -206,12 +206,69 @@ export async function waitForPost(id, { timeoutMs = 150_000, intervalMs = 6_000 
   return last;
 }
 
+let organizationId = null;
+
+// Kanalda son `hours` saatte olusturulan (hata/taslak olmayan) gonderi sayisi; sorgu basarisizsa null.
+export async function countRecentPosts(channelId, hours = 24) {
+  try {
+    if (!organizationId) {
+      const org = await graphql('query Org { account { organizations { id } } }');
+      organizationId = org.account.organizations[0]?.id ?? null;
+    }
+    if (!organizationId) return null;
+    const since = new Date(Date.now() - hours * 3600e3).toISOString();
+    const data = await graphql(
+      `
+        query RecentPosts($org: OrganizationId!, $channels: [ChannelId!], $since: DateTime!) {
+          posts(first: 50, input: { organizationId: $org, filter: { channelIds: $channels, createdAt: { start: $since } } }) {
+            edges {
+              node {
+                status
+              }
+            }
+          }
+        }
+      `,
+      { org: organizationId, channels: [channelId], since }
+    );
+    return data.posts.edges.filter((e) => ['sent', 'sending', 'scheduled'].includes(e.node.status)).length;
+  } catch (err) {
+    console.error(`  Buffer gönderi sayısı alınamadı: ${err.message.split('\n')[0]}`);
+    return null;
+  }
+}
+
 function isFailed(post) {
   return Boolean(post && (post.status === 'error' || post.status === 'failed' || post.error));
 }
 
-// X'e video ile paylasir; Buffer hata verirse (aninda ya da yayin sirasinda) gorselli/duz tweete duser.
+// Metindeki Spotify (URL) satirini ayirir: { main: linksiz metin, link }. URL yoksa link null.
+export function splitLink(text) {
+  const lines = text.split('\n');
+  const idx = lines.findIndex((l) => /^https?:\/\/\S+$/.test(l.trim()));
+  if (idx < 0) return { main: text, link: null };
+  const main = lines
+    .filter((_, i) => i !== idx)
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  return { main, link: lines[idx].trim() };
+}
+
+// X'te ana tweet'teki dis link erisimi dusurur: Spotify linki ilk yanita tasinir.
+// X_LINK_REPLY=0 ile eski davranis (link ana tweet'te).
 export async function publishPostWithVideo(text, imageUrl, videoUrl) {
+  const { main, link } = process.env.X_LINK_REPLY === '0' ? { main: text, link: null } : splitLink(text);
+  if (!link) return publishSingleWithVideo(text, imageUrl, videoUrl);
+
+  const items = [{ text: main, imageUrl, videoUrl }, { text: `🎧 Spotify'da dinle:\n${link}` }];
+  const result = await publishThreadWithVideo(items);
+  // Thread hic olusmadiysa (Buffer reddetti) eski tek tweet yoluna don; yarim kalan thread'de tekrar atilmaz.
+  if (result.message) return publishSingleWithVideo(text, imageUrl, videoUrl);
+  return result;
+}
+
+async function publishSingleWithVideo(text, imageUrl, videoUrl) {
   if (!videoUrl) return publishPost(text, imageUrl);
   try {
     const result = await publishPost(text, null, videoUrl);

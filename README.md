@@ -22,6 +22,12 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 - **Top 5 thread'i**: ilk tweet liste metnini + 1. şarkının videosunu taşır; 2-5. şarkılar yanıt olarak gelir.
 - X'te video tweet'i Buffer'da hata verirse otomatik olarak eski görselli tweet'e düşülür.
 - Trend olayları için çalıştırma başına en fazla 1 video üretilir.
+- **Spotify linki X'te ilk yanıtta:** Ana tweet'teki dış link erişimi düşürdüğü için tekli paylaşımlarda (yeni şarkı, yıl dönümü, trend olayları)
+  link ana tweet'ten çıkarılıp "🎧 Spotify'da dinle:" yanıtına konur (thread olarak). Top 5 thread'inde zaten her şarkının linki yanıttadır.
+- **Tek harfli soru:** Her paylaşımın sonunda "E / H yaz 👇", "Puanın kaç? 1-10 yaz 👇" gibi kolay cevaplanan bir soru olur (`src/cta.js`).
+  Top 5 / haftalık liste tweetinde yer kalmadığı için soru thread'in son tweetinde sorulur; TikTok açıklamasında liste altındadır.
+- **TikTok hacmi:** Son 24 saatte en fazla 3 TikTok gönderisi (trend olayları için en fazla 2; yeni şarkı ve liste için yer kalsın diye).
+  Sayı Buffer'dan okunur; sınıra gelince o olay yalnızca X'e gider. Hashtag sayısı gönderi başına 5.
 - **Sanatçı etiketleme (X):** Tüm X paylaşımlarında sanatçı adının yanına `(@hesap)` eklenir: yeni şarkı, yıl dönümü, trend olayları (en fazla 2 kişi), liste ve haftalık özet (280 karaktere sığdığı kadar, sırayla). Takip edilen sanatçıların hesapları
   `src/artistHandles.js` içinde elle doğrulanmış listede; liste dışı sanatçılar (liste girdileri) MusicBrainz + Wikidata ile çapraz kontrol
   edilerek bulunur, emin olunamazsa etiket eklenmez. TikTok açıklamalarına etiket eklenmez.
@@ -46,6 +52,9 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 - `TIKTOK_HASHTAGS=0` hashtag eklemeyi kapatır.
 - `TIKTOK_GLOBAL=1` dünya günlük listesi videosunu açar.
 - `X_TAGS=0` X tweetlerinde sanatçı etiketlemeyi (@hesap) kapatır.
+- `X_LINK_REPLY=0` Spotify linkini ana tweet'te bırakır (yanıta taşımaz).
+- `CTA_QUESTIONS=0` paylaşımlara soru eklemeyi kapatır.
+- `TIKTOK_DAILY_MAX=N` son 24 saatteki TikTok sınırı (varsayılan 3, `0` = sınırsız).
 
 ## Önizleme
 

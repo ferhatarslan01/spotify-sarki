@@ -1,13 +1,15 @@
 // TikTok aciklamalarina eklenen hashtag'ler. TIKTOK_HASHTAGS=0 ile kapatilir.
-// Amac: az sayida, ilgili ve gonderi turune gore degisen etiket (hepsi ayni olursa spam gibi gorunur).
+// Amac: az sayida (toplam 5), ilgili ve gonderi turune gore degisen etiket (hepsi ayni olursa spam gibi gorunur).
+// Dagilim: 1 genel kesfet + 2 tur etiketi + 1 sanatci + 1 rastgele kesif etiketi.
 
 // Hesap Turkiye kitlesini hedefliyor: uluslararasi etiketler (#fyp, #foryou) yurt disi trafigi cektigi icin kullanilmaz.
-const ALWAYS = ['#keşfet', '#türkiye'];
-const DISCOVERY = ['#keşfetteyiz', '#keşfetbeniöneçıkar', '#tiktokturkiye', '#müzik', '#şarkı', '#trend'];
+const ALWAYS = ['#keşfet'];
+const DISCOVERY = ['#keşfetteyiz', '#tiktokturkiye', '#müzik', '#şarkı', '#trend'];
+const MAX_TAGS = 5;
 
 const KIND_TAGS = {
-  release: ['#yenişarkı', '#yeniçıkanlar', '#türkçemüzik'],
-  anniversary: ['#nostalji', '#yıldönümü', '#türkçemüzik'],
+  release: ['#yenişarkı', '#türkçemüzik', '#yeniçıkanlar'],
+  anniversary: ['#nostalji', '#türkçemüzik', '#yıldönümü'],
   'trend-jump': ['#spotifytürkiye', '#trend', '#yükselenşarkılar'],
   'trend-top10': ['#spotifytürkiye', '#top10', '#trend'],
   'trend-milestone': ['#spotifytürkiye', '#rekor', '#stream'],
@@ -15,7 +17,7 @@ const KIND_TAGS = {
   'daily-tr': ['#spotifytürkiye', '#günlükliste', '#top5'],
   'weekly-tr': ['#spotifytürkiye', '#haftalıkliste', '#top5'],
   'daily-global': ['#spotifyglobal', '#dünyalistesi', '#top5'],
-  'weekly-digest': ['#yenişarkılar', '#buhaftaçıkanlar', '#türkçemüzik'],
+  'weekly-digest': ['#yenişarkılar', '#türkçemüzik', '#buhaftaçıkanlar'],
 };
 
 const FALLBACK_TAGS = ['#spotify', '#müzik', '#türkçemüzik'];
@@ -52,10 +54,10 @@ function artistTags(artists, limit) {
 
 export function buildHashtags({ kind, artists = [] }) {
   const base = KIND_TAGS[kind] ?? FALLBACK_TAGS;
-  const all = [...ALWAYS, ...base.slice(0, 3), ...artistTags(artists, 2), ...pickRandom(DISCOVERY, 2)];
+  const all = [...ALWAYS, ...base.slice(0, 2), ...artistTags(artists, 1), ...pickRandom(DISCOVERY, 3)];
 
   const seen = new Set();
-  return all.filter((t) => !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase())).slice(0, 8);
+  return all.filter((t) => !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase())).slice(0, MAX_TAGS);
 }
 
 export function withHashtags(description, { kind, artists = [] }) {

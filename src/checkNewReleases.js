@@ -5,6 +5,7 @@ import { loadState, saveState } from './state.js';
 import { publishPostWithVideo } from './bufferPost.js';
 import { tagText } from './artistHandles.js';
 import { buildPostText } from './postText.js';
+import { ctaFor } from './cta.js';
 import { appendToWeeklyLog } from './weeklyLog.js';
 import { loadAnniversaryState, saveAnniversaryState } from './anniversaryState.js';
 import { makeEventVideos, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
@@ -158,7 +159,14 @@ async function main() {
         const key = `${release.id}-${currentYear}`;
         if (anniversaryState.announced.includes(key)) continue;
 
-        const annText = `📅 ${artist.name} - ${release.name}\n\nÜzerinden tam ${yearsAgo} yıl geçti! 🎂\n${release.url}`;
+        const annQuestion = ctaFor('anniversary');
+        const annText = [
+          `📅 ${artist.name} - ${release.name}`,
+          '',
+          `Üzerinden tam ${yearsAgo} yıl geçti! 🎂`,
+          ...(annQuestion ? ['', annQuestion] : []),
+          release.url,
+        ].join('\n');
         console.log(`[YIL DÖNÜMÜ] ${artist.name}: ${release.name} (${yearsAgo} yıl) -> paylaşılıyor...`);
         try {
           const tiktokParams = {

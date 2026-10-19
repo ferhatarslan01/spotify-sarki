@@ -3,6 +3,7 @@ import { fetchGlobalChart } from './globalChart.js';
 import { loadTrendsState, saveTrendsState, emptyTrendsState, highestMilestone } from './trendsState.js';
 import { publishPostWithVideo } from './bufferPost.js';
 import { tagText } from './artistHandles.js';
+import { ctaFor } from './cta.js';
 import { makeEventVideos, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -18,6 +19,12 @@ function artistNames(entry) {
 
 function trackLabel(entry) {
   return `${artistNames(entry)} - ${entry.trackName}`;
+}
+
+// Olay metni: baslik, aciklama, (varsa) tek harfli soru, son satir Spotify linki (X'te ilk yanita tasinir).
+function eventText(kind, head, body, url) {
+  const question = ctaFor(kind);
+  return [head, '', body, ...(question ? ['', question] : []), url].join('\n');
 }
 
 async function postEvent(text, trackUrl, handle) {
@@ -74,7 +81,12 @@ async function main() {
         priority: entry.positionChange,
         trackUrl: entry.trackUrl,
         artists: entry.artists,
-        text: `🚀 ${label}\n\n${entry.positionChange} sıra birden yükseldi! Şu an Türkiye ${entry.rank}. sırada 🔥\n${entry.trackUrl}`,
+        text: eventText(
+          'trend-jump',
+          `🚀 ${label}`,
+          `${entry.positionChange} sıra birden yükseldi! Şu an Türkiye ${entry.rank}. sırada 🔥`,
+          entry.trackUrl
+        ),
         card: {
           kind: 'trend-jump',
           label: 'SIRA ATLADI',
@@ -103,7 +115,7 @@ async function main() {
           priority: 11 - entry.rank + 100,
           trackUrl: entry.trackUrl,
         artists: entry.artists,
-          text: `🎉 ${label}\n\nİlk kez Türkiye Top 10'a girdi! (${entry.rank}. sıra)\n${entry.trackUrl}`,
+          text: eventText('trend-top10', `🎉 ${label}`, `İlk kez Türkiye Top 10'a girdi! (${entry.rank}. sıra)`, entry.trackUrl),
           card: {
             kind: 'trend-top10',
             label: 'İLK KEZ TOP 10',
@@ -146,7 +158,7 @@ async function main() {
             priority: milestone / 1_000_000,
             trackUrl: entry.trackUrl,
         artists: entry.artists,
-            text: `🎊 ${label}\n\n${formatStreams(milestone)} stream'i geçti! 🎧\n${entry.trackUrl}`,
+            text: eventText('trend-milestone', `🎊 ${label}`, `${formatStreams(milestone)} stream'i geçti! 🎧`, entry.trackUrl),
             card: {
               kind: 'trend-milestone',
               label: 'STREAM REKORU',
@@ -191,7 +203,12 @@ async function main() {
           priority: 200,
           trackUrl: entry.trackUrl,
         artists: entry.artists,
-          text: `🌍 ${label}\n\nBizden bir şarkı şu anda Dünya Günlük Top 200'de de yer alıyor! 🇹🇷➡️🌍\n${entry.trackUrl}`,
+          text: eventText(
+            'trend-global',
+            `🌍 ${label}`,
+            "Bizden bir şarkı şu anda Dünya Günlük Top 200'de de yer alıyor! 🇹🇷➡️🌍",
+            entry.trackUrl
+          ),
           card: {
             kind: 'trend-global',
             label: 'DÜNYA LİSTESİNDE',

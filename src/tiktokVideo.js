@@ -10,7 +10,10 @@ import {
   tiktokListPost,
   chartDescription,
   chartArtists,
+  tiktokSlotAvailable,
+  noteTikTokSent,
 } from './tiktok.js';
+import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
 import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer } from './videoPrep.js';
@@ -111,12 +114,14 @@ export function hostVideo(handle) {
 // TikTok'a gonder. Hata verirse false doner.
 export async function postVideoToTikTok(handle) {
   if (!handle || !tiktokEnabled()) return false;
+  if (!(await tiktokSlotAvailable(handle.kind))) return false;
   try {
     const result = await publishTikTokVideo(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
       text: withHashtags(stripUrls(handle.caption), { kind: handle.kind, artists: handle.artists }),
       videoUrl: hostVideo(handle),
     });
     if (result.message) throw new Error(result.message);
+    noteTikTokSent();
     console.log(
       `  TikTok videosu gönderildi (post id: ${result.post.id}, ${handle.note}, ${(handle.video.length / 1024).toFixed(0)} KB)`
     );
@@ -196,7 +201,7 @@ async function renderSquare({ artist, title, cover, audioUrl }) {
 // Hicbiri uretilemezse { tiktok: null, x: null }.
 export async function makeEventVideos(params) {
   const none = { tiktok: null, x: null };
-  const needTikTok = videoEnabled() && tiktokEnabled();
+  const needTikTok = videoEnabled() && tiktokEnabled() && (await tiktokSlotAvailable(params.kind));
   const needX = videoEnabled() && xVideoEnabled();
   if (!(needTikTok || needX) || !(params.scene || params.template)) return none;
 
@@ -268,6 +273,7 @@ function headerParts(header) {
 // Chart icin en ust 5 sarkiyla "geri sayim" videosu uretir (paylasmaz).
 export async function makeChartVideo({ kind, header, date, entries }) {
   if (!(videoEnabled() && tiktokEnabled())) return null;
+  if (!(await tiktokSlotAvailable(kind))) return null;
 
   try {
     const top = entries.slice(0, 5);
@@ -349,7 +355,7 @@ export async function makeChartVideo({ kind, header, date, entries }) {
     return {
       kind,
       video,
-      caption: chartDescription(`${header} TOP ${top.length}`, date, top),
+      caption: chartDescription(`${header} TOP ${top.length}`, date, top, kind),
       artists: chartArtists(top),
       note: `${engine}, ${items.filter((i) => i.audioUrl).length} sesli`,
     };
@@ -402,8 +408,8 @@ export async function makeChartThread({ kind, entries }) {
 }
 
 // makeChartThread sonucundan Buffer thread ogeleri (ilk oge rootText'i tasir).
-export async function buildChartThreadItems(thread, rootText) {
-  return Promise.all(thread.map(async (o, i) => {
+export async function buildChartThreadItems(thread, rootText, kind) {
+  const items = await Promise.all(thread.map(async (o, i) => {
     const e = o.entry;
     const artist = e.artists.map((a) => a.name).join(' & ');
     const ch = typeof e.positionChange === 'number' && e.positionChange !== 0 ? ` ${e.positionChange > 0 ? '▲' : '▼'}${Math.abs(e.positionChange)}` : '';
@@ -411,6 +417,10 @@ export async function buildChartThreadItems(thread, rootText) {
     const text = i === 0 ? plain : await tagText(plain, e.artists);
     return o.handle ? { text, videoUrl: hostVideo(o.handle) } : { text, imageUrl: o.coverUrl ?? undefined };
   }));
+  // Ana tweet 280 karakteri doldurdugu icin soru thread'in kapanis tweetinde sorulur.
+  const question = kind ? ctaFor(kind) : null;
+  if (question) items.push({ text: `💬 ${question}` });
+  return items;
 }
 
 // Eski API: chart videosu uret + TikTok'a gonder (video kapaliysa foto kart).

@@ -4,7 +4,7 @@ import { Audio } from "@remotion/media";
 import { loadFont as loadOswald } from "@remotion/google-fonts/Oswald";
 import { loadFont as loadMono } from "@remotion/google-fonts/RobotoMono";
 import { Anniversary } from "./Anniversary";
-import data from "./data-era90.json";
+import data from "./data-eraintro.json";
 
 const { fontFamily } = loadOswald("normal", {
   weights: ["500", "700"],
@@ -20,7 +20,7 @@ const INTRO = data.introSeconds; // giris suresi (sn)
 const S1_END = data.scene1End; // 1. sahne bitisi / 2. sahne baslangici
 const KNOB = data.knobAt; // elin dugmeye dokundugu an: muzik ve ses cubugu buradan baslar
 const FADE = 0.45; // sahneler arasi capraz erime
-const AMBER = "#ffb42a";
+const ACCENT = data.accent; // donem rengi (etiket)
 const GREEN = "#3ddc84";
 const RED = "#ff5a5f";
 
@@ -57,12 +57,12 @@ const Intro: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ background: "#050505", fontFamily }}>
-      <Audio src={staticFile("era90-intro.wav")} />
+      <Audio src={staticFile("eraintro-intro.wav")} />
 
       {/* sahne 1: radyonun basinda oturan */}
       <AbsoluteFill style={{ overflow: "hidden" }}>
         <OffthreadVideo
-          src={staticFile("era90-s1.mp4")}
+          src={staticFile("eraintro-s1.mp4")}
           muted
           style={{ width: 1080, height: 1920, objectFit: "cover", scale: s1Zoom, filter: "brightness(1.15) contrast(1.05)" }}
         />
@@ -72,7 +72,7 @@ const Intro: React.FC = () => {
       {s2 > 0 ? (
         <AbsoluteFill style={{ opacity: s2, overflow: "hidden" }}>
           <OffthreadVideo
-            src={staticFile("era90-s2.mp4")}
+            src={staticFile("eraintro-s2.mp4")}
             muted
             startFrom={0}
             style={{ width: 1080, height: 1920, objectFit: "cover", scale: s2Pulse, filter: `brightness(${s2Bright})` }}
@@ -112,8 +112,8 @@ const Intro: React.FC = () => {
           translate: `0px ${(1 - labelIn) * -30}px`,
         }}
       >
-        <div style={{ fontWeight: 700, fontSize: 150, letterSpacing: 14, color: AMBER, textShadow: "0 6px 30px rgba(0,0,0,0.7)" }}>
-          90&apos;LAR
+        <div style={{ fontWeight: 700, fontSize: 150, letterSpacing: 14, color: ACCENT, textShadow: "0 6px 30px rgba(0,0,0,0.7)" }}>
+          {data.label}
         </div>
       </div>
 
@@ -124,7 +124,7 @@ const Intro: React.FC = () => {
         </div>
         {Array.from({ length: segments }).map((_, i) => {
           const on = i < lit;
-          const col = i < 6 ? GREEN : i < 8 ? AMBER : RED;
+          const col = i < 6 ? GREEN : i < 8 ? "#ffb42a" : RED;
           return (
             <div
               key={i}
@@ -144,7 +144,7 @@ const Intro: React.FC = () => {
 };
 
 // ---------------------------------------------------------------- giris + "kac yil oldu"
-export const Era90s: React.FC = () => {
+export const EraIntro: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const t = frame / fps;

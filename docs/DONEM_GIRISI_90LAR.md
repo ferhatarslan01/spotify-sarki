@@ -24,3 +24,14 @@ başında filtre tam banda açılır. Mevcut `Anniversary` kompozisyonu `Sequenc
 - `Era90s` kompozisyonu: 8 sn giriş (etiket "90'LAR", yükselen VOL çubuğu, bas ile atan hoparlör, radyo filtreli şarkı) + beyaz parlama + mevcut "KAÇ YIL OLDU?".
 - Canlı akışta **kapalı**: `ERA_INTROS=1` ile açılır (onaydan sonra). Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era90`.
 - Ses notu: yerel ffmpeg 8.1'de `apad` sonrası `atrim` sesi erken kesiyordu; tüm müzik hazırlayıcılarda `-t` ile değiştirildi.
+
+## 2000'ler (devam ediyor, 19 Ekim 2026'da yarıda bırakıldı)
+- Kompozisyon artık ortak: `EraIntro` (dönem etiketi, vurgu rengi ve klipler veriden gelir). Dönem tablosu `src/videoPrep.js` içinde `ERAS` (90s: amber, 2000s: camgöbeği `#4dd2ff`).
+- Sahne fikri: **1.** bilgisayar başında oturan sırtı dönük biri (CRT monitör, masaüstü hoparlör, CD'ler), **2.** masaüstü hoparlör yakın planı (bas ile atar).
+- Taslaklar tamam ve iyi: `tools/comfy/out/annivbg_pc1_draft_41_*.mp4`, `annivbg_pc2_draft_51_*.mp4`.
+- Tam kalite: **sahne 1 hazır** (`tools/comfy/out/annivbg_pc1_tiled_41_00001_.mp4`, henüz kareleri incelenmedi), **sahne 2 henüz üretilmedi**.
+- Kalan adımlar:
+  1. ComfyUI'yi başlat (`D:\ComfyUI\ComfyUI_windows_portable`, `--disable-pinned-memory`), GPU < 50 °C iken `node tools/comfy/bgGen.mjs pc2 --seed 51 --tiled` (~15 dk).
+  2. Klipleri hazırla: `node tools/comfy/makeEraClip.mjs <pc1.mp4> video/assets/era2000-s1.mp4 --dur 5` ve `<pc2.mp4> video/assets/era2000-s2.mp4 --dur 3.2` (gerekirse `--gamma`).
+  3. Dokunma anı: `ERAS['2000s'].KNOB` değerini sahne 1'deki fare tıklama anına göre ayarla.
+  4. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era2000`.

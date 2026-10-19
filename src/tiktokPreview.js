@@ -1,5 +1,5 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era90,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era90,era2000,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
@@ -131,18 +131,33 @@ async function main() {
       },
     ]);
   }
-  if (want('era90')) {
+  // Donem girisli yil donumu onizlemeleri: era90 (1990-1999) ve era2000 (2000-2009); klipleri hazir olan donemler calisir.
+  const ERA_PREVIEWS = [
+    {
+      key: 'era90',
+      name: 'yildonumu-90lar',
+      decade: /^199\d/,
+      queries: ['Tarkan Simarik', 'MFO Ali Desidero', 'Sezen Aksu Gulumse', 'Mustafa Sandal Jest Oyna', 'Ajda Pekkan Bambaska Biri', 'Kenan Dogulu Yaparim Bilirsin'],
+    },
+    {
+      key: 'era2000',
+      name: 'yildonumu-2000ler',
+      decade: /^200\d/,
+      queries: ['Tarkan Kuzu Kuzu', 'Hakan Peker Karam', 'Mustafa Sandal Araba', 'Sertab Erener Everyway That I Can', 'Gulsen Be Adam', 'Teoman Papatya', 'Mor ve Otesi Daglari Delelim', 'Duman Her Seyi Yak'],
+    },
+  ];
+  for (const era of ERA_PREVIEWS) {
+    if (!want(era.key)) continue;
     process.env.ERA_INTROS = '1'; // onizlemede donem girisi her zaman acik
     jobs.push([
-      'yildonumu-90lar',
+      era.name,
       async () => {
-        // 90'larda cikmis bir sarki bul (iTunes surumleri yeniden yayin tarihi gosterebilir; 199x olani sec)
-        const queries = ['Tarkan Simarik', 'MFO Ali Desidero', 'Sezen Aksu Gulumse', 'Mustafa Sandal Jest Oyna', 'Ajda Pekkan Bambaska Biri', 'Kenan Dogulu Yaparim Bilirsin'];
-        for (const q of queries) {
+        // O donemde cikmis bir sarki bul (iTunes surumleri yeniden yayin tarihi gosterebilir; donem tarihli olani sec)
+        for (const q of era.queries) {
           const r = await (await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&country=TR&entity=song&limit=10`)).json();
-          const s = r.results.find((x) => x.previewUrl && /^199\d/.test(x.releaseDate ?? ''));
+          const s = r.results.find((x) => x.previewUrl && era.decade.test(x.releaseDate ?? ''));
           if (s) {
-            console.log(`  90lar: ${s.artistName} - ${s.trackName} (${s.releaseDate.slice(0, 10)})`);
+            console.log(`  ${era.key}: ${s.artistName} - ${s.trackName} (${s.releaseDate.slice(0, 10)})`);
             return prepAnniversaryAuto({
               artist: s.artistName,
               title: s.trackName,
@@ -152,7 +167,7 @@ async function main() {
             });
           }
         }
-        throw new Error("199x tarihli onizlemeli sarki bulunamadi");
+        throw new Error('Donem tarihli onizlemeli sarki bulunamadi');
       },
     ]);
   }

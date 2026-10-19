@@ -127,7 +127,7 @@ async function loadAnnivBackground() {
   return { buffer: await readFileBuf(path), seconds: Number(stdout.trim()) };
 }
 
-// era: dönem girisi varsa { introSeconds, knobAt }. Bu modda geri sarma sesi (motor, tiklar, cizirti) yok ve sarki, girisin devami olarak
+// era: dönem girisi varsa { introSeconds, knobAt, hp, lp }. Bu modda geri sarma sesi (motor, tiklar, cizirti) yok ve sarki, girisin devami olarak
 // kesintisiz calar (radyo sesinden tam banda acilir).
 export async function prepAnniversary({ artist, title, releaseDate, cover, audioUrl }, { era = null } = {}) {
   const DUR = 18;
@@ -180,7 +180,7 @@ export async function prepAnniversary({ artist, title, releaseDate, cover, audio
       const SWEEP = 1.6;
       const graph =
         `[0:a]atrim=start=${hookSS + eraMusic}:duration=${OFF},asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo,asplit=2[l][c];` +
-        `[l]highpass=f=350,lowpass=f=3200,acompressor=threshold=-18dB:ratio=3,volume=4dB,volume='1-clip(t/${SWEEP},0,1)':eval=frame[lo];` +
+        `[l]highpass=f=${era.hp ?? 350},lowpass=f=${era.lp ?? 3200},acompressor=threshold=-18dB:ratio=3,volume=4dB,volume='1-clip(t/${SWEEP},0,1)':eval=frame[lo];` +
         `[c]volume='clip(t/${SWEEP},0,1)':eval=frame[hi];` +
         `[lo][hi]amix=inputs=2:normalize=0,afade=t=out:st=${OFF - 1.3}:d=1.3,apad=whole_dur=${DUR}[m]`;
       await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-t', String(DUR), '-ar', '44100', '-ac', '2', join(dir, 'music.wav')]);
@@ -583,28 +583,36 @@ export async function prepDuel({ a, b, dateShort }) {
   });
 }
 
-// ---------------------------------------------------------------- Donem girisli yil donumu (90'lar: radyo)
-// Giris: ComfyUI ile uretilmis 2 sahne (video/assets/era90-s1.mp4, era90-s2.mp4) + radyo filtreli sarki yukselisi; ardindan "KAC YIL OLDU?".
-const ERA90 = { INTRO: 8.0, S1_END: 5.0, KNOB: 2.8 };
+// ---------------------------------------------------------------- Donem girisli yil donumu
+// Cikis yilina gore 8 sn'lik giris (ComfyUI ile uretilmis 2 sahne: video/assets/era<dönem>-s1.mp4, -s2.mp4) + ses yukselisi; ardindan "KAC YIL OLDU?".
+// Ses profili: hp/lp = giristeki cihazin (radyo / PC hoparlor) frekans araligi; ana videoda tam banda acilir.
+const ERAS = {
+  '90s': { years: [1990, 1999], label: "90'LAR", accent: '#ffb42a', files: 'era90', INTRO: 8.0, S1_END: 5.0, KNOB: 2.8, hp: 350, lp: 3200, click: 650 },
+  '2000s': { years: [2000, 2009], label: "2000'LER", accent: '#4dd2ff', files: 'era2000', INTRO: 8.0, S1_END: 5.0, KNOB: 2.8, hp: 200, lp: 7000, click: 2200 },
+};
 
-// Yayin yilina uygun dönem girisi klipleri varsa { s1, s2 }, yoksa null.
-// Onaylanana kadar kapali: ERA_INTROS=1 ile acilir (canli akisa kendiliginden girmesin).
+// Yayin yilina uygun dönem girisi varsa { id, cfg, s1, s2 }, yoksa null.
+// Onaylanana kadar kapali: ERA_INTROS=1 ile acilir (canli akisa kendiliginden girmesin); ERA_INTROS=90s,2000s ile secilebilir.
 export function eraClipsFor(releaseYear) {
-  if (process.env.ERA_INTROS !== '1') return null;
-  if (releaseYear >= 1990 && releaseYear <= 1999) {
+  const flag = process.env.ERA_INTROS;
+  if (!flag) return null;
+  for (const [id, cfg] of Object.entries(ERAS)) {
+    if (releaseYear < cfg.years[0] || releaseYear > cfg.years[1]) continue;
+    if (flag !== '1' && !flag.split(',').includes(id)) continue;
     const dir = join(process.cwd(), 'video', 'assets');
-    const s1 = join(dir, 'era90-s1.mp4');
-    const s2 = join(dir, 'era90-s2.mp4');
-    if (existsSync(s1) && existsSync(s2)) return { id: '90s', s1, s2 };
+    const s1 = join(dir, `${cfg.files}-s1.mp4`);
+    const s2 = join(dir, `${cfg.files}-s2.mp4`);
+    if (existsSync(s1) && existsSync(s2)) return { id, cfg, s1, s2 };
   }
   return null;
 }
 
-export async function prepAnniversaryEra90(args) {
+export async function prepAnniversaryEra(args) {
   const clips = eraClipsFor(Number(String(args.releaseDate).slice(0, 4)));
-  if (!clips) throw new Error('90lar giris klipleri bulunamadi');
-  const { INTRO, S1_END, KNOB } = ERA90;
-  const base = await prepAnniversary(args, { era: { introSeconds: INTRO, knobAt: KNOB } });
+  if (!clips) throw new Error('Donem giris klipleri bulunamadi');
+  const { cfg } = clips;
+  const { INTRO, S1_END, KNOB } = cfg;
+  const base = await prepAnniversary(args, { era: { introSeconds: INTRO, knobAt: KNOB, hp: cfg.hp, lp: cfg.lp } });
 
   return withTmp(async (dir) => {
     const prev = join(dir, 'prev.bin');
@@ -615,15 +623,15 @@ export async function prepAnniversaryEra90(args) {
     const musicLen = INTRO - KNOB;
     const graph =
       `[0:a]atrim=start=${hookSS}:duration=${musicLen + 0.1},asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo,` +
-      `highpass=f=350,lowpass=f=3200,acompressor=threshold=-18dB:ratio=3,` +
+      `highpass=f=${cfg.hp},lowpass=f=${cfg.lp},acompressor=threshold=-18dB:ratio=3,` +
       `volume='0.06+0.94*pow(clip(t/${musicLen},0,1),1.7)':eval=frame,volume=4dB,afade=t=in:d=0.04,` +
       `adelay=${Math.round(KNOB * 1000)}|${Math.round(KNOB * 1000)},apad=whole_dur=${INTRO}[m]`;
     await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-t', String(INTRO), '-ar', '44100', '-ac', '2', join(dir, 'music.wav')]);
 
     const sfx = makeSfx(INTRO, 57);
     sfx.hiss(0, INTRO, 0.012); // oda cizirtisi
-    sfx.tick(KNOB - 0.05, 0.8, 650); // dugme tiki
-    sfx.whoosh(KNOB, 0.6, 0.12, 300, 3200); // frekans taramasi
+    sfx.tick(KNOB - 0.05, 0.8, cfg.click); // dugme / fare tiki
+    if (clips.id === '90s') sfx.whoosh(KNOB, 0.6, 0.12, 300, 3200); // radyo frekans taramasi
     sfx.whoosh(S1_END - 0.5, 0.5, 0.25, 200, 2400); // sahne gecisi
     sfx.riser(INTRO - 1.0, INTRO, 0.35); // ana videoya yukselis
     sfx.boom(INTRO - 0.05, 0.6, 70);
@@ -632,15 +640,15 @@ export async function prepAnniversaryEra90(args) {
     const bands = await analyzeBands(join(dir, 'music.wav'), INTRO);
 
     return {
-      composition: 'Era90s',
-      dataKey: 'era90',
-      data: { introSeconds: INTRO, scene1End: S1_END, knobAt: KNOB, fps: FPS, bands },
+      composition: 'EraIntro',
+      dataKey: 'eraintro',
+      data: { introSeconds: INTRO, scene1End: S1_END, knobAt: KNOB, fps: FPS, label: cfg.label, accent: cfg.accent, bands },
       extras: [{ dataKey: base.dataKey, data: base.data }],
       assets: [
         ...base.assets,
-        { name: 'era90-s1.mp4', buffer: await readFileBuf(clips.s1) },
-        { name: 'era90-s2.mp4', buffer: await readFileBuf(clips.s2) },
-        { name: 'era90-intro.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) },
+        { name: 'eraintro-s1.mp4', buffer: await readFileBuf(clips.s1) },
+        { name: 'eraintro-s2.mp4', buffer: await readFileBuf(clips.s2) },
+        { name: 'eraintro-intro.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) },
       ],
     };
   });
@@ -648,5 +656,5 @@ export async function prepAnniversaryEra90(args) {
 
 // Yayin yilina gore dönem girisli ya da duz yil donumu videosunu hazirlar.
 export async function prepAnniversaryAuto(args) {
-  return eraClipsFor(Number(String(args.releaseDate).slice(0, 4))) ? prepAnniversaryEra90(args) : prepAnniversary(args);
+  return eraClipsFor(Number(String(args.releaseDate).slice(0, 4))) ? prepAnniversaryEra(args) : prepAnniversary(args);
 }

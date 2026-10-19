@@ -1,6 +1,6 @@
 // Yerel ComfyUI (Wan 2.2 TI2V 5B) ile arka plan videosu uretir. Tek seferlik: sonuc repoya konur, bulutta GPU gerekmez.
 // Kullanim: node tools/comfy/bgGen.mjs <stil> [--draft] [--seed N] [--frames 121]
-//   stil: room | vhs | film | radio1 | radio2   (asagidaki STYLES)
+//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2   (asagidaki STYLES)
 //   --draft: kucuk boyut (480x864) hizli onizleme; yoksa 704x1280.
 //   --cool N / --rest S: GPU N C altinda ve S sn bosta kalana kadar bekle (varsayilan 50 C / 0 sn: GPU 50 C altina inince baslar; --cool 0 = bekleme yok).
 //   --tiled: VAE'yi parcali cozer (8 GB VRAM'de buyuk boyutta takilmayi onler).
@@ -23,6 +23,24 @@ const NEGATIVE_PERSON =
   '色调艳丽，过曝，静态，字幕，丑陋的，畸形的，多余的手指，画得不好的手部，畸形的毁容的';
 
 const STYLES = {
+  pc1: {
+    note: "2000ler girisi, sahne 1: bilgisayar basinda oturan, fareye tiklayan",
+    negative: NEGATIVE_PERSON,
+    prompt:
+      'Cinematic vertical shot from behind: a teenager in early-2000s clothes, an oversized white t-shirt under an open baggy denim jacket, low-rise baggy jeans and a trucker cap, ' +
+      'sits at a cluttered computer desk in a dim bedroom at night, his back to the camera. In front of him a chunky CRT computer monitor glows bright blue and green, ' +
+      'a pair of small desktop speakers sits on either side, a stack of burned CDs, a Nokia phone and a soda can on the desk, posters on the wall. ' +
+      'He grabs the mouse and clicks, the screen brightens. Cool blue monitor glow mixed with a warm desk lamp, analog film grain, shallow depth of field, ' +
+      'slow camera push-in from behind his shoulder, nostalgic mood.',
+  },
+  pc2: {
+    note: '2000ler girisi, sahne 2: masaustu hoparlorunun bas ile titremesi',
+    negative: NEGATIVE_PERSON,
+    prompt:
+      'Close-up of a small early-2000s desktop PC speaker, silver and black plastic, on a desk next to a glowing CRT monitor: the speaker cone vibrates and pulses with deep bass, ' +
+      'dust particles jump on the grille, a small blue LED and a green power light glow, cool blue monitor light mixed with warm lamp light, ' +
+      'analog film grain, shallow depth of field, slow camera push-in, nostalgic mood, no hands, no text.',
+  },
   radio1: {
     note: '90lar girisi, sahne 1: radyo basinda oturan, sesi acan',
     negative: NEGATIVE_PERSON,

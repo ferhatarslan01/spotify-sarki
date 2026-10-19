@@ -4,7 +4,11 @@ import json, os, subprocess, sys, time, traceback, urllib.request
 
 subprocess.check_call([sys.executable, "-m", "pip", "install", "-q", "-U", "diffusers", "transformers", "accelerate", "sentencepiece", "imageio", "imageio-ffmpeg"])
 
+# Kaggle'in hazir torchao'su yeni diffusers ile uyumsuz (FqnToConfig yok); kullanmadigimiz icin kaldiriyoruz.
+subprocess.call([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"])
+
 import torch
+print("torch:", torch.__version__, flush=True)
 from diffusers import LTXImageToVideoPipeline
 from diffusers.utils import export_to_video, load_image
 

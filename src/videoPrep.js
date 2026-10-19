@@ -446,3 +446,104 @@ export async function prepTopBoard({ items, header, heroLabel, date, dateShort }
     };
   });
 }
+
+// ---------------------------------------------------------------- Duello ("hangisi daha cok dinlendi?")
+// a, b: { artist, title, cover(Buffer), audioUrl, rank, streams }
+const DUEL = { DUR: 17, tA: 1.6, tB: 5.6, tCount: 9.6, tReveal: 12.6, tWin: 14.4 };
+
+async function meanVolumeDb(file, ss, d) {
+  const { stderr } = await run('ffmpeg', ['-v', 'info', '-ss', String(ss), '-t', String(d), '-i', file, '-af', 'volumedetect', '-f', 'null', '-']);
+  const m = /mean_volume:\s*(-?[\d.]+) dB/.exec(stderr);
+  return m ? Number(m[1]) : -20;
+}
+
+// Onizlemenin [hookSS, hookSS+segD) kismi; ortalama ses -17 dB'e esitlenir (iki sarki ayni siddette olsun)
+async function duelSegment({ prev, hookSS, segD, delayMs, out, fadeOut = 0.4, dur }) {
+  const gain = Math.max(-12, Math.min(12, -17 - (await meanVolumeDb(prev, hookSS, segD))));
+  const graph =
+    `[0:a]atrim=start=${hookSS}:duration=${segD},asetpts=PTS-STARTPTS,volume=${gain.toFixed(1)}dB,` +
+    `afade=t=in:d=0.03,afade=t=out:st=${Math.max(0, segD - fadeOut)}:d=${fadeOut},` +
+    `aformat=sample_rates=44100:channel_layouts=stereo,adelay=${delayMs}|${delayMs},apad=whole_dur=${dur},atrim=0:${dur}[m]`;
+  await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-ar', '44100', '-ac', '2', out]);
+}
+
+export async function prepDuel({ a, b, dateShort }) {
+  const { DUR, tA, tB, tCount, tReveal, tWin } = DUEL;
+  const winner = a.streams >= b.streams ? 'a' : 'b';
+  const coverA = await squareJpeg(a.cover, 600, 90);
+  const coverB = await squareJpeg(b.cover, 600, 90);
+  const hueA = await hueOf(sharp, coverA);
+  const hueB = await hueOf(sharp, coverB);
+
+  return withTmp(async (dir) => {
+    const prevA = join(dir, 'a.bin');
+    const prevB = join(dir, 'b.bin');
+    await writeFile(prevA, await fetchBuf(a.audioUrl));
+    await writeFile(prevB, await fetchBuf(b.audioUrl));
+    const segA = tB - tA;
+    const segB = tCount - tB;
+    const ssA = await findHookStart(prevA, segA);
+    const ssB = await findHookStart(prevB, segB);
+
+    await duelSegment({ prev: prevA, hookSS: ssA, segD: segA, delayMs: Math.round(tA * 1000), out: join(dir, 'ma.wav'), dur: DUR });
+    await duelSegment({ prev: prevB, hookSS: ssB, segD: segB, delayMs: Math.round(tB * 1000), out: join(dir, 'mb.wav'), dur: DUR });
+    // kazananin nakarati sonuc aninda tekrar calar
+    const w = winner === 'a' ? { prev: prevA, ss: ssA } : { prev: prevB, ss: ssB };
+    await duelSegment({
+      prev: w.prev,
+      hookSS: w.ss,
+      segD: DUR - tWin,
+      delayMs: Math.round(tWin * 1000),
+      out: join(dir, 'mw.wav'),
+      fadeOut: 1.2,
+      dur: DUR,
+    });
+    await run('ffmpeg', [
+      '-y', '-v', 'error', '-i', join(dir, 'ma.wav'), '-i', join(dir, 'mb.wav'), '-i', join(dir, 'mw.wav'),
+      '-filter_complex', '[0:a][1:a][2:a]amix=inputs=3:normalize=0[m]', '-map', '[m]', '-ar', '44100', '-ac', '2', join(dir, 'music.wav'),
+    ]);
+
+    const sfx = makeSfx(DUR, 41);
+    sfx.whoosh(0.05, 0.65, 0.45, 150, 2400);
+    sfx.whoosh(0.38, 0.65, 0.45, 150, 2400);
+    sfx.tick(tA - 0.02, 0.5, 1400);
+    sfx.tick(tB - 0.02, 0.5, 1400);
+    // gerisayim: 3-2-1 tik + yukselen ton
+    for (let i = 0; i < 3; i++) sfx.tick(tCount + i, 0.8, 900 + i * 220);
+    sfx.riser(tCount + 0.2, tReveal, 0.55);
+    sfx.clatter(tReveal, tWin - tReveal, 70, 0.32);
+    sfx.boom(tWin, 0.9, 80);
+    [1046.5, 1318.51, 1567.98, 2093.0].forEach((f, i) => sfx.ding(tWin + 0.05 + i * 0.07, f, 0.5, 0.7));
+    sfx.whoosh(DUR - 1.3, 1.2, 0.4, 5000, 250);
+    await sfx.writeWav(join(dir, 'sfx.wav'));
+    await mixMusicAndSfx(join(dir, 'music.wav'), join(dir, 'sfx.wav'), join(dir, 'mix.wav'), 0.7);
+    const bands = await analyzeBands(join(dir, 'music.wav'), DUR);
+
+    return {
+      composition: 'Duel',
+      dataKey: 'duel',
+      data: {
+        fps: FPS,
+        durationSeconds: DUR,
+        tA,
+        tB,
+        tCount,
+        tReveal,
+        tWin,
+        hueA,
+        hueB,
+        dateShort,
+        a: { artist: a.artist, title: a.title, rank: a.rank, streams: a.streams },
+        b: { artist: b.artist, title: b.title, rank: b.rank, streams: b.streams },
+        winner,
+        diff: Math.abs(a.streams - b.streams),
+        bands,
+      },
+      assets: [
+        { name: 'duel-cover-a.jpg', buffer: coverA },
+        { name: 'duel-cover-b.jpg', buffer: coverB },
+        { name: 'duel-soundtrack.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) },
+      ],
+    };
+  });
+}

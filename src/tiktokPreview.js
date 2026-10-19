@@ -1,9 +1,10 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,rise,new,top10,board,digest]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel } from './videoPrep.js';
+import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 
 const args = process.argv.slice(2);
@@ -114,6 +115,19 @@ async function main() {
           date,
           dateShort: `${dd}.${mm}.${yyyy.slice(2)}`,
         });
+      },
+    ]);
+  }
+  if (want('duel')) {
+    jobs.push([
+      'duello',
+      async () => {
+        const pair = pickDuelPair(entries, { seed: Number(date.replace(/\D/g, '')) });
+        if (!pair) throw new Error('duello cifti bulunamadi');
+        console.log(`  duello: A=${names(pair.a)} (#${pair.a.rank}) vs B=${names(pair.b)} (#${pair.b.rank}), fark %${(pair.gap * 100).toFixed(1)}`);
+        const [dd, mm, yyyy] = date.split('.');
+        const side = async (e) => ({ ...(await trackInput(e)), rank: e.rank, streams: e.streams });
+        return prepDuel({ a: await side(pair.a), b: await side(pair.b), dateShort: `${dd}.${mm}.${yyyy.slice(2)}` });
       },
     ]);
   }

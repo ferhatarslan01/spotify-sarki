@@ -46,6 +46,23 @@ const STUBS = {
     bands: [],
   },
   player: { artist: '', title: '', hue: 30, fps: 30, durationSeconds: 20, hookStart: 0, bands: [] },
+  duel: {
+    fps: 30,
+    durationSeconds: 17,
+    tA: 1.6,
+    tB: 5.6,
+    tCount: 9.6,
+    tReveal: 12.6,
+    tWin: 14.4,
+    hueA: 30,
+    hueB: 210,
+    dateShort: '',
+    a: { artist: '', title: '', rank: 1, streams: 0 },
+    b: { artist: '', title: '', rank: 2, streams: 0 },
+    winner: 'a',
+    diff: 0,
+    bands: [],
+  },
   anniv: { artist: '', title: '', dateText: '', day: 1, monthAbbr: 'OCA', releaseYear: 2000, yearNow: 2026, years: 26, hue: 30, fps: 30, durationSeconds: 18, rewindStart: 1.8, rewindEnd: 6.6, off: 16.4, bands: [] },
 };
 

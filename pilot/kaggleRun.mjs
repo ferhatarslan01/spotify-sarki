@@ -1,5 +1,5 @@
 // Pilot: kapak -> hareket klibi (Kaggle ucretsiz GPU). Kaggle API anahtari ~/.kaggle/kaggle.json icinde olmali.
-// Kullanim: node --env-file=.env pilot/kaggleRun.mjs [--accelerator NvidiaTeslaT4]
+// Kullanim: node --env-file=.env pilot/kaggleRun.mjs   (GPU: kernel-metadata.json icindeki enable_gpu)
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
@@ -11,7 +11,6 @@ const run = promisify(execFile);
 const KAGGLE = process.env.KAGGLE_BIN ?? join(homedir(), 'AppData/Roaming/Python/Python310/Scripts/kaggle.exe');
 const DIR = 'pilot/cover-motion';
 const OUT = 'pilot/out';
-const accel = process.argv.includes('--accelerator') ? process.argv[process.argv.indexOf('--accelerator') + 1] : 'NvidiaTeslaT4';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // kullanici adi (anahtar yazdirilmaz)
@@ -22,7 +21,7 @@ const slug = 'cover-motion-pilot';
 // 1) test kapaklari: listeden 3 + Duman + Poizi
 const covers = [];
 const { entries } = await fetchDailyChart();
-for (const e of [entries[0], entries[3], entries[7]]) {
+for (const e of [entries[0], entries[3], entries[7], entries[12]]) {
   const url = await getTrackThumbnail(e.trackUrl).catch(() => null);
   if (url) covers.push({ name: e.trackName.replace(/[^\w]+/g, '_').slice(0, 24), url });
 }
@@ -57,10 +56,10 @@ await writeFile(
 );
 
 // 3) gonder ve bekle
-const kg = (args) => run(KAGGLE, args, { maxBuffer: 1 << 26 });
+const kg = (args) => run(KAGGLE, args, { maxBuffer: 1 << 26, env: { ...process.env, PYTHONUTF8: '1', PYTHONIOENCODING: 'utf-8' } });
 console.log("Kaggle'a gonderiliyor...");
 try {
-  console.log((await kg(['kernels', 'push', '-p', 'pilot/.build', '--accelerator', accel])).stdout);
+  console.log((await kg(['kernels', 'push', '-p', 'pilot/.build'])).stdout);
 } catch (e) {
   console.error(e.stdout, e.stderr || e.message);
   process.exit(1);

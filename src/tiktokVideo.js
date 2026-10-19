@@ -16,7 +16,8 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel } from './videoPrep.js';
+import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
 
@@ -436,6 +437,53 @@ export async function tiktokChartPostPrepared(handle, { kind, header, date, entr
   if (handle) return postVideoToTikTok(handle);
   if (!videoEnabled()) return tiktokChartPost({ kind, header, date, entries, maxRows });
   return false;
+}
+
+// Duello: ilk 10'dan iki sarki, "hangisi daha cok dinlendi?" tahmin videosu (dikey; X ve TikTok ortak). Paylasmaz.
+// Cevap (kazanan) yalnizca videoda aciklanir; metinlerde yazilmaz.
+// Doner: { kind, video, caption, artists, note, pair } ya da null.
+export async function makeDuelVideo({ date, entries, excludeKeys = [] }) {
+  if (!(wantVideo() && remotionEnabled())) return null;
+  const seed = Number(String(date).replace(/\D/g, ''));
+  const label = (e) => e.artists.map((a) => a.name).join(' & ');
+  const tried = [...excludeKeys];
+
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const pair = pickDuelPair(entries, { excludeKeys: tried, seed });
+    if (!pair) break;
+    tried.push(pair.key);
+    try {
+      const side = async (e) => {
+        const preview = await findPreview(e.artists[0].name, e.trackName);
+        if (!preview) throw new Error(`Ses önizlemesi yok: ${label(e)} - ${e.trackName}`);
+        const coverUrl = await getTrackThumbnail(e.trackUrl);
+        if (!coverUrl) throw new Error(`Kapak yok: ${e.trackName}`);
+        return { artist: label(e), title: e.trackName, cover: await fetchBuffer(coverUrl), audioUrl: preview.url, rank: e.rank, streams: e.streams };
+      };
+      const a = await side(pair.a);
+      const b = await side(pair.b);
+      const [dd, mm, yyyy] = String(date).split('.');
+      const video = await renderPrepared(await prepDuel({ a, b, dateShort: yyyy ? `${dd}.${mm}.${yyyy.slice(2)}` : String(date) }));
+      const question = ctaFor('duel');
+      return {
+        kind: 'duel',
+        video,
+        caption: [
+          'Hangisi daha çok dinlendi? ⚔️',
+          '',
+          `A: ${a.artist} - ${a.title}`,
+          `B: ${b.artist} - ${b.title}`,
+          ...(question ? ['', question] : []),
+        ].join('\n'),
+        artists: [pair.a.artists[0].name, pair.b.artists[0].name],
+        note: `remotion:Duel, fark %${(pair.gap * 100).toFixed(1)}`,
+        pair,
+      };
+    } catch (err) {
+      console.error(`  Düello çifti atlandı (${err.message.split('\n')[0]}), yenisi deneniyor.`);
+    }
+  }
+  return null;
 }
 
 function formatDate(iso) {

@@ -13,7 +13,8 @@
     "check:weekly": "node src/postWeeklyChart.js",
     "check:global": "node src/postGlobalChart.js",
     "weekly:digest": "node src/postWeeklyDigest.js",
-    "check:trends": "node src/checkChartTrends.js"
+    "check:trends": "node src/checkChartTrends.js",
+    "post:duel": "node src/postDuel.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

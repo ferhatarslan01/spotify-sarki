@@ -22,6 +22,7 @@ const QUESTIONS = {
   'weekly-tr': ['Haftaya 1 numara değişir mi? E / H yaz 👇', 'Haftaya da zirvede kalır mı? E / H yaz 👇'],
   'daily-global': ['Yarın 1 numara değişir mi? E / H yaz 👇'],
   'weekly-digest': ['Haftanın şarkısı hangisi? Sanatçı adını yaz 👇'],
+  duel: ['A mı B mi? A / B yaz 👇', 'Sen hangisini seçerdin? A / B yaz 👇'],
 };
 
 function pick(list) {

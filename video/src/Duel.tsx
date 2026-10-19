@@ -310,7 +310,7 @@ export const Duel: React.FC = () => {
       ? { l1: "HANGİSİ", l2: "DAHA ÇOK DİNLENDİ?" }
       : phase === 1
         ? { l1: "SENCE", l2: "HANGİSİ?" }
-        : { l1: "BUGÜNÜN KAZANANI", l2: winnerInfo.title.toUpperCase() };
+        : { l1: "KAZANAN", l2: winnerInfo.title.toUpperCase() };
 
   const l2Size = phase === 2 ? (head.l2.length > 16 ? 58 : 76) : 78;
 

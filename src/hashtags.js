@@ -17,6 +17,7 @@ const KIND_TAGS = {
   'daily-tr': ['#spotifytürkiye', '#günlükliste', '#top5'],
   'weekly-tr': ['#spotifytürkiye', '#haftalıkliste', '#top5'],
   'daily-global': ['#spotifyglobal', '#dünyalistesi', '#top5'],
+  duel: ['#spotifytürkiye', '#türkçemüzik', '#hangisi'],
   'weekly-digest': ['#yenişarkılar', '#türkçemüzik', '#buhaftaçıkanlar'],
 };
 

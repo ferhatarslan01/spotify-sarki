@@ -147,7 +147,7 @@ export function trackedByName(name) {
 }
 
 // Metindeki sanatci adlarinin ilk gecisinden sonra " (@kullanici)" ekler (en fazla `max` kisi).
-// 280 karakteri asarsa etiketsiz metni dondurur.
+// Her etiket tek tek 280 karakter sinirina gore kontrol edilir; sigmayan etiket atlanir, siradakiler denenir.
 export async function tagText(text, artists, { max = 2 } = {}) {
   if (!xTagsEnabled()) return text;
   let out = text;
@@ -160,8 +160,10 @@ export async function tagText(text, artists, { max = 2 } = {}) {
     if (i < 0) continue;
     const end = i + a.name.length;
     if (out.slice(end).startsWith(' (@')) continue;
-    out = `${out.slice(0, end)} (@${handle})${out.slice(end)}`;
+    const next = `${out.slice(0, end)} (@${handle})${out.slice(end)}`;
+    if (next.length > 280) continue;
+    out = next;
     n += 1;
   }
-  return out.length <= 280 ? out : text;
+  return out;
 }

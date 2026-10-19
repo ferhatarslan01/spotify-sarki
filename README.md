@@ -22,7 +22,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 - **Top 5 thread'i**: ilk tweet liste metnini + 1. şarkının videosunu taşır; 2-5. şarkılar yanıt olarak gelir.
 - X'te video tweet'i Buffer'da hata verirse otomatik olarak eski görselli tweet'e düşülür.
 - Trend olayları için çalıştırma başına en fazla 1 video üretilir.
-- **Sanatçı etiketleme (X):** Tweet metinlerinde sanatçı adının yanına `(@hesap)` eklenir (en fazla 2 kişi). Takip edilen sanatçıların hesapları
+- **Sanatçı etiketleme (X):** Tüm X paylaşımlarında sanatçı adının yanına `(@hesap)` eklenir: yeni şarkı, yıl dönümü, trend olayları (en fazla 2 kişi), liste ve haftalık özet (280 karaktere sığdığı kadar, sırayla). Takip edilen sanatçıların hesapları
   `src/artistHandles.js` içinde elle doğrulanmış listede; liste dışı sanatçılar (liste girdileri) MusicBrainz + Wikidata ile çapraz kontrol
   edilerek bulunur, emin olunamazsa etiket eklenmez. TikTok açıklamalarına etiket eklenmez.
 

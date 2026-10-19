@@ -5,6 +5,7 @@ import { publishPost, publishThreadWithVideo } from './bufferPost.js';
 import { generateChartCollage } from './collage.js';
 import { pushFile, getRawUrl } from './gitPublish.js';
 import { makeChartVideo, makeChartThread, buildChartThreadItems, tiktokChartPostPrepared } from './tiktokVideo.js';
+import { tagText } from './artistHandles.js';
 
 const STATE_FILE = 'globalChartState.json';
 
@@ -46,11 +47,17 @@ async function main() {
   // TikTok: dikey Top 5 videosu. X: 5 ayri kare "kapak + oynatici" videosu thread olarak (ilk tweet liste metnini tasir).
   const chartParams = { kind: 'daily-global', header: 'DÜNYA GÜNLÜK SPOTIFY', date, entries };
   // Dikey TikTok videosu sadece TIKTOK_GLOBAL=1 iken uretilir (gereksiz render olmasin).
+  // X metni: Top 5 listesi (videolu thread ile ayni); etiketler sigsin diye 5 satirla sinirli.
+  const xText = await tagText(
+    formatGlobalChartPost(date, entries, 5),
+    entries.slice(0, 10).flatMap((e) => e.artists),
+    { max: 10 }
+  );
   const handle = process.env.TIKTOK_GLOBAL === '1' ? await makeChartVideo(chartParams) : null;
   const thread = await makeChartThread(chartParams);
   const result = thread
-    ? await publishThreadWithVideo(await buildChartThreadItems(thread, text), () => publishPost(text, imageUrl))
-    : await publishPost(text, imageUrl);
+    ? await publishThreadWithVideo(await buildChartThreadItems(thread, xText), () => publishPost(xText, imageUrl))
+    : await publishPost(xText, imageUrl);
   if (result.message) {
     console.error(`Buffer hatasi: ${result.message}`);
     process.exitCode = 1;

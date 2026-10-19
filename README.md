@@ -22,6 +22,9 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 - **Top 5 thread'i**: ilk tweet liste metnini + 1. şarkının videosunu taşır; 2-5. şarkılar yanıt olarak gelir.
 - X'te video tweet'i Buffer'da hata verirse otomatik olarak eski görselli tweet'e düşülür.
 - Trend olayları için çalıştırma başına en fazla 1 video üretilir.
+- **Sanatçı etiketleme (X):** Tweet metinlerinde sanatçı adının yanına `(@hesap)` eklenir (en fazla 2 kişi). Takip edilen sanatçıların hesapları
+  `src/artistHandles.js` içinde elle doğrulanmış listede; liste dışı sanatçılar (liste girdileri) MusicBrainz + Wikidata ile çapraz kontrol
+  edilerek bulunur, emin olunamazsa etiket eklenmez. TikTok açıklamalarına etiket eklenmez.
 
 ## Klasörler
 
@@ -42,6 +45,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 - `TIKTOK_REMOTION=0` Remotion yerine yedek (Node) video motoru.
 - `TIKTOK_HASHTAGS=0` hashtag eklemeyi kapatır.
 - `TIKTOK_GLOBAL=1` dünya günlük listesi videosunu açar.
+- `X_TAGS=0` X tweetlerinde sanatçı etiketlemeyi (@hesap) kapatır.
 
 ## Önizleme
 

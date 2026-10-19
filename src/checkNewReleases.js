@@ -3,6 +3,7 @@ import { getAccessToken, getRecentReleases, QuotaError } from './spotify.js';
 import { loadSpotifyBlock, saveSpotifyBlock } from './spotifyBlock.js';
 import { loadState, saveState } from './state.js';
 import { publishPostWithVideo } from './bufferPost.js';
+import { tagText } from './artistHandles.js';
 import { buildPostText } from './postText.js';
 import { appendToWeeklyLog } from './weeklyLog.js';
 import { loadAnniversaryState, saveAnniversaryState } from './anniversaryState.js';
@@ -128,7 +129,7 @@ async function main() {
             },
           };
         const handle = await makeEventVideos(tiktokParams);
-        const result = await publishPostWithVideo(text, latest.imageUrl, handle.x ? hostVideo(handle.x) : null);
+        const result = await publishPostWithVideo(await tagText(text, [artist]), latest.imageUrl, handle.x ? hostVideo(handle.x) : null);
         if (result.message) {
           console.error(`  Buffer hatası: ${result.message}`);
         } else {
@@ -186,7 +187,7 @@ async function main() {
               },
             };
           const handle = await makeEventVideos(tiktokParams);
-          const result = await publishPostWithVideo(annText, release.imageUrl, handle.x ? hostVideo(handle.x) : null);
+          const result = await publishPostWithVideo(await tagText(annText, [artist]), release.imageUrl, handle.x ? hostVideo(handle.x) : null);
           if (result.message) {
             console.error(`  Buffer hatası: ${result.message}`);
           } else {

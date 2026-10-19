@@ -1,6 +1,7 @@
 import { loadWeeklyLog, clearWeeklyLog } from './weeklyLog.js';
 import { publishThread, publishThreadWithVideo } from './bufferPost.js';
 import { makeDigestVideo, hostVideo, tiktokDigestPostPrepared } from './tiktokVideo.js';
+import { tagText, trackedByName } from './artistHandles.js';
 
 async function main() {
   const log = await loadWeeklyLog();
@@ -17,10 +18,12 @@ async function main() {
       text: `🎵 Bu hafta çıkan yeni şarkılar 🎵\n\n${log.length} yeni yayın 👇`,
       imageUrl: log[0].imageUrl,
     },
-    ...log.map((entry) => ({
-      text: `${entry.artistName} - ${entry.songName}\n${entry.url}`,
-      imageUrl: entry.imageUrl,
-    })),
+    ...(await Promise.all(
+      log.map(async (entry) => ({
+        text: await tagText(`${entry.artistName} - ${entry.songName}\n${entry.url}`, [trackedByName(entry.artistName)]),
+        imageUrl: entry.imageUrl,
+      }))
+    )),
   ];
 
   const digestArgs = {

@@ -2,6 +2,7 @@ import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.
 import { fetchGlobalChart } from './globalChart.js';
 import { loadTrendsState, saveTrendsState, emptyTrendsState, highestMilestone } from './trendsState.js';
 import { publishPostWithVideo } from './bufferPost.js';
+import { tagText } from './artistHandles.js';
 import { makeEventVideos, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -72,6 +73,7 @@ async function main() {
       events.push({
         priority: entry.positionChange,
         trackUrl: entry.trackUrl,
+        artists: entry.artists,
         text: `🚀 ${label}\n\n${entry.positionChange} sıra birden yükseldi! Şu an Türkiye ${entry.rank}. sırada 🔥\n${entry.trackUrl}`,
         card: {
           kind: 'trend-jump',
@@ -100,6 +102,7 @@ async function main() {
         events.push({
           priority: 11 - entry.rank + 100,
           trackUrl: entry.trackUrl,
+        artists: entry.artists,
           text: `🎉 ${label}\n\nİlk kez Türkiye Top 10'a girdi! (${entry.rank}. sıra)\n${entry.trackUrl}`,
           card: {
             kind: 'trend-top10',
@@ -142,6 +145,7 @@ async function main() {
           events.push({
             priority: milestone / 1_000_000,
             trackUrl: entry.trackUrl,
+        artists: entry.artists,
             text: `🎊 ${label}\n\n${formatStreams(milestone)} stream'i geçti! 🎧\n${entry.trackUrl}`,
             card: {
               kind: 'trend-milestone',
@@ -186,6 +190,7 @@ async function main() {
         events.push({
           priority: 200,
           trackUrl: entry.trackUrl,
+        artists: entry.artists,
           text: `🌍 ${label}\n\nBizden bir şarkı şu anda Dünya Günlük Top 200'de de yer alıyor! 🇹🇷➡️🌍\n${entry.trackUrl}`,
           card: {
             kind: 'trend-global',
@@ -248,7 +253,7 @@ async function main() {
       caption: event.text,
     };
     const handles = videosMade < MAX_TIKTOK_PER_RUN ? await makeEventVideos(params) : { tiktok: null, x: null };
-    const ok = await postEvent(event.text, event.trackUrl, handles.x);
+    const ok = await postEvent(await tagText(event.text, event.artists), event.trackUrl, handles.x);
     if (ok) {
       event.onCommit();
       if (handles.x || handles.tiktok) videosMade += 1;

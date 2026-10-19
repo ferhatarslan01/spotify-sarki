@@ -46,7 +46,7 @@ async function main() {
   const handle = await makeChartVideo(chartParams);
   const thread = await makeChartThread(chartParams);
   const result = thread
-    ? await publishThreadWithVideo(buildChartThreadItems(thread, text), () => publishPost(text, imageUrl))
+    ? await publishThreadWithVideo(await buildChartThreadItems(thread, text), () => publishPost(text, imageUrl))
     : await publishPost(text, imageUrl);
   if (result.message) {
     console.error(`Buffer hatasi: ${result.message}`);

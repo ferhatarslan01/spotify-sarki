@@ -15,6 +15,7 @@ import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
 import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer } from './videoPrep.js';
 import { renderPrepared } from './remotionRender.js';
+import { tagText } from './artistHandles.js';
 
 // TIKTOK_VIDEO=0 ise hareketli video kapatilir, sadece foto kartlar gider.
 function videoEnabled() {
@@ -401,14 +402,15 @@ export async function makeChartThread({ kind, entries }) {
 }
 
 // makeChartThread sonucundan Buffer thread ogeleri (ilk oge rootText'i tasir).
-export function buildChartThreadItems(thread, rootText) {
-  return thread.map((o, i) => {
+export async function buildChartThreadItems(thread, rootText) {
+  return Promise.all(thread.map(async (o, i) => {
     const e = o.entry;
     const artist = e.artists.map((a) => a.name).join(' & ');
     const ch = typeof e.positionChange === 'number' && e.positionChange !== 0 ? ` ${e.positionChange > 0 ? '▲' : '▼'}${Math.abs(e.positionChange)}` : '';
-    const text = i === 0 ? rootText : `${e.rank}. ${artist} - ${e.trackName}\n${formatStreams(e.streams)} stream${ch}\n${e.trackUrl}`;
+    const plain = i === 0 ? rootText : `${e.rank}. ${artist} - ${e.trackName}\n${formatStreams(e.streams)} stream${ch}\n${e.trackUrl}`;
+    const text = i === 0 ? plain : await tagText(plain, e.artists);
     return o.handle ? { text, videoUrl: hostVideo(o.handle) } : { text, imageUrl: o.coverUrl ?? undefined };
-  });
+  }));
 }
 
 // Eski API: chart videosu uret + TikTok'a gonder (video kapaliysa foto kart).

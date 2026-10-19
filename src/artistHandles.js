@@ -5,6 +5,10 @@ import { artists as trackedArtists } from './artists.js';
 
 // Takip edilen sanatcilar: Spotify sanatci ID -> X kullanici adi (elle dogrulanmis liste).
 const STATIC = {
+  '51DevdOxIJin6DB1FXJpD1': 'Chavo1312', // UZI (kullanıcı onayı)
+  '6sBSLIunx1Je0Y2T77wpkP': 'motive2m', // Motive (kullanıcı onayı)
+  '0L3wrFI3QcbXAvFL7IaPQX': 'guneswon', // Güneş (kullanıcı onayı)
+  '5PRW6j58xEEWL4DDVEITKT': 'dedublumanoffic', // Dedublüman (kullanıcı onayı)
   '6bGOmNBU1AOgttgOjh0ldf': 'ati242_', // Ati242
   '1CcZoULzFHa8Uhwo6OlQcp': 'semicenk', // Semicenk
   '0V2oXYR7DtrZAEFeILRW2r': 'lvbeIc5', // Lvbel C5

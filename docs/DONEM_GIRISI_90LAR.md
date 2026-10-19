@@ -31,3 +31,9 @@ başında filtre tam banda açılır. Mevcut `Anniversary` kompozisyonu `Sequenc
 - Klipler: `video/assets/era2000-s1.mp4`, `era2000-s2.mp4`. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era2000`.
 - Not: sahne 2'nin taslağı (`annivbg_pc2_draft_51`) net bir bobinli hoparlör gösteriyordu, tam kalite hâli daha soyut çıktı. İstenirse farklı seed ile (örn. 52) yeniden üretilebilir (~15 dk).
 - Canlı akışta **kapalı**: `ERA_INTROS=1` (tüm dönemler) ya da `ERA_INTROS=90s,2000s`.
+
+## 2010'lar (hazır, 19 Ekim 2026)
+- `ERAS['2010s']`: etiket "2010'LAR", pembe `#ff5fa2`, hoparlör profili hp 120 / lp 10000 Hz, S1_END 4.4 sn, telefon anı (şarkı girişi) 3.5. sn.
+- Sahne 1: yatak kenarında oturan, sırtı dönük, ters şapkalı ve kapüşonlu biri (sarı led ışık zinciri, polaroidler, mor led şerit); sonunda telefonunu kaldırır. Sahne 2: pembe halkalı silindirik bluetooth hoparlör, yanında ekranı yanan telefon, altın/pembe bokeh.
+- İlk sahne denemesi profilden çekimdi ve yüz görünüyordu (reddedildi); yeniden sırtı dönük olarak üretildi (`NEGATIVE_BACK` ile).
+- Klipler: `video/assets/era2010-s1.mp4` (leke temizliği `cleanBlobs.py --region 0,0,0.6,0.28`), `era2010-s2.mp4`. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era2010`.

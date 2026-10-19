@@ -1,5 +1,5 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era90,era2000,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era90,era2000,era2010,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
@@ -138,6 +138,12 @@ async function main() {
       name: 'yildonumu-90lar',
       decade: /^199\d/,
       queries: ['Tarkan Simarik', 'MFO Ali Desidero', 'Sezen Aksu Gulumse', 'Mustafa Sandal Jest Oyna', 'Ajda Pekkan Bambaska Biri', 'Kenan Dogulu Yaparim Bilirsin'],
+    },
+    {
+      key: 'era2010',
+      name: 'yildonumu-2010lar',
+      decade: /^201\d/,
+      queries: ['Hadise Ask Kac Beden Giyer', 'Murat Boz Janti', 'Mabel Matiz Karmasik', 'Sila Yaz Bitmeden', 'Gripin Kafamda Deli Sorular', 'Mor ve Otesi Sonsuza Dek', 'Kenan Dogulu Yaparim Bilirsin', 'Yalin Sorma', 'Ceza Suspus', 'Sezen Aksu Gulumse'],
     },
     {
       key: 'era2000',

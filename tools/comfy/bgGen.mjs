@@ -1,6 +1,6 @@
 // Yerel ComfyUI (Wan 2.2 TI2V 5B) ile arka plan videosu uretir. Tek seferlik: sonuc repoya konur, bulutta GPU gerekmez.
 // Kullanim: node tools/comfy/bgGen.mjs <stil> [--draft] [--seed N] [--frames 121]
-//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2   (asagidaki STYLES)
+//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2 | phone1 | phone2   (asagidaki STYLES)
 //   --draft: kucuk boyut (480x864) hizli onizleme; yoksa 704x1280.
 //   --cool N / --rest S: GPU N C altinda ve S sn bosta kalana kadar bekle (varsayilan 50 C / 0 sn: GPU 50 C altina inince baslar; --cool 0 = bekleme yok).
 //   --tiled: VAE'yi parcali cozer (8 GB VRAM'de buyuk boyutta takilmayi onler).
@@ -22,7 +22,29 @@ const NEGATIVE_PERSON =
   'deformed hands, extra fingers, fused fingers, distorted body, extra limbs, ugly, face close-up, looking at camera, worst quality, ' +
   '色调艳丽，过曝，静态，字幕，丑陋的，畸形的，多余的手指，画得不好的手部，畸形的毁容的';
 
+// Sirti donuk planlar: yuz/profil/agiz gorunmesin.
+const NEGATIVE_BACK =
+  NEGATIVE_PERSON + ', profile view, side view, visible face, face visible, open mouth, smiling, looking sideways, turning head';
+
 const STYLES = {
+  phone1: {
+    note: '2010lar girisi, sahne 1: sirti donuk, yatak kenarinda telefonuyla muzik acan (yuz gorunmez)',
+    negative: NEGATIVE_BACK,
+    prompt:
+      'Cinematic vertical shot from directly behind: a young person in 2010s clothes, an oversized grey hoodie and a snapback cap worn backwards, ' +
+      'sits on the edge of a bed in a cozy bedroom at night, seen only from behind, facing the wall. In front of them are warm string fairy lights, ' +
+      'polaroid photos taped on the wall and a pink and purple LED strip glow, a portable cylinder Bluetooth speaker stands on the desk. ' +
+      'Over their shoulder the glow of a smartphone screen lights up their hand and the wall as they tap it. ' +
+      'Slow camera push-in from behind the shoulder, analog film grain, shallow depth of field, nostalgic mood.',
+  },
+  phone2: {
+    note: '2010lar girisi, sahne 2: bluetooth hoparlorun bas ile titremesi',
+    negative: NEGATIVE_PERSON,
+    prompt:
+      'Close-up of a portable cylinder Bluetooth speaker on a bedside table pulsing with deep bass, its fabric grille vibrating, a small pink LED ring glowing, ' +
+      'warm fairy lights bokeh in the background, a smartphone lying next to it with its screen lighting up, pink and purple neon glow, ' +
+      'analog film grain, shallow depth of field, slow camera push-in, nostalgic mood, no hands, no text.',
+  },
   pc1: {
     note: "2000ler girisi, sahne 1: bilgisayar basinda oturan, fareye tiklayan",
     negative: NEGATIVE_PERSON,

@@ -8,3 +8,5 @@ video/out/
 video/public/*
 !video/public/.gitkeep
 video/src/data-*.json
+pilot/.build/
+pilot/out/

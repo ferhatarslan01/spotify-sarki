@@ -16,7 +16,7 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto } from './videoPrep.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -83,7 +83,7 @@ function remotionEnabled() {
 async function renderTemplate(template, input) {
   let prepared;
   if (template === 'NewRelease') prepared = await prepNewRelease(input);
-  else if (template === 'Anniversary') prepared = await prepAnniversary(input);
+  else if (template === 'Anniversary') prepared = await prepAnniversaryAuto(input); // 90lar vb. icin donem girisi otomatik
   else if (template === 'RankRise') prepared = await prepRankRise(input);
   else throw new Error(`Bilinmeyen sablon: ${template}`);
   return renderPrepared(prepared);

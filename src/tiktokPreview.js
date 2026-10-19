@@ -1,9 +1,9 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era90,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto } from './videoPrep.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 
@@ -128,6 +128,31 @@ async function main() {
         const [dd, mm, yyyy] = date.split('.');
         const side = async (e) => ({ ...(await trackInput(e)), rank: e.rank, streams: e.streams });
         return prepDuel({ a: await side(pair.a), b: await side(pair.b), dateShort: `${dd}.${mm}.${yyyy.slice(2)}` });
+      },
+    ]);
+  }
+  if (want('era90')) {
+    process.env.ERA_INTROS = '1'; // onizlemede donem girisi her zaman acik
+    jobs.push([
+      'yildonumu-90lar',
+      async () => {
+        // 90'larda cikmis bir sarki bul (iTunes surumleri yeniden yayin tarihi gosterebilir; 199x olani sec)
+        const queries = ['Tarkan Simarik', 'MFO Ali Desidero', 'Sezen Aksu Gulumse', 'Mustafa Sandal Jest Oyna', 'Ajda Pekkan Bambaska Biri', 'Kenan Dogulu Yaparim Bilirsin'];
+        for (const q of queries) {
+          const r = await (await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&country=TR&entity=song&limit=10`)).json();
+          const s = r.results.find((x) => x.previewUrl && /^199\d/.test(x.releaseDate ?? ''));
+          if (s) {
+            console.log(`  90lar: ${s.artistName} - ${s.trackName} (${s.releaseDate.slice(0, 10)})`);
+            return prepAnniversaryAuto({
+              artist: s.artistName,
+              title: s.trackName,
+              releaseDate: s.releaseDate.slice(0, 10),
+              cover: await buf(s.artworkUrl100.replace('100x100bb', '600x600bb')),
+              audioUrl: s.previewUrl,
+            });
+          }
+        }
+        throw new Error("199x tarihli onizlemeli sarki bulunamadi");
       },
     ]);
   }

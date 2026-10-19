@@ -46,6 +46,7 @@ const STUBS = {
     bands: [],
   },
   player: { artist: '', title: '', hue: 30, fps: 30, durationSeconds: 20, hookStart: 0, bands: [] },
+  era90: { introSeconds: 8, scene1End: 5, knobAt: 3, fps: 30, bands: [] },
   duel: {
     fps: 30,
     durationSeconds: 17,
@@ -115,13 +116,15 @@ async function ensureStubs() {
   }
 }
 
-async function renderOne({ composition, dataKey, data, assets }) {
+async function renderOne({ composition, dataKey, data, assets, extras = [] }) {
   await ensureDeps();
   await ensureStubs();
 
   const pub = join(VIDEO_DIR, 'public');
   await mkdir(pub, { recursive: true });
   await writeFile(join(VIDEO_DIR, 'src', `data-${dataKey}.json`), JSON.stringify(data));
+  // birden cok veri dosyasi gerektiren kompozisyonlar (ornek: Era90s icinde Anniversary)
+  for (const x of extras) await writeFile(join(VIDEO_DIR, 'src', `data-${x.dataKey}.json`), JSON.stringify(x.data));
   for (const a of assets) await writeFile(join(pub, a.name), a.buffer);
 
   const out = join(tmpdir(), `remotion-${composition}-${Date.now()}.mp4`);
@@ -139,7 +142,7 @@ async function renderOne({ composition, dataKey, data, assets }) {
   }
 }
 
-// prepared: videoPrep.js fonksiyonlarinin dondurdugu { composition, dataKey, data, assets }
+// prepared: videoPrep.js fonksiyonlarinin dondurdugu { composition, dataKey, data, assets, extras? }
 export function renderPrepared(prepared) {
   const run = queue.then(() => renderOne(prepared));
   queue = run.catch(() => {});

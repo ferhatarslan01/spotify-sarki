@@ -47,13 +47,14 @@ async function buildMusic({ prev, hookSS, segD, delayMs, dur, out, filterSweep }
       `[0:a]atrim=start=${hookSS}:duration=${segD},asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo,asplit=2[l][c];` +
       `[l]${lo},volume='1-clip((t-${from})/${to - from},0,1)':eval=frame[lo];` +
       `[c]volume='clip((t-${from})/${to - from},0,1)':eval=frame[hi];` +
-      `[lo][hi]amix=inputs=2:normalize=0,afade=t=in:d=0.05,afade=t=out:st=${Math.max(0, segD - 1.1)}:d=1.1,adelay=${delayMs}|${delayMs},apad=whole_dur=${dur},atrim=0:${dur}[m]`;
+      `[lo][hi]amix=inputs=2:normalize=0,afade=t=in:d=0.05,afade=t=out:st=${Math.max(0, segD - 1.1)}:d=1.1,adelay=${delayMs}|${delayMs},apad=whole_dur=${dur}[m]`;
   } else {
     graph =
       `[0:a]atrim=start=${hookSS}:duration=${segD},asetpts=PTS-STARTPTS,afade=t=in:d=0.02,afade=t=out:st=${Math.max(0, segD - 1.3)}:d=1.3,` +
-      `aformat=sample_rates=44100:channel_layouts=stereo,adelay=${delayMs}|${delayMs},apad=whole_dur=${dur},atrim=0:${dur}[m]`;
+      `aformat=sample_rates=44100:channel_layouts=stereo,adelay=${delayMs}|${delayMs},apad=whole_dur=${dur}[m]`;
   }
-  await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-ar', '44100', '-ac', '2', out]);
+  // Sure sinirini cikista (-t) uyguluyoruz: apad sonrasi atrim, yeni ffmpeg surumlerinde sesi erken kesiyor.
+  await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-t', String(dur), '-ar', '44100', '-ac', '2', out]);
 }
 
 // ---------------------------------------------------------------- Yeni cikis ("yukleniyor... DROP")
@@ -476,8 +477,8 @@ async function duelSegment({ prev, hookSS, segD, delayMs, out, fadeOut = 0.4, du
   const graph =
     `[0:a]atrim=start=${hookSS}:duration=${segD},asetpts=PTS-STARTPTS,volume=${gain.toFixed(1)}dB,` +
     `afade=t=in:d=0.03,afade=t=out:st=${Math.max(0, segD - fadeOut)}:d=${fadeOut},` +
-    `aformat=sample_rates=44100:channel_layouts=stereo,adelay=${delayMs}|${delayMs},apad=whole_dur=${dur},atrim=0:${dur}[m]`;
-  await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-ar', '44100', '-ac', '2', out]);
+    `aformat=sample_rates=44100:channel_layouts=stereo,adelay=${delayMs}|${delayMs},apad=whole_dur=${dur}[m]`;
+  await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-t', String(dur), '-ar', '44100', '-ac', '2', out]);
 }
 
 export async function prepDuel({ a, b, dateShort }) {
@@ -559,4 +560,72 @@ export async function prepDuel({ a, b, dateShort }) {
       ],
     };
   });
+}
+
+// ---------------------------------------------------------------- Donem girisli yil donumu (90'lar: radyo)
+// Giris: ComfyUI ile uretilmis 2 sahne (video/assets/era90-s1.mp4, era90-s2.mp4) + radyo filtreli sarki yukselisi; ardindan "KAC YIL OLDU?".
+const ERA90 = { INTRO: 8.0, S1_END: 5.0, KNOB: 2.8 };
+
+// Yayin yilina uygun dönem girisi klipleri varsa { s1, s2 }, yoksa null.
+// Onaylanana kadar kapali: ERA_INTROS=1 ile acilir (canli akisa kendiliginden girmesin).
+export function eraClipsFor(releaseYear) {
+  if (process.env.ERA_INTROS !== '1') return null;
+  if (releaseYear >= 1990 && releaseYear <= 1999) {
+    const dir = join(process.cwd(), 'video', 'assets');
+    const s1 = join(dir, 'era90-s1.mp4');
+    const s2 = join(dir, 'era90-s2.mp4');
+    if (existsSync(s1) && existsSync(s2)) return { id: '90s', s1, s2 };
+  }
+  return null;
+}
+
+export async function prepAnniversaryEra90(args) {
+  const clips = eraClipsFor(Number(String(args.releaseDate).slice(0, 4)));
+  if (!clips) throw new Error('90lar giris klipleri bulunamadi');
+  const base = await prepAnniversary(args);
+  const { INTRO, S1_END, KNOB } = ERA90;
+
+  return withTmp(async (dir) => {
+    const prev = join(dir, 'prev.bin');
+    await writeFile(prev, await fetchBuf(args.audioUrl));
+    // prepAnniversary ile ayni nakarat penceresi: radyoda duyulan kisim, sonra tam bantta tekrar calar
+    const hookSS = await findHookStart(prev, base.data.off - base.data.rewindEnd + 0.2);
+
+    const musicLen = INTRO - KNOB;
+    const graph =
+      `[0:a]atrim=start=${hookSS}:duration=${musicLen + 0.1},asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo,` +
+      `highpass=f=350,lowpass=f=3200,acompressor=threshold=-18dB:ratio=3,` +
+      `volume='0.06+0.94*pow(clip(t/${musicLen},0,1),1.7)':eval=frame,volume=4dB,afade=t=in:d=0.04,` +
+      `adelay=${Math.round(KNOB * 1000)}|${Math.round(KNOB * 1000)},apad=whole_dur=${INTRO}[m]`;
+    await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-t', String(INTRO), '-ar', '44100', '-ac', '2', join(dir, 'music.wav')]);
+
+    const sfx = makeSfx(INTRO, 57);
+    sfx.hiss(0, INTRO, 0.012); // oda cizirtisi
+    sfx.tick(KNOB - 0.05, 0.8, 650); // dugme tiki
+    sfx.whoosh(KNOB, 0.6, 0.12, 300, 3200); // frekans taramasi
+    sfx.whoosh(S1_END - 0.5, 0.5, 0.25, 200, 2400); // sahne gecisi
+    sfx.riser(INTRO - 1.0, INTRO, 0.35); // ana videoya yukselis
+    sfx.boom(INTRO - 0.05, 0.6, 70);
+    await sfx.writeWav(join(dir, 'sfx.wav'));
+    await mixMusicAndSfx(join(dir, 'music.wav'), join(dir, 'sfx.wav'), join(dir, 'mix.wav'), 0.9);
+    const bands = await analyzeBands(join(dir, 'music.wav'), INTRO);
+
+    return {
+      composition: 'Era90s',
+      dataKey: 'era90',
+      data: { introSeconds: INTRO, scene1End: S1_END, knobAt: KNOB, fps: FPS, bands },
+      extras: [{ dataKey: base.dataKey, data: base.data }],
+      assets: [
+        ...base.assets,
+        { name: 'era90-s1.mp4', buffer: await readFileBuf(clips.s1) },
+        { name: 'era90-s2.mp4', buffer: await readFileBuf(clips.s2) },
+        { name: 'era90-intro.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) },
+      ],
+    };
+  });
+}
+
+// Yayin yilina gore dönem girisli ya da duz yil donumu videosunu hazirlar.
+export async function prepAnniversaryAuto(args) {
+  return eraClipsFor(Number(String(args.releaseDate).slice(0, 4))) ? prepAnniversaryEra90(args) : prepAnniversary(args);
 }

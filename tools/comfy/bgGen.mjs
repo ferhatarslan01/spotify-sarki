@@ -1,7 +1,8 @@
 // Yerel ComfyUI (Wan 2.2 TI2V 5B) ile arka plan videosu uretir. Tek seferlik: sonuc repoya konur, bulutta GPU gerekmez.
 // Kullanim: node tools/comfy/bgGen.mjs <stil> [--draft] [--seed N] [--frames 121]
-//   stil: room | vhs | film   (asagidaki STYLES)
+//   stil: room | vhs | film | radio1 | radio2   (asagidaki STYLES)
 //   --draft: kucuk boyut (480x864) hizli onizleme; yoksa 704x1280.
+//   --cool N / --rest S: GPU N C altinda ve S sn bosta kalana kadar bekle (varsayilan 50 C / 0 sn: GPU 50 C altina inince baslar; --cool 0 = bekleme yok).
 //   --tiled: VAE'yi parcali cozer (8 GB VRAM'de buyuk boyutta takilmayi onler).
 // Onkosul: ComfyUI http://127.0.0.1:8188 adresinde calisiyor (D:\ComfyUI\ComfyUI_windows_portable).
 import { copyFile, mkdir } from 'node:fs/promises';
@@ -15,7 +16,31 @@ const NEGATIVE =
   'people, person, face, hands, text, letters, logo, watermark, subtitles, blurry details, overexposed, static frame, ' +
   'low quality, jpeg artifacts, deformed, ugly, cluttered background, worst quality, 色调艳丽，过曝，静态，字幕，丑陋的，畸形的';
 
+// Insan iceren sahneler icin negatif ('people' yok): yuz/el bozulmasi ve metin engellenir.
+const NEGATIVE_PERSON =
+  'text, letters, logo, watermark, subtitles, blurry details, overexposed, static frame, low quality, jpeg artifacts, ' +
+  'deformed hands, extra fingers, fused fingers, distorted body, extra limbs, ugly, face close-up, looking at camera, worst quality, ' +
+  '色调艳丽，过曝，静态，字幕，丑陋的，畸形的，多余的手指，画得不好的手部，畸形的毁容的';
+
 const STYLES = {
+  radio1: {
+    note: '90lar girisi, sahne 1: radyo basinda oturan, sesi acan',
+    negative: NEGATIVE_PERSON,
+    prompt:
+      'Cinematic vertical shot from behind: a young man in 1990s clothing, an oversized stonewashed denim jacket, baggy jeans and a backwards baseball cap, ' +
+      'sits cross-legged on the floor of a cozy 1990s bedroom at dusk, his back to the camera. In front of him on a low wooden table is a vintage boombox radio ' +
+      'with a cassette deck and a glowing orange tuning dial. He reaches out with one hand and slowly turns the volume knob up. ' +
+      'Warm tungsten lamp light, posters on the wall, dust floating in the light, analog film grain, shallow depth of field, ' +
+      'slow camera push-in from behind his shoulder, nostalgic mood.',
+  },
+  radio2: {
+    note: '90lar girisi, sahne 2: radyo hoparlorunun bas ile titremesi (ses yukseliyor)',
+    negative: NEGATIVE_PERSON,
+    prompt:
+      'Close-up of the round speaker of a vintage 1990s boombox radio in a dim room: the speaker cone pulses and vibrates with deep bass, ' +
+      'getting stronger and stronger, tiny dust particles jump on the metal speaker grille, small red and green LEDs flicker next to it, ' +
+      'warm orange lamp light from the side, analog film grain, shallow depth of field, slow camera push-in, nostalgic mood, no hands, no text.',
+  },
   room: {
     note: 'Nostalji odasi: CRT TV + plak calar',
     prompt:
@@ -59,7 +84,7 @@ const prompt = {
   39: { class_type: 'VAELoader', inputs: { vae_name: 'wan2.2_vae.safetensors' } },
   48: { class_type: 'ModelSamplingSD3', inputs: { model: ['37', 0], shift: 8 } },
   6: { class_type: 'CLIPTextEncode', inputs: { clip: ['38', 0], text: STYLES[style].prompt } },
-  7: { class_type: 'CLIPTextEncode', inputs: { clip: ['38', 0], text: NEGATIVE } },
+  7: { class_type: 'CLIPTextEncode', inputs: { clip: ['38', 0], text: STYLES[style].negative ?? NEGATIVE } },
   55: { class_type: 'Wan22ImageToVideoLatent', inputs: { vae: ['39', 0], width, height, length: frames, batch_size: 1 } },
   3: {
     class_type: 'KSampler',
@@ -84,6 +109,38 @@ const prompt = {
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Laptopu dinlendirir: GPU sicakligi hedefin altinda VE bosta (<%10) olarak art arda `rest` saniye gectikten sonra devam eder.
+// --cool 50 (varsayilan 50; 0 = bekleme yok), --rest 0 (istenirse ek bosta kalma suresi, sn). Cekirdek sicakligi yuk kalkinca bir dakikada duser,
+// bu yuzden tek basina sicaklik yetmez; asil dinlenme icin bosta kalma suresi sarttir.
+async function waitCool(target, rest) {
+  if (!(target > 0)) return;
+  const { execFile } = await import('node:child_process');
+  const read = () =>
+    new Promise((res) =>
+      execFile('nvidia-smi', ['--query-gpu=temperature.gpu,utilization.gpu', '--format=csv,noheader,nounits'], (e, out) => {
+        if (e) return res(null);
+        const [t, u] = out.trim().split(',').map(Number);
+        res({ t, u });
+      }),
+    );
+  let idleSince = null;
+  for (let i = 0; i < 240; i++) {
+    const r = await read();
+    if (!r) return;
+    if (r.t <= target && r.u < 10) {
+      idleSince ??= Date.now();
+      const idle = (Date.now() - idleSince) / 1000;
+      if (idle >= rest) return;
+      console.log(`GPU ${r.t} C, bosta ${Math.round(idle)}/${rest} sn, dinlenme suruyor...`);
+    } else {
+      idleSince = null;
+      console.log(`GPU ${r.t} C (%${r.u}), ${target} C altina inmesi bekleniyor...`);
+    }
+    await sleep(20_000);
+  }
+}
+await waitCool(opt('--cool', 50), opt('--rest', 0));
 const t0 = Date.now();
 console.log(`${style} (${STYLES[style].note}) ${width}x${height}, ${frames} kare, seed ${seed}${draft ? ' [taslak]' : ''}`);
 

@@ -25,13 +25,9 @@ başında filtre tam banda açılır. Mevcut `Anniversary` kompozisyonu `Sequenc
 - Canlı akışta **kapalı**: `ERA_INTROS=1` ile açılır (onaydan sonra). Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era90`.
 - Ses notu: yerel ffmpeg 8.1'de `apad` sonrası `atrim` sesi erken kesiyordu; tüm müzik hazırlayıcılarda `-t` ile değiştirildi.
 
-## 2000'ler (devam ediyor, 19 Ekim 2026'da yarıda bırakıldı)
-- Kompozisyon artık ortak: `EraIntro` (dönem etiketi, vurgu rengi ve klipler veriden gelir). Dönem tablosu `src/videoPrep.js` içinde `ERAS` (90s: amber, 2000s: camgöbeği `#4dd2ff`).
-- Sahne fikri: **1.** bilgisayar başında oturan sırtı dönük biri (CRT monitör, masaüstü hoparlör, CD'ler), **2.** masaüstü hoparlör yakın planı (bas ile atar).
-- Taslaklar tamam ve iyi: `tools/comfy/out/annivbg_pc1_draft_41_*.mp4`, `annivbg_pc2_draft_51_*.mp4`.
-- Tam kalite: **sahne 1 hazır** (`tools/comfy/out/annivbg_pc1_tiled_41_00001_.mp4`, henüz kareleri incelenmedi), **sahne 2 henüz üretilmedi**.
-- Kalan adımlar:
-  1. ComfyUI'yi başlat (`D:\ComfyUI\ComfyUI_windows_portable`, `--disable-pinned-memory`), GPU < 50 °C iken `node tools/comfy/bgGen.mjs pc2 --seed 51 --tiled` (~15 dk).
-  2. Klipleri hazırla: `node tools/comfy/makeEraClip.mjs <pc1.mp4> video/assets/era2000-s1.mp4 --dur 5` ve `<pc2.mp4> video/assets/era2000-s2.mp4 --dur 3.2` (gerekirse `--gamma`).
-  3. Dokunma anı: `ERAS['2000s'].KNOB` değerini sahne 1'deki fare tıklama anına göre ayarla.
-  4. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era2000`.
+## 2000'ler (hazır, 19 Ekim 2026)
+- Kompozisyon ortak: `EraIntro` (dönem etiketi, vurgu rengi ve klipler veriden gelir). Dönem tablosu `src/videoPrep.js` içinde `ERAS` (90s: amber, 2000s: camgöbeği `#4dd2ff`, PC hoparlör profili hp 200 / lp 7000 Hz, fare tıkı 2,4. sn).
+- Sahne 1: bilgisayar başında oturan, sırtı dönük biri (parlak mavi CRT, iki stüdyo hoparlörü, CD'ler). Sahne 2: mavi/yeşil LED'li siyah masaüstü hoparlör-kule (hareket az; bas ile atma Remotion'da eklenir).
+- Klipler: `video/assets/era2000-s1.mp4`, `era2000-s2.mp4`. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era2000`.
+- Not: sahne 2'nin taslağı (`annivbg_pc2_draft_51`) net bir bobinli hoparlör gösteriyordu, tam kalite hâli daha soyut çıktı. İstenirse farklı seed ile (örn. 52) yeniden üretilebilir (~15 dk).
+- Canlı akışta **kapalı**: `ERA_INTROS=1` (tüm dönemler) ya da `ERA_INTROS=90s,2000s`.

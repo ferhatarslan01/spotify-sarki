@@ -588,7 +588,7 @@ export async function prepDuel({ a, b, dateShort }) {
 // Ses profili: hp/lp = giristeki cihazin (radyo / PC hoparlor) frekans araligi; ana videoda tam banda acilir.
 const ERAS = {
   '90s': { years: [1990, 1999], label: "90'LAR", accent: '#ffb42a', files: 'era90', INTRO: 8.0, S1_END: 5.0, KNOB: 2.8, hp: 350, lp: 3200, click: 650 },
-  '2000s': { years: [2000, 2009], label: "2000'LER", accent: '#4dd2ff', files: 'era2000', INTRO: 8.0, S1_END: 5.0, KNOB: 2.8, hp: 200, lp: 7000, click: 2200 },
+  '2000s': { years: [2000, 2009], label: "2000'LER", accent: '#4dd2ff', files: 'era2000', INTRO: 8.0, S1_END: 5.0, KNOB: 2.4, hp: 200, lp: 7000, click: 2200 },
 };
 
 // Yayin yilina uygun dönem girisi varsa { id, cfg, s1, s2 }, yoksa null.

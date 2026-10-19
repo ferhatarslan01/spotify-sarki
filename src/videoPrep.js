@@ -1,5 +1,6 @@
 // Remotion sahneleri icin veri + ses hazirligi.
 // Her fonksiyon { composition, dataKey, data, assets } dondurur; remotionRender.js bunu video/ klasorune yazip render eder.
+import { existsSync } from 'node:fs';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -117,6 +118,14 @@ export async function prepNewRelease({ artist, title, cover, audioUrl, dateText,
 }
 
 // ---------------------------------------------------------------- Yil donumu ("VHS geri sarma")
+// Arka plan: ComfyUI ile (tek seferlik, yerelde) uretilmis nostalji odasi dongusu; repoda video/assets/anniv-bg.mp4. Yoksa null.
+async function loadAnnivBackground() {
+  const path = join(process.cwd(), 'video', 'assets', 'anniv-bg.mp4');
+  if (!existsSync(path)) return null;
+  const { stdout } = await run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', path]);
+  return { buffer: await readFileBuf(path), seconds: Number(stdout.trim()) };
+}
+
 export async function prepAnniversary({ artist, title, releaseDate, cover, audioUrl }) {
   const DUR = 18;
   const REW_S = 1.8;
@@ -132,6 +141,7 @@ export async function prepAnniversary({ artist, title, releaseDate, cover, audio
   if (years < 1) throw new Error('Yil donumu icin en az 1 yil gerekir');
   const cover800 = await squareJpeg(cover, 800, 92);
   const hue = await hueOf(sharp, cover800);
+  const bg = await loadAnnivBackground();
 
   return withTmp(async (dir) => {
     const prev = join(dir, 'prev.bin');
@@ -185,11 +195,14 @@ export async function prepAnniversary({ artist, title, releaseDate, cover, audio
         rewindStart: REW_S,
         rewindEnd: REW_E,
         off: OFF,
+        bg: Boolean(bg),
+        bgSeconds: bg?.seconds ?? 0,
         bands,
       },
       assets: [
         { name: 'anniv-cover.jpg', buffer: cover800 },
         { name: 'anniv-soundtrack.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) },
+        ...(bg ? [{ name: 'anniv-bg.mp4', buffer: bg.buffer }] : []),
       ],
     };
   });

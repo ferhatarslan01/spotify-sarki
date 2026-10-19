@@ -33,6 +33,19 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
   `src/artistHandles.js` içinde elle doğrulanmış listede; liste dışı sanatçılar (liste girdileri) MusicBrainz + Wikidata ile çapraz kontrol
   edilerek bulunur, emin olunamazsa etiket eklenmez. TikTok açıklamalarına etiket eklenmez.
 
+## ComfyUI ile üretilen arka plan (tek seferlik, yerelde)
+
+Yıl dönümü videosunun arka planı (`video/assets/anniv-bg.mp4`, 4 sn'lik kusursuz döngü) bu PC'deki ComfyUI + Wan 2.2 5B ile **bir kez** üretildi;
+bulutta GPU gerekmez. Yeniden üretmek için (ComfyUI'yi `D:\ComfyUI\ComfyUI_windows_portable` içinde `--disable-pinned-memory` ile başlat):
+
+```bash
+node tools/comfy/bgGen.mjs room --seed 7 --tiled        # 704x1280, ~15 dk (8 GB VRAM için parçalı VAE şart)
+python -I tools/comfy/cleanBlobs.py girdi.mp4 temiz.mp4  # yanıp sönen leke artefaktlarını temizler
+node tools/comfy/makeLoop.mjs temiz.mp4 video/assets/anniv-bg.mp4
+```
+
+Dosya yoksa şablon eski (ızgara) arka planla çalışır.
+
 ## Klasörler
 
 - `src/` bot kodu. `videoPrep.js` (veri + ses), `remotionRender.js` (render), `tiktokVideo.js` (karar + paylaşım).

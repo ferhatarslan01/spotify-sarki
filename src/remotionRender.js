@@ -63,7 +63,7 @@ const STUBS = {
     diff: 0,
     bands: [],
   },
-  anniv: { artist: '', title: '', dateText: '', day: 1, monthAbbr: 'OCA', releaseYear: 2000, yearNow: 2026, years: 26, hue: 30, fps: 30, durationSeconds: 18, rewindStart: 1.8, rewindEnd: 6.6, off: 16.4, bands: [] },
+  anniv: { artist: '', title: '', dateText: '', day: 1, monthAbbr: 'OCA', releaseYear: 2000, yearNow: 2026, years: 26, hue: 30, fps: 30, durationSeconds: 18, rewindStart: 1.8, rewindEnd: 6.6, off: 16.4, bg: false, bgSeconds: 0, bands: [] },
 };
 
 const CHROME_LIBS = [

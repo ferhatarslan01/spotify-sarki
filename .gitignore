@@ -10,3 +10,5 @@ video/public/*
 video/src/data-*.json
 pilot/.build/
 pilot/out/
+tools/comfy/out/
+tools/comfy/*.log

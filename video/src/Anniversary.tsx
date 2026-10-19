@@ -4,6 +4,8 @@ import {
   Easing,
   Img,
   interpolate,
+  Loop,
+  OffthreadVideo,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
@@ -353,14 +355,33 @@ export const Anniversary: React.FC = () => {
       <Audio src={staticFile("anniv-soundtrack.wav")} />
 
       <AbsoluteFill style={{ opacity: 1 - sceneFade, translate: `${shake}px ${shake * -0.5}px` }}>
-        {/* arka plan: ince izgara + yumusak isik */}
-        <AbsoluteFill
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)",
-            backgroundSize: "90px 90px",
-          }}
-        />
+        {/* arka plan: ComfyUI ile uretilmis nostalji odasi dongusu (yoksa ince izgara) + yumusak isik */}
+        {data.bg ? (
+          <AbsoluteFill>
+            <Loop durationInFrames={Math.max(1, Math.round(data.bgSeconds * fps))}>
+              <OffthreadVideo
+                src={staticFile("anniv-bg.mp4")}
+                muted
+                style={{ width: 1080, height: 1920, objectFit: "cover", filter: "brightness(1.7) contrast(1.08) saturate(1.2)" }}
+              />
+            </Loop>
+            {/* yazi okunurlugu icin hafif karartma + vinyet */}
+            <AbsoluteFill
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.04) 26%, rgba(0,0,0,0.04) 62%, rgba(0,0,0,0.5) 100%)",
+              }}
+            />
+          </AbsoluteFill>
+        ) : (
+          <AbsoluteFill
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px)",
+              backgroundSize: "90px 90px",
+            }}
+          />
+        )}
         <AbsoluteFill
           style={{
             background: `radial-gradient(ellipse 800px 700px at 50% 30%, hsla(${HUE}, 80%, ${22 + bass * 10}%, ${afterPlay ? 0.55 : 0.2}), rgba(0,0,0,0) 70%)`,

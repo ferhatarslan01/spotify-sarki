@@ -127,7 +127,9 @@ async function loadAnnivBackground() {
   return { buffer: await readFileBuf(path), seconds: Number(stdout.trim()) };
 }
 
-export async function prepAnniversary({ artist, title, releaseDate, cover, audioUrl }) {
+// era: dönem girisi varsa { introSeconds, knobAt }. Bu modda geri sarma sesi (motor, tiklar, cizirti) yok ve sarki, girisin devami olarak
+// kesintisiz calar (radyo sesinden tam banda acilir).
+export async function prepAnniversary({ artist, title, releaseDate, cover, audioUrl }, { era = null } = {}) {
   const DUR = 18;
   const REW_S = 1.8;
   const REW_E = 6.6;
@@ -148,39 +150,58 @@ export async function prepAnniversary({ artist, title, releaseDate, cover, audio
     const prev = join(dir, 'prev.bin');
     await writeFile(prev, await fetchBuf(audioUrl));
     const segD = OFF - REW_E;
-    const hookSS = await findHookStart(prev, segD + 0.2);
+    const eraMusic = era ? era.introSeconds - era.knobAt : 0; // girisde calan sarki suresi
+    const hookSS = await findHookStart(prev, era ? eraMusic + OFF + 0.2 : segD + 0.2);
 
     const sfx = makeSfx(DUR, 11);
-    sfx.hiss(0, REW_S + 0.2, 0.05);
-    sfx.motor(REW_S, REW_E - 0.25, 650, 1250, 0.22);
-    for (let d = 1; d <= years; d++) {
-      const p = 1 - Math.pow(1 - d / years, 1 / 4);
-      const t = REW_S + p * (REW_E - REW_S);
-      sfx.tick(t, 0.35 + 0.5 * p, 2300 - 1200 * p);
+    if (era) {
+      // geri sarma sesi yok: sarki devam eder; yalnizca "oynat" vurusu ve CRT kapanisi
+      sfx.tick(REW_E, 0.8, 700);
+      sfx.boom(REW_E, 0.5, 70);
+    } else {
+      sfx.hiss(0, REW_S + 0.2, 0.05);
+      sfx.motor(REW_S, REW_E - 0.25, 650, 1250, 0.22);
+      for (let d = 1; d <= years; d++) {
+        const p = 1 - Math.pow(1 - d / years, 1 / 4);
+        const t = REW_S + p * (REW_E - REW_S);
+        sfx.tick(t, 0.35 + 0.5 * p, 2300 - 1200 * p);
+      }
+      sfx.slowdown(REW_E - 0.4, 0.4, 1100, 0.3);
+      sfx.tick(REW_E, 0.95, 700);
+      sfx.boom(REW_E, 0.8, 70);
+      sfx.hiss(REW_E, REW_E + 4.2, 0.05);
     }
-    sfx.slowdown(REW_E - 0.4, 0.4, 1100, 0.3);
-    sfx.tick(REW_E, 0.95, 700);
-    sfx.boom(REW_E, 0.8, 70);
-    sfx.hiss(REW_E, REW_E + 4.2, 0.05);
     sfx.slowdown(OFF, 0.8, 1500, 0.3);
     sfx.boom(OFF + 0.05, 0.5, 60);
     await sfx.writeWav(join(dir, 'sfx.wav'));
 
-    await buildMusic({
-      prev,
-      hookSS,
-      segD,
-      delayMs: Math.round(REW_E * 1000),
-      dur: DUR,
-      out: join(dir, 'music.wav'),
-      filterSweep: { from: 0.5, to: 3.7, lowpass: 2800, highpass: 350 },
-    });
+    if (era) {
+      // Girisin tam devami: ayni sarki konumundan (hookSS + eraMusic) baslar; radyo filtresi (girisle ayni zincir, +4 dB) 1.6 sn'de tam banda acilir.
+      const SWEEP = 1.6;
+      const graph =
+        `[0:a]atrim=start=${hookSS + eraMusic}:duration=${OFF},asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo,asplit=2[l][c];` +
+        `[l]highpass=f=350,lowpass=f=3200,acompressor=threshold=-18dB:ratio=3,volume=4dB,volume='1-clip(t/${SWEEP},0,1)':eval=frame[lo];` +
+        `[c]volume='clip(t/${SWEEP},0,1)':eval=frame[hi];` +
+        `[lo][hi]amix=inputs=2:normalize=0,afade=t=out:st=${OFF - 1.3}:d=1.3,apad=whole_dur=${DUR}[m]`;
+      await run('ffmpeg', ['-y', '-v', 'error', '-i', prev, '-filter_complex', graph, '-map', '[m]', '-t', String(DUR), '-ar', '44100', '-ac', '2', join(dir, 'music.wav')]);
+    } else {
+      await buildMusic({
+        prev,
+        hookSS,
+        segD,
+        delayMs: Math.round(REW_E * 1000),
+        dur: DUR,
+        out: join(dir, 'music.wav'),
+        filterSweep: { from: 0.5, to: 3.7, lowpass: 2800, highpass: 350 },
+      });
+    }
     await mixMusicAndSfx(join(dir, 'music.wav'), join(dir, 'sfx.wav'), join(dir, 'mix.wav'), 0.85);
     const bands = await analyzeBands(join(dir, 'music.wav'), DUR);
 
     return {
       composition: 'Anniversary',
       dataKey: 'anniv',
+      meta: { hookSS },
       data: {
         artist,
         title,
@@ -582,14 +603,14 @@ export function eraClipsFor(releaseYear) {
 export async function prepAnniversaryEra90(args) {
   const clips = eraClipsFor(Number(String(args.releaseDate).slice(0, 4)));
   if (!clips) throw new Error('90lar giris klipleri bulunamadi');
-  const base = await prepAnniversary(args);
   const { INTRO, S1_END, KNOB } = ERA90;
+  const base = await prepAnniversary(args, { era: { introSeconds: INTRO, knobAt: KNOB } });
 
   return withTmp(async (dir) => {
     const prev = join(dir, 'prev.bin');
     await writeFile(prev, await fetchBuf(args.audioUrl));
-    // prepAnniversary ile ayni nakarat penceresi: radyoda duyulan kisim, sonra tam bantta tekrar calar
-    const hookSS = await findHookStart(prev, base.data.off - base.data.rewindEnd + 0.2);
+    // Ana video ayni pencereyi kullanir: giriste duyulan kisimdan sonra sarki kesintisiz devam eder (geri sarma sesi yok)
+    const { hookSS } = base.meta;
 
     const musicLen = INTRO - KNOB;
     const graph =

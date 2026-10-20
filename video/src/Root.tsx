@@ -11,6 +11,9 @@ import { NRBulten } from "./NRBulten";
 import { NRKilit } from "./NRKilit";
 import { NRNeon } from "./NRNeon";
 import { NRKaset } from "./NRKaset";
+import { NRTahmin } from "./NRTahmin";
+import { NRRadyo } from "./NRRadyo";
+import { NRMesaj } from "./NRMesaj";
 import board from "./data-board.json";
 import fresh from "./data-new.json";
 import rise from "./data-rise.json";
@@ -110,6 +113,30 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="NRKaset"
         component={NRKaset}
+        durationInFrames={frames(nrvar.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="NRTahmin"
+        component={NRTahmin}
+        durationInFrames={frames(nrvar.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="NRRadyo"
+        component={NRRadyo}
+        durationInFrames={frames(nrvar.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="NRMesaj"
+        component={NRMesaj}
         durationInFrames={frames(nrvar.durationSeconds)}
         fps={FPS}
         width={1080}

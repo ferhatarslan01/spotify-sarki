@@ -781,6 +781,70 @@ NR_TEMPLATES.kaset = {
   },
 };
 
+// ---- izleyiciyi tutan sablonlar: merak boslugu + geri sayim + canlanan akis (ComfyUI gerektirmez)
+NR_TEMPLATES.tahmin = {
+  composition: 'NRTahmin',
+  DUR: 15,
+  REVEAL: 9.0,
+  OUTRO: 13.2,
+  musicAt: 0.4, // sarki bastan calar: izleyici dinleyerek tahmin eder
+  bg: null,
+  sfx(sfx, c) {
+    // geri sayim tiklari (her saniye, giderek sertlesir), ipucu zilleri, son 2 sn yukselis, acilista vurus
+    for (let s = 1; s < c.REVEAL - 0.4; s++) sfx.tick(s, 0.35 + 0.5 * (s / c.REVEAL), 1500 + s * 90);
+    sfx.ding(3.5, 1174.7, 0.35, 0.35);
+    sfx.ding(6.0, 1318.5, 0.4, 0.35);
+    sfx.riser(c.REVEAL - 2.0, c.REVEAL - 0.05, 0.55);
+    sfx.boom(c.REVEAL, 1.0, 70);
+    sfx.whoosh(c.REVEAL, 0.8, 0.45, 500, 7000);
+    sfx.whoosh(c.OUTRO, 1.2, 0.35, 5000, 250);
+  },
+};
+
+NR_TEMPLATES.radyo = {
+  composition: 'NRRadyo',
+  DUR: 15,
+  REVEAL: 5.4,
+  OUTRO: 13.2,
+  musicAt: 1.0, // zayif sinyal: bantli + cizirtili baslar, istasyon oturunca berraklasir
+  sweep: { from: 3.2, to: 4.6, lowpass: 2400, highpass: 450 },
+  bg: null,
+  sfx(sfx, c) {
+    // parazit + ayar dugmesi hareketleri; REVEAL'da sinyal yakalanir
+    sfx.hiss(0.0, c.REVEAL + 0.6, 0.12);
+    sfx.whoosh(0.6, 0.7, 0.3, 300, 2600);
+    sfx.whoosh(1.7, 0.6, 0.3, 2600, 400);
+    sfx.whoosh(2.7, 0.8, 0.3, 400, 3000);
+    sfx.whoosh(3.8, 0.7, 0.3, 3000, 600);
+    sfx.whoosh(4.6, 0.7, 0.25, 700, 1900);
+    sfx.tick(c.REVEAL - 0.05, 0.7, 700);
+    sfx.ding(c.REVEAL, 880, 0.4, 0.5);
+    sfx.boom(c.REVEAL, 0.5, 80);
+    sfx.whoosh(c.OUTRO, 1.2, 0.3, 5000, 250);
+  },
+};
+
+NR_TEMPLATES.mesaj = {
+  composition: 'NRMesaj',
+  DUR: 16,
+  REVEAL: 9.0,
+  OUTRO: 14.0,
+  bg: null,
+  sfx(sfx, c) {
+    // mesaj gelisi: yumusak "pop" (gelen) ve "swish" (giden); acilista vurus
+    const incoming = [0.8, 2.0, 5.2, 6.6];
+    incoming.forEach((t) => {
+      sfx.ding(t, 1568, 0.35, 0.18);
+      sfx.ding(t + 0.07, 2093, 0.25, 0.15);
+    });
+    sfx.whoosh(3.7, 0.3, 0.3, 900, 4200); // giden mesaj
+    sfx.whoosh(c.REVEAL - 0.5, 0.35, 0.3, 900, 4200); // giden: "Hemen aciyorum"
+    sfx.tick(c.REVEAL - 0.1, 0.5, 900);
+    sfx.boom(c.REVEAL, 0.6, 85);
+    sfx.whoosh(c.OUTRO, 1.2, 0.3, 5000, 250);
+  },
+};
+
 // Varsa ComfyUI arka plan dongusu (video/assets/<dosya>)
 async function loadNrBackground(file) {
   if (!file) return null;
@@ -816,6 +880,8 @@ export async function prepNewReleaseVariant(template, { artist, title, cover, au
   const cfg = NR_TEMPLATES[template];
   if (!cfg) throw new Error(`Bilinmeyen yeni cikti sablonu: ${template}`);
   const { DUR, REVEAL, OUTRO } = cfg;
+  // sarki varsayilan olarak acilista baslar; musicAt ile erkene alinabilir (tahmin/radyo), sweep ile bantli sesten berraklasir
+  const musicAt = cfg.musicAt ?? REVEAL;
   const cover800 = await squareJpeg(cover, 800, 92);
   const hue = await hueOf(sharp, cover800);
   const bg = await loadNrBackground(cfg.bg);
@@ -823,13 +889,21 @@ export async function prepNewReleaseVariant(template, { artist, title, cover, au
   return withTmp(async (dir) => {
     const prev = join(dir, 'prev.bin');
     await writeFile(prev, await fetchBuf(audioUrl));
-    const segD = DUR - REVEAL - 1.2;
+    const segD = DUR - musicAt - 1.2;
     const hookSS = await findHookStart(prev, segD);
 
     const sfx = makeSfx(DUR, 17);
     cfg.sfx(sfx, cfg);
     await sfx.writeWav(join(dir, 'sfx.wav'));
-    await buildMusic({ prev, hookSS, segD, delayMs: Math.round(REVEAL * 1000), dur: DUR, out: join(dir, 'music.wav') });
+    await buildMusic({
+      prev,
+      hookSS,
+      segD,
+      delayMs: Math.round(musicAt * 1000),
+      dur: DUR,
+      out: join(dir, 'music.wav'),
+      filterSweep: cfg.sweep,
+    });
     await mixMusicAndSfx(join(dir, 'music.wav'), join(dir, 'sfx.wav'), join(dir, 'mix.wav'));
     const bands = await analyzeBands(join(dir, 'music.wav'), DUR);
 

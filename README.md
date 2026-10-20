@@ -9,7 +9,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 
 | Olay | X | TikTok (Remotion şablonu) |
 |---|---|---|
-| Yeni şarkı/albüm (3 saatte bir) | kare oynatıcı videosu | **NewRelease** ailesi: 6 şablon (aşağıda), şarkıya göre dönüşümlü |
+| Yeni şarkı/albüm (3 saatte bir) | kare oynatıcı videosu | **NewRelease** ailesi: 9 şablon (aşağıda), şarkıya göre dönüşümlü |
 | Yıl dönümü | kare oynatıcı videosu | **Anniversary**: VHS geri sarma |
 | Sırada +10 ve üstü yükseliş | kare oynatıcı videosu | **RankRise**: sıralama yarışı |
 | İlk kez Top 10 / stream rekoru / dünya listesi | kare oynatıcı videosu | **NewRelease** (özel metinlerle) |
@@ -64,9 +64,9 @@ TikTok'taki **yıl dönümü** videosu, şarkının çıkış yılına göre 8 s
 - Giriş klipleri `video/assets/era*.mp4`, üretim/araçlar `tools/comfy/`, ayrıntı `docs/DONEM_GIRISI_90LAR.md`.
 - Bulutta render hata verirse video otomatik olarak yedek (Node) motora düşer, paylaşım durmaz.
 
-## Yeni çıktı şablonları (6'lı aile)
+## Yeni çıktı şablonları (9'lu aile)
 
-Gerçek yeni şarkı/albüm için TikTok videosu 6 şablondan birini alır. Seçim şarkı kimliğine göre **deterministik** (aynı şarkı hep aynı şablonu alır, farklı şarkılar dağılır).
+Gerçek yeni şarkı/albüm için TikTok videosu 9 şablondan birini alır. Seçim şarkı kimliğine göre **deterministik** (aynı şarkı hep aynı şablonu alır, farklı şarkılar dağılır).
 
 | Şablon | Konsept | Arka plan |
 |---|---|---|
@@ -76,12 +76,15 @@ Gerçek yeni şarkı/albüm için TikTok videosu 6 şablondan birini alır. Seç
 | `kilit` | Kilit ekranı bildirimi → oynatıcı | yok (kapaktan türer) |
 | `neon` | Neon tüpler, harf harf yanan sanatçı adı, neon çerçeveli kapak | ComfyUI (dumanlı sahne) |
 | `kaset` | Kalemle yazılan kaset etiketi, PLAY, dönen makaralar, VU ibreleri | ComfyUI (sıcak masa) |
+| `tahmin` | "Bu şarkıyı tanıdın mı?": şarkı baştan çalar, bulanık kapak netleşir, harf ipuçları + geri sayım, cevap sonda | yok |
+| `radyo` | Frekans arama: parazit içinde bantlı ses, sinyal oturunca kapak açılır ve ses berraklaşır | yok |
+| `mesaj` | Sohbet: "yazıyor…" noktaları, mesajlar, Spotify link kartı, "Hemen açıyorum" → şarkı | yok |
 
 - Kapatmak için `NR_VARIANTS=0` (hep `drop`); havuzu kısıtlamak için `NR_ONLY=fragman,kaset` gibi.
 - Şablon hazırlanamazsa otomatik `drop`'a, o da olmazsa yedek Node motoruna düşer.
-- ComfyUI arka planı olan şablonlarda **"AI ile üretildi" etiketi** otomatik açılır (`kilit` ve `drop`'ta açılmaz).
+- ComfyUI arka planı olan şablonlarda **"AI ile üretildi" etiketi** otomatik açılır (`kilit`, `tahmin`, `radyo`, `mesaj` ve `drop`'ta açılmaz).
 - X'e yeni şablonlar gitmez: X kare "kapak + oynatıcı" videosunu alır.
-- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset` (çıktı `preview/yeni-*.mp4`).
+- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj` (hepsi: `--only nr`) (çıktı `preview/yeni-*.mp4`).
 - Kod: `video/src/NR*.tsx`, ses/seçici `src/videoPrep.js` (`NR_TEMPLATES`), arka plan döngüleri `video/assets/nr-*-bg.mp4`, ComfyUI sahneleri `tools/comfy/bgGen.mjs`.
 
 ## Paylaşım penceresi (Türkiye saati)
@@ -100,7 +103,7 @@ tüm sanatçıları tarar, böylece gece çıkan şarkı sabah gecikmeden bulunu
 
 - `src/` bot kodu. `videoPrep.js` (veri + ses), `remotionRender.js` (render), `tiktokVideo.js` (karar + paylaşım).
 - `src/videoEngine.js` Remotion çalışmazsa devreye giren yedek video motoru.
-- `video/` Remotion projesi (şablonlar: `TopBoard`, `NewRelease`, `RankRise`, `Anniversary`, `CoverPlayer`, `Duel`, `EraIntro`, yeni çıktı ailesi `NRFragman`/`NRBulten`/`NRKilit`/`NRNeon`/`NRKaset`).
+- `video/` Remotion projesi (şablonlar: `TopBoard`, `NewRelease`, `RankRise`, `Anniversary`, `CoverPlayer`, `Duel`, `EraIntro`, yeni çıktı ailesi `NRFragman`/`NRBulten`/`NRKilit`/`NRNeon`/`NRKaset`/`NRTahmin`/`NRRadyo`/`NRMesaj`).
 - `data/` botun durum dosyaları (workflow'lar commit eder).
 
 ## Anahtarlar (ortam değişkenleri / GitHub secrets)

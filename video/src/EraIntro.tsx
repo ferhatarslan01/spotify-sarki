@@ -26,6 +26,12 @@ const RED = "#ff5a5f";
 
 const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const easeOutCubic = (x: number) => 1 - (1 - clamp(x)) ** 3;
+const easeOutBack = (x: number) => {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  const y = clamp(x);
+  return 1 + c3 * (y - 1) ** 3 + c1 * (y - 1) ** 2;
+};
 const hash = (a: number, b = 0): number => {
   let h = (a * 374761393 + b * 668265263) | 0;
   h = (h ^ (h >>> 13)) * 1274126177;
@@ -51,7 +57,11 @@ const Intro: React.FC = () => {
   const s2Pulse = 1.03 + bass * 0.09 * (0.3 + vol); // hoparlor ses yukseldikce daha cok atar
   const s2Bright = 1 + bass * 0.6 * (0.3 + vol);
 
-  const labelIn = easeOutCubic((t - 0.7) / 0.5) * (1 - clamp((t - 3.2) / 0.5));
+  // 1. sahne boyunca ekranda: kucuk donem etiketi + buyuk "KAC YIL OLDU?" kancasi (2. sahne gelirken solar)
+  const sceneOut = 1 - s2;
+  const labelIn = easeOutCubic((t - 0.3) / 0.5) * sceneOut;
+  const hookPop = easeOutBack((t - 0.15) / 0.55);
+  const hookOpacity = clamp(hookPop * 1.6) * sceneOut;
   const segments = 10;
   const lit = Math.max(1, Math.round(1 + (segments - 1) * clamp((vol - 0.06) / 0.94)));
 
@@ -100,11 +110,20 @@ const Intro: React.FC = () => {
         ))}
       </AbsoluteFill>
 
-      {/* donem etiketi */}
+      {/* yazi okunurlugu icin ust karartma (1. sahne) */}
+      <AbsoluteFill
+        style={{
+          background: "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.25) 38%, rgba(0,0,0,0) 55%)",
+          opacity: sceneOut,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* donem etiketi (kucuk) */}
       <div
         style={{
           position: "absolute",
-          top: 150,
+          top: 120,
           left: 0,
           width: 1080,
           textAlign: "center",
@@ -112,8 +131,29 @@ const Intro: React.FC = () => {
           translate: `0px ${(1 - labelIn) * -30}px`,
         }}
       >
-        <div style={{ fontWeight: 700, fontSize: 150, letterSpacing: 14, color: ACCENT, textShadow: "0 6px 30px rgba(0,0,0,0.7)" }}>
+        <div style={{ fontWeight: 700, fontSize: 92, letterSpacing: 14, color: ACCENT, textShadow: "0 6px 30px rgba(0,0,0,0.7)" }}>
           {data.label}
+        </div>
+      </div>
+
+      {/* kanca: KAC YIL OLDU? (ilk saniyeden itibaren) */}
+      <div
+        style={{
+          position: "absolute",
+          top: 300,
+          left: 0,
+          width: 1080,
+          textAlign: "center",
+          opacity: hookOpacity,
+          scale: 0.82 + 0.18 * Math.min(1.12, hookPop),
+          transformOrigin: "50% 40%",
+        }}
+      >
+        <div style={{ fontWeight: 700, fontSize: 190, lineHeight: 1, color: "#fff", textShadow: "0 10px 50px rgba(0,0,0,0.9)" }}>
+          KAÇ YIL
+        </div>
+        <div style={{ fontWeight: 700, fontSize: 240, lineHeight: 1, color: ACCENT, textShadow: "0 10px 50px rgba(0,0,0,0.9)" }}>
+          OLDU?
         </div>
       </div>
 

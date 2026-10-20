@@ -138,7 +138,8 @@ export async function publishTikTokVideo(channelId, { text, videoUrl, aiGenerate
 }
 
 // items: [{ text, imageUrl? }, ...] - ilk eleman kok (root) tweet, digerleri sirayla yanit olarak zincirlenir
-export async function publishThread(items) {
+// opts.aiGenerated: true ise X'te "yapay zeka ile uretildi" etiketi (metadata.twitter.isAiGenerated); yalnizca true iken gonderilir.
+export async function publishThread(items, { aiGenerated = false } = {}) {
   const toAssets = (imageUrl, videoUrl) =>
     videoUrl ? [{ video: { url: videoUrl } }] : imageUrl ? [{ image: { url: imageUrl } }] : [];
 
@@ -148,7 +149,7 @@ export async function publishThread(items) {
         $text: String!
         $channelId: ChannelId!
         $assets: [AssetInput!]
-        $thread: [ThreadedPostInput!]!
+        $meta: PostInputMetaData
       ) {
         createPost(
           input: {
@@ -157,7 +158,7 @@ export async function publishThread(items) {
             schedulingType: automatic
             mode: shareNow
             assets: $assets
-            metadata: { twitter: { thread: $thread } }
+            metadata: $meta
           }
         ) {
           ... on PostActionSuccess {
@@ -176,7 +177,12 @@ export async function publishThread(items) {
       text: items[0].text,
       channelId: BUFFER_CHANNEL_ID,
       assets: toAssets(items[0].imageUrl, items[0].videoUrl),
-      thread: items.map((item) => ({ text: item.text, assets: toAssets(item.imageUrl, item.videoUrl) })),
+      meta: {
+        twitter: {
+          thread: items.map((item) => ({ text: item.text, assets: toAssets(item.imageUrl, item.videoUrl) })),
+          ...(aiGenerated ? { isAiGenerated: true } : {}),
+        },
+      },
     }
   );
 
@@ -259,12 +265,12 @@ export function splitLink(text) {
 
 // X'te ana tweet'teki dis link erisimi dusurur: Spotify linki ilk yanita tasinir.
 // X_LINK_REPLY=0 ile eski davranis (link ana tweet'te).
-export async function publishPostWithVideo(text, imageUrl, videoUrl) {
+export async function publishPostWithVideo(text, imageUrl, videoUrl, { aiGenerated = false } = {}) {
   const { main, link } = process.env.X_LINK_REPLY === '0' ? { main: text, link: null } : splitLink(text);
   if (!link) return publishSingleWithVideo(text, imageUrl, videoUrl);
 
   const items = [{ text: main, imageUrl, videoUrl }, { text: `🎧 Spotify'da dinle:\n${link}` }];
-  const result = await publishThreadWithVideo(items);
+  const result = await publishThreadWithVideo(items, undefined, { aiGenerated });
   // Thread hic olusmadiysa (Buffer reddetti) eski tek tweet yoluna don; yarim kalan thread'de tekrar atilmaz.
   if (result.message) return publishSingleWithVideo(text, imageUrl, videoUrl);
   return result;
@@ -291,10 +297,11 @@ async function publishSingleWithVideo(text, imageUrl, videoUrl) {
 }
 
 // Thread'in kokunde video varsa ayni dogrulama/yedek mantigi; fallback: yedek paylasimi yapan fonksiyon.
-export async function publishThreadWithVideo(items, fallback) {
+export async function publishThreadWithVideo(items, fallback, { aiGenerated = false } = {}) {
   if (!items[0]?.videoUrl) return publishThread(items);
   try {
-    const result = await publishThread(items);
+    // etiket yalnizca video denemesinde; gorsele dusulurse (yedek) etiket gonderilmez
+    const result = await publishThread(items, { aiGenerated });
     if (!result.message) {
       const status = await waitForPost(result.post.id);
       if (!isFailed(status)) {

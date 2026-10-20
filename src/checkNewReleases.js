@@ -201,7 +201,9 @@ async function main() {
               },
             };
           const handle = await makeEventVideos(tiktokParams);
-          const result = await publishPostWithVideo(await tagText(annText, [artist]), release.imageUrl, handle.x ? hostVideo(handle.x) : null);
+          const result = await publishPostWithVideo(await tagText(annText, [artist]), release.imageUrl, handle.x ? hostVideo(handle.x) : null, {
+            aiGenerated: Boolean(handle.x?.aiGenerated) && process.env.X_AI_LABEL !== '0', // yapay zeka (ComfyUI) goruntusu varsa X etiketi
+          });
           if (result.message) {
             console.error(`  Buffer hatası: ${result.message}`);
           } else {

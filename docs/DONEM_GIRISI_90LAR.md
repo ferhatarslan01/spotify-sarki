@@ -49,3 +49,4 @@ başında filtre tam banda açılır. Mevcut `Anniversary` kompozisyonu `Sequenc
 - Dönem girişleri **varsayılan açık** (`ERA_INTROS` yoksa = açık). Yıl eşlemesi: 1979 ve öncesi → 80'ler, 1980-89 → 80'ler, 90'lar, 2000'ler, 2010-19 ve 2020 sonrası → 2010'lar.
 - TikTok'ta `isAiGenerated` etiketi bu videolarda (ve oda arka planlı yıl dönümü videolarında) otomatik açık (`TIKTOK_AI_LABEL=0` ile kapanır). Buffer bunu yalnızca video gönderilerinde kabul eder, foto gönderilerinde hata verir.
 - X'e hâlâ kare oynatıcı gidiyor; dikey dönem videosunu X'e koymak ayrı karar.
+- **X'e de dönem videosu** (20 Ekim 2026): yıl dönümü tweet'i artık TikTok'taki dikey dönem videosuyla gider; `X_ERA_VIDEO=0` eski kare oynatıcıyı geri getirir. X'te de `isAiGenerated` etiketi açık (`X_AI_LABEL=0` ile kapanır).

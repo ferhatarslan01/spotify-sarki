@@ -16,7 +16,7 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor } from './videoPrep.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -299,6 +299,20 @@ export async function makeEventVideos(params) {
 
     let tiktok = null;
     if (needTikTok) tiktok = await makeEventVideo(params);
+
+    // Yil donumu + donem girisi: X'e de TikTok'taki dikey donem videosu gider (ayni video nesnesi, tek kez barindirilir).
+    // X_ERA_VIDEO=0 ile eski kare oynatici. TikTok istenmediyse (sinir dolu) dikey video yine uretilir ama TikTok'a gonderilmez.
+    if (
+      needX &&
+      remotionEnabled() &&
+      process.env.X_ERA_VIDEO !== '0' &&
+      params.template === 'Anniversary' &&
+      eraClipsFor(Number(String(params.templateData?.releaseDate).slice(0, 4)))
+    ) {
+      const vertical = tiktok ?? (await makeEventVideo(params));
+      if (vertical) return { tiktok, x: vertical };
+      console.log('  Dikey dönem videosu üretilemedi, X için kare oynatıcıya düşülüyor.');
+    }
 
     let x = null;
     if (needX && remotionEnabled()) {

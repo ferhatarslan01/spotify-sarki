@@ -147,7 +147,7 @@ export const NRKaset: React.FC = () => {
           <div style={{ position: "absolute", right: 30, top: 6, fontFamily: typewriter, fontSize: 30, color: "#fff", letterSpacing: 4 }}>STEREO</div>
           <div style={{ position: "absolute", left: 40, top: 70, width: 700, fontFamily: hand, fontWeight: 700, fontSize: playing ? Math.min(labelSize, 76) : 76, color: INK, lineHeight: 1.05, whiteSpace: "nowrap" }}>
             {playing ? label2 : label1}
-            {Math.floor(t * 3) % 2 === 0 ? "▎" : ""}
+            {Math.floor(t * 3) % 2 === 0 ? <span style={{ display: "inline-block", width: 6, height: "0.85em", background: INK, marginLeft: 6, verticalAlign: "-0.08em" }} /> : null}
           </div>
           <div style={{ position: "absolute", left: 40, top: 160, width: 700, height: 4, background: "rgba(29,42,92,0.35)" }} />
         </div>
@@ -178,7 +178,7 @@ export const NRKaset: React.FC = () => {
           );
         })}
         {/* tuslar */}
-        {["⏪", "▶", "⏹"].map((g, i) => {
+        {(["rew", "play", "stop"] as const).map((g, i) => {
           const isPlay = i === 1;
           const down = isPlay && pressed;
           return (
@@ -196,11 +196,11 @@ export const NRKaset: React.FC = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 44,
-                color: down ? "#b3261e" : "#222",
               }}
             >
-              {g}
+              <svg width="48" height="48" viewBox="0 0 24 24" fill={down ? "#b3261e" : "#222"}>
+                {g === "rew" ? <path d="M11 6v12L2 12zM21 6v12l-9-6z" /> : g === "play" ? <path d="M7 4v16l13-8z" /> : <path d="M6 6h12v12H6z" />}
+              </svg>
             </div>
           );
         })}

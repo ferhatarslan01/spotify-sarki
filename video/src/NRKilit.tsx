@@ -79,12 +79,28 @@ export const NRKilit: React.FC = () => {
       {/* durum cubugu */}
       <div style={{ position: "absolute", left: 70, top: 46, right: 70, display: "flex", justifyContent: "space-between", color: "#fff", fontWeight: 600, fontSize: 32, opacity: fadeIn }}>
         <div>00:00</div>
-        <div style={{ letterSpacing: 2 }}>5G ▂▄▆█ ▭</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <span>5G</span>
+          <svg width="46" height="30" viewBox="0 0 46 30" fill="#fff">
+            <rect x="0" y="20" width="8" height="10" rx="2" />
+            <rect x="13" y="13" width="8" height="17" rx="2" />
+            <rect x="26" y="6" width="8" height="24" rx="2" />
+            <rect x="39" y="0" width="7" height="30" rx="2" />
+          </svg>
+          <svg width="58" height="28" viewBox="0 0 58 28" fill="none">
+            <rect x="1.5" y="1.5" width="48" height="25" rx="7" stroke="#fff" strokeWidth="3" />
+            <rect x="6" y="6" width="34" height="16" rx="4" fill="#fff" />
+            <rect x="52" y="9" width="5" height="10" rx="2.5" fill="#fff" />
+          </svg>
+        </div>
       </div>
 
       {/* kilit ekrani: saat + tarih (oyuncu acilinca silinir) */}
       <div style={{ position: "absolute", left: 0, top: 170, width: 1080, textAlign: "center", color: "#fff", opacity: fadeIn * (1 - playerIn), translate: `0px ${-playerIn * 60}px` }}>
-        <div style={{ fontSize: 40 }}>🔒</div>
+        <svg width="44" height="52" viewBox="0 0 24 28" fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round">
+          <rect x="3" y="12" width="18" height="14" rx="3" fill="#fff" />
+          <path d="M7 12V8a5 5 0 0 1 10 0v4" />
+        </svg>
         <div style={{ fontSize: 40, fontWeight: 500, marginTop: 6, opacity: 0.9 }}>{data.dateText}</div>
         <div style={{ fontSize: 250, fontWeight: 700, lineHeight: 1, letterSpacing: -4 }}>00:00</div>
       </div>

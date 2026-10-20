@@ -52,7 +52,7 @@ export const NRBulten: React.FC = () => {
   const typed = Math.floor(clamp((dr - 0.6) / 1.1) * `${ARTIST} · ${TITLE}`.length);
   const headline = `${ARTIST} · ${TITLE}`.slice(0, typed);
   const blink = Math.floor(t * 2) % 2 === 0;
-  const tickerText = `YENİ ÇIKTI  ▪  ${ARTIST} – ${TITLE}  ▪  ŞİMDİ SPOTIFY'DA  ▪  `;
+  const tickerText = `YENİ ÇIKTI  •  ${ARTIST} – ${TITLE}  •  ŞİMDİ SPOTIFY'DA  •  `;
   const tickerShift = -((t * 240) % 1900);
   const headSize = fit(`${ARTIST} · ${TITLE}`, 64, 880, 0.5);
   const outroT = clamp((t - OUTRO) / 0.6);
@@ -153,7 +153,7 @@ export const NRBulten: React.FC = () => {
               <div style={{ fontWeight: 500, fontSize: 38, letterSpacing: 5, color: RED }}>YENİ ŞARKI</div>
               <div style={{ fontWeight: 700, fontSize: headSize, lineHeight: 1.05, whiteSpace: "nowrap", overflow: "hidden" }}>
                 {headline}
-                {blink ? "▌" : " "}
+                {blink ? <span style={{ display: "inline-block", width: 10, height: "0.85em", background: NAVY, marginLeft: 6, verticalAlign: "-0.08em" }} /> : null}
               </div>
             </div>
           </div>

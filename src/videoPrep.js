@@ -854,18 +854,37 @@ async function loadNrBackground(file) {
   return { buffer: await readFileBuf(path), seconds: Number(stdout.trim()) };
 }
 
-// Sarki/albüm kimligine gore sablon: ayni sarki hep ayni sablonu alir, farkli sarkilar dagilir ('drop' = ilk, yukleniyor->DROP sablonu).
-// NR_ONLY=fragman,drop,... ile kisitlanabilir.
-export function pickNewReleaseTemplate(seed, names = ['drop', ...Object.keys(NR_TEMPLATES)]) {
+// Secilebilir yeni cikti sablonlari ('drop' = ilk, yukleniyor->DROP sablonu). NR_ONLY=fragman,drop,... ile kisitlanabilir.
+export function newReleasePool(names = ['drop', ...Object.keys(NR_TEMPLATES)]) {
   const only = (process.env.NR_ONLY ?? '').split(',').map((s) => s.trim()).filter(Boolean);
-  const pool = only.length ? names.filter((n) => only.includes(n)) : names;
-  if (pool.length === 0) return null;
-  let h = 0;
-  for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return pool[h % pool.length];
+  return only.length ? names.filter((n) => only.includes(n)) : names;
 }
 
-// Gercek yeni cikti icin sablon adi: sarki kimligine gore 'drop' ya da NR_TEMPLATES anahtari. NR_VARIANTS=0 -> hep 'drop'.
+function seedHash(seed) {
+  let h = 0;
+  for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return h;
+}
+
+// Durumsuz secim (yedek): sarki kimligine gore sabit ama rastgele; ayni sarki hep ayni sablonu alir.
+export function pickNewReleaseTemplate(seed, names) {
+  const pool = newReleasePool(names);
+  return pool.length ? pool[seedHash(seed) % pool.length] : null;
+}
+
+// Sirali dongu: en uzun suredir kullanilmayan sablon secilir (hic kullanilmayanlar once), bir onceki sablon tekrarlanmaz.
+// Esitlikte sarki kimligi karar verir. history: eskiden yeniye kullanilan sablon adlari.
+export function chooseLeastRecentTemplate(seed, pool, history) {
+  if (pool.length === 0) return null;
+  const last = history.at(-1);
+  const cands = pool.length > 1 ? pool.filter((n) => n !== last) : pool;
+  const age = (n) => history.lastIndexOf(n); // -1: hic kullanilmadi
+  const oldest = Math.min(...cands.map(age));
+  const ties = cands.filter((n) => age(n) === oldest);
+  return ties[seedHash(seed) % ties.length];
+}
+
+// Gercek yeni cikti icin sablon adi (durumsuz yedek). NR_VARIANTS=0 -> hep 'drop'.
 export function newReleaseVariantFor(seed) {
   if (process.env.NR_VARIANTS === '0' || !seed) return 'drop';
   return pickNewReleaseTemplate(seed) ?? 'drop';

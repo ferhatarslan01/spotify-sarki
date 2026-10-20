@@ -66,7 +66,7 @@ TikTok'taki **yıl dönümü** videosu, şarkının çıkış yılına göre 8 s
 
 ## Yeni çıktı şablonları (9'lu aile)
 
-Gerçek yeni şarkı/albüm için TikTok videosu 9 şablondan birini alır. Seçim şarkı kimliğine göre **deterministik** (aynı şarkı hep aynı şablonu alır, farklı şarkılar dağılır).
+Gerçek yeni şarkı/albüm için TikTok videosu 9 şablondan birini alır. Seçim **sıralı döngü**: en uzun süredir kullanılmayan şablon seçilir (hiç kullanılmayanlar önce), bir önceki şablon tekrar edilmez; 9'u da çıkmadan hiçbiri ikinci kez gelmez. Bir şarkı bir kez atandıysa aynı şablonu korur. Durum `data/nrTemplateState.json` içinde tutulur (release-check workflow'u commit eder; kod `src/nrTemplateState.js`).
 
 | Şablon | Konsept | Arka plan |
 |---|---|---|

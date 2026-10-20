@@ -16,7 +16,8 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, newReleaseVariantFor, nrVariantUsesAi } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, nrVariantUsesAi } from './videoPrep.js';
+import { nextNewReleaseVariant, rememberNewReleaseVariant } from './nrTemplateState.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -150,6 +151,7 @@ async function renderTemplate(template, input) {
       try {
         prepared = await prepNewReleaseVariant(input.variant, input);
       } catch (err) {
+        input.variant = 'drop'; // hazirlik basarisiz: gercekte DROP kullanilacak
         console.error(`  Yeni çıktı şablonu hazırlanamadı (${input.variant}), DROP şablonuna dönülüyor: ${String(err.message).split('\n')[0]}`);
       }
     }
@@ -239,10 +241,14 @@ export async function makeEventVideo({
     let aiGenerated = false; // ComfyUI (yapay zeka) goruntusu kullanildi mi -> TikTok "AI ile uretildi" etiketi
     if (template && remotionEnabled()) {
       try {
-        const variant = template === 'NewRelease' ? newReleaseVariantFor(variantSeed) : null;
-        video = await renderTemplate(template, { artist, title, cover, audioUrl: preview.url, ...templateData, variant });
+        const input = { artist, title, cover, audioUrl: preview.url, ...templateData, variant: template === 'NewRelease' ? await nextNewReleaseVariant(variantSeed) : null };
+        video = await renderTemplate(template, input);
+        const variant = input.variant;
         engine = `remotion:${template}${variant && variant !== 'drop' ? `/${variant}` : ''}`;
-        if (template === 'NewRelease') aiGenerated = Boolean(variant) && nrVariantUsesAi(variant);
+        if (template === 'NewRelease') {
+          aiGenerated = Boolean(variant) && nrVariantUsesAi(variant);
+          await rememberNewReleaseVariant(variantSeed, variant); // sirali donus: kullanilan sablon kaydedilir
+        }
         if (template === 'Anniversary') aiGenerated = annivUsesAiFootage(Number(String(templateData?.releaseDate).slice(0, 4)));
       } catch (err) {
         console.error(`  Remotion hatası (${kind}), dahili motora geçiliyor: ${err.message.split('\n')[0]}`);

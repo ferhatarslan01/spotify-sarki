@@ -16,7 +16,7 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage } from './videoPrep.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -182,6 +182,8 @@ export async function postVideoToTikTok(handle) {
     const result = await publishTikTokVideo(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
       text: withHashtags(stripUrls(handle.caption), { kind: handle.kind, artists: handle.artists }),
       videoUrl: hostVideo(handle),
+      // yapay zeka (ComfyUI) goruntusu iceren videolarda TikTok etiketi; TIKTOK_AI_LABEL=0 ile kapatilir
+      aiGenerated: Boolean(handle.aiGenerated) && process.env.TIKTOK_AI_LABEL !== '0',
     });
     if (result.message) throw new Error(result.message);
     noteTikTokSent();
@@ -224,10 +226,12 @@ export async function makeEventVideo({
 
     let video = null;
     let engine = '';
+    let aiGenerated = false; // ComfyUI (yapay zeka) goruntusu kullanildi mi -> TikTok "AI ile uretildi" etiketi
     if (template && remotionEnabled()) {
       try {
         video = await renderTemplate(template, { artist, title, cover, audioUrl: preview.url, ...templateData });
         engine = `remotion:${template}`;
+        if (template === 'Anniversary') aiGenerated = annivUsesAiFootage(Number(String(templateData?.releaseDate).slice(0, 4)));
       } catch (err) {
         console.error(`  Remotion hatası (${kind}), dahili motora geçiliyor: ${err.message.split('\n')[0]}`);
       }
@@ -247,6 +251,7 @@ export async function makeEventVideo({
       caption: caption ?? `${artist} - ${title}`,
       artists: [artist],
       note: `${engine}, ses: ${preview.source}`,
+      aiGenerated,
     };
   } catch (err) {
     console.error(`  Video üretilemedi (${kind}): ${err.message}`);

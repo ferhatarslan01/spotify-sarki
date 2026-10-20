@@ -47,6 +47,22 @@ node tools/comfy/makeLoop.mjs temiz.mp4 video/assets/anniv-bg.mp4
 
 Dosya yoksa şablon eski (ızgara) arka planla çalışır.
 
+## Yıl dönümü videosu: dönem girişleri (canlı, 20 Ekim 2026)
+
+TikTok'taki **yıl dönümü** videosu, şarkının çıkış yılına göre 8 sn'lik bir giriş sahnesiyle başlar (ComfyUI ile üretilmiş 2 sahne + radyo/cihaz sesinden yükselen şarkı), ardından "KAÇ YIL OLDU?" gelir:
+
+| Çıkış yılı | Giriş | Vurgu |
+|---|---|---|
+| 1979 ve öncesi, 1980-89 | plak / pikap | kırmızı-turuncu |
+| 1990-99 | radyo | amber |
+| 2000-09 | bilgisayar | camgöbeği |
+| 2010-19, 2020 ve sonrası | telefon + bluetooth hoparlör | pembe |
+
+- Varsayılan **açık**; kapatmak için `ERA_INTROS=0`, yalnızca bazı dönemler için `ERA_INTROS=90s,2000s`. Bu giriş yalnızca TikTok videosunda; X'te yıl dönümü hâlâ kare oynatıcı.
+- Bu videolarda yapay zekâ görüntüsü olduğu için TikTok'ta **"AI ile üretildi" etiketi otomatik açılır** (Buffer `isAiGenerated`; yalnızca video gönderilerinde desteklenir). Kapatmak için `TIKTOK_AI_LABEL=0`.
+- Giriş klipleri `video/assets/era*.mp4`, üretim/araçlar `tools/comfy/`, ayrıntı `docs/DONEM_GIRISI_90LAR.md`.
+- Bulutta render hata verirse video otomatik olarak yedek (Node) motora düşer, paylaşım durmaz.
+
 ## Paylaşım penceresi (Türkiye saati)
 
 Tüm saatler **Türkiye saatiyle** (Europe/Istanbul, UTC+3) hesaplanır; kullanıcının ya da makinenin yerel saati (ör. ABD) hiçbir yerde kullanılmaz.

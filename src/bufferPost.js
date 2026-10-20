@@ -104,10 +104,11 @@ export async function publishTikTokPhoto(channelId, { text, imageUrls, title }) 
 }
 
 // TikTok video gonderisi: tek MP4 (herkese acik URL) + aciklama (text)
-export async function publishTikTokVideo(channelId, { text, videoUrl }) {
+// aiGenerated: true ise TikTok'ta "AI ile uretildi" etiketi acilir (Buffer metadata.tiktok.isAiGenerated).
+export async function publishTikTokVideo(channelId, { text, videoUrl, aiGenerated = false }) {
   const data = await graphql(
     `
-      mutation CreateTikTokVideo($text: String!, $channelId: ChannelId!, $assets: [AssetInput!]) {
+      mutation CreateTikTokVideo($text: String!, $channelId: ChannelId!, $assets: [AssetInput!], $ai: Boolean) {
         createPost(
           input: {
             text: $text
@@ -115,6 +116,7 @@ export async function publishTikTokVideo(channelId, { text, videoUrl }) {
             schedulingType: automatic
             mode: shareNow
             assets: $assets
+            metadata: { tiktok: { isAiGenerated: $ai } }
           }
         ) {
           ... on PostActionSuccess {
@@ -129,7 +131,7 @@ export async function publishTikTokVideo(channelId, { text, videoUrl }) {
         }
       }
     `,
-    { text, channelId, assets: [{ video: { url: videoUrl } }] }
+    { text, channelId, assets: [{ video: { url: videoUrl } }], ai: Boolean(aiGenerated) }
   );
 
   return data.createPost;

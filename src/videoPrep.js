@@ -598,17 +598,20 @@ export async function prepDuel({ a, b, dateShort }) {
 // Cikis yilina gore 8 sn'lik giris (ComfyUI ile uretilmis 2 sahne: video/assets/era<dönem>-s1.mp4, -s2.mp4) + ses yukselisi; ardindan "KAC YIL OLDU?".
 // Ses profili: hp/lp = giristeki cihazin (radyo / PC hoparlor) frekans araligi; ana videoda tam banda acilir.
 const ERAS = {
-  '80s': { years: [1980, 1989], label: "80'LER", accent: '#ff5a36', files: 'era80', INTRO: 8.0, S1_END: 4.8, KNOB: 2.2, hp: 60, lp: 12000, click: 900, crackle: true },
+  '80s': { years: [0, 1989], // 1980 öncesi çıkışlar da bu şablonu kullanır
+    label: "80'LER", accent: '#ff5a36', files: 'era80', INTRO: 8.0, S1_END: 4.8, KNOB: 2.2, hp: 60, lp: 12000, click: 900, crackle: true },
   '90s': { years: [1990, 1999], label: "90'LAR", accent: '#ffb42a', files: 'era90', INTRO: 8.0, S1_END: 5.0, KNOB: 2.8, hp: 350, lp: 3200, click: 650 },
-  '2010s': { years: [2010, 2019], label: "2010'LAR", accent: '#ff5fa2', files: 'era2010', INTRO: 8.0, S1_END: 4.4, KNOB: 3.5, hp: 120, lp: 10000, click: 1600 },
+  '2010s': { years: [2010, 9999], // 2020 ve sonrası çıkışlar da bu şablonu kullanır
+    label: "2010'LAR", accent: '#ff5fa2', files: 'era2010', INTRO: 8.0, S1_END: 4.4, KNOB: 3.5, hp: 120, lp: 10000, click: 1600 },
   '2000s': { years: [2000, 2009], label: "2000'LER", accent: '#4dd2ff', files: 'era2000', INTRO: 8.0, S1_END: 5.0, KNOB: 2.4, hp: 200, lp: 7000, click: 2200 },
 };
 
 // Yayin yilina uygun dönem girisi varsa { id, cfg, s1, s2 }, yoksa null.
-// Onaylanana kadar kapali: ERA_INTROS=1 ile acilir (canli akisa kendiliginden girmesin); ERA_INTROS=90s,2000s ile secilebilir.
+// Varsayilan ACIK. ERA_INTROS=0 kapatir; ERA_INTROS=90s,2000s gibi secili donemler de verilebilir.
+// Yil araliklari disindakiler en yakin donemi kullanir: 1980 oncesi -> 80'ler, 2019 sonrasi -> 2010'lar.
 export function eraClipsFor(releaseYear) {
-  const flag = process.env.ERA_INTROS;
-  if (!flag) return null;
+  const flag = (process.env.ERA_INTROS ?? '').trim() || '1';
+  if (flag === '0') return null;
   for (const [id, cfg] of Object.entries(ERAS)) {
     if (releaseYear < cfg.years[0] || releaseYear > cfg.years[1]) continue;
     if (flag !== '1' && !flag.split(',').includes(id)) continue;
@@ -618,6 +621,11 @@ export function eraClipsFor(releaseYear) {
     if (existsSync(s1) && existsSync(s2)) return { id, cfg, s1, s2 };
   }
   return null;
+}
+
+// Yil donumu videosunda yapay zeka (ComfyUI) goruntusu var mi? (donem girisi ya da oda arka plani) -> TikTok "AI ile uretildi" etiketi
+export function annivUsesAiFootage(releaseYear) {
+  return Boolean(eraClipsFor(releaseYear)) || existsSync(join(process.cwd(), 'video', 'assets', 'anniv-bg.mp4'));
 }
 
 export async function prepAnniversaryEra(args) {

@@ -44,3 +44,8 @@ başında filtre tam banda açılır. Mevcut `Anniversary` kompozisyonu `Sequenc
 - Sahne 2: dönen, turuncu etiketli plak ve pikap (soluk benek artefaktları `cleanBlobs.py --region 0,0,1,0.3` ile temizlendi).
 - Klipler: `video/assets/era80-s1.mp4`, `era80-s2.mp4`. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era80`.
 - Canlıya açmak: `ERA_INTROS=80s,90s,2000s,2010s` (ya da `1`).
+
+## Canlıya alındı (20 Ekim 2026)
+- Dönem girişleri **varsayılan açık** (`ERA_INTROS` yoksa = açık). Yıl eşlemesi: 1979 ve öncesi → 80'ler, 1980-89 → 80'ler, 90'lar, 2000'ler, 2010-19 ve 2020 sonrası → 2010'lar.
+- TikTok'ta `isAiGenerated` etiketi bu videolarda (ve oda arka planlı yıl dönümü videolarında) otomatik açık (`TIKTOK_AI_LABEL=0` ile kapanır). Buffer bunu yalnızca video gönderilerinde kabul eder, foto gönderilerinde hata verir.
+- X'e hâlâ kare oynatıcı gidiyor; dikey dönem videosunu X'e koymak ayrı karar.

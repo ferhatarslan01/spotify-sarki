@@ -232,9 +232,19 @@ export async function prepAnniversary({ artist, title, releaseDate, cover, audio
 }
 
 // ---------------------------------------------------------------- Kare kapak + oynatici (X icin)
-export async function prepCoverPlayer({ artist, title, cover, audioUrl, seconds = 20 }) {
+// audioUrl yoksa (ya da silent: true) SESSIZ mod: 8 sn kapak hareketi, "SPOTIFY'DA DINLE" etiketi; sahte oynatici ogesi yok.
+export async function prepCoverPlayer({ artist, title, cover, audioUrl, seconds = 20, silent = false }) {
   const cover1080 = await squareJpeg(cover, 1080, 92);
   const hue = await hueOf(sharp, cover1080);
+
+  if (silent || !audioUrl) {
+    return {
+      composition: 'CoverPlayer',
+      dataKey: 'player',
+      data: { artist, title, hue, fps: FPS, durationSeconds: 8, hookStart: 0, silent: true, label: "SPOTIFY'DA DİNLE", bands: [] },
+      assets: [{ name: 'player-cover.jpg', buffer: cover1080 }],
+    };
+  }
 
   return withTmp(async (dir) => {
     const prev = join(dir, 'prev.bin');

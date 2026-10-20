@@ -23,6 +23,9 @@ const { fontFamily: mono } = loadMono("normal", {
 });
 
 const BANDS = data.bands as number[][];
+// Sessiz mod: ses onizlemesi bulunamadiginda kapak hareketi (oynatici ogeleri ve ses yok).
+const SILENT = Boolean((data as { silent?: boolean }).silent);
+const LABEL = (data as { label?: string }).label || "ŞİMDİ ÇALIYOR";
 const DURATION = data.durationSeconds;
 const SIZE = 1080;
 const MARGIN = 64;
@@ -48,7 +51,7 @@ export const CoverPlayer: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ background: "#000", fontFamily }}>
-      <Audio src={staticFile("player-soundtrack.wav")} />
+      {SILENT ? null : <Audio src={staticFile("player-soundtrack.wav")} />}
 
       {/* kapak */}
       <AbsoluteFill style={{ overflow: "hidden" }}>
@@ -86,7 +89,7 @@ export const CoverPlayer: React.FC = () => {
           translate: `0px ${-slideUp * 140}px`,
         }}
       >
-        <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 30 }}>
+        <div style={{ display: SILENT ? "none" : "flex", alignItems: "flex-end", gap: 4, height: 30 }}>
           {[2, 6, 10, 14].map((b, i) => (
             <div
               key={i}
@@ -100,7 +103,7 @@ export const CoverPlayer: React.FC = () => {
           ))}
         </div>
         <div style={{ fontFamily, fontWeight: 500, fontSize: 30, letterSpacing: 4, color: "#fff" }}>
-          ŞİMDİ ÇALIYOR
+          {LABEL}
         </div>
       </div>
 
@@ -140,7 +143,8 @@ export const CoverPlayer: React.FC = () => {
           {data.artist}
         </div>
 
-        {/* ilerleme cubugu */}
+        {/* ilerleme cubugu, sureler ve kontroller (sessiz modda yok) */}
+        <div style={{ display: SILENT ? "none" : "block" }}>
         <div style={{ position: "relative", height: 24, marginTop: 30 }}>
           <div
             style={{
@@ -226,6 +230,7 @@ export const CoverPlayer: React.FC = () => {
             <rect x="38" y="10" width="6" height="32" rx="2" fill="#fff" fillOpacity="0.9" />
             <polygon points="8,10 8,42 34,26" fill="#fff" fillOpacity="0.9" />
           </svg>
+        </div>
         </div>
       </div>
 

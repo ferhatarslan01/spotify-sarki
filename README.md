@@ -23,10 +23,10 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 - **Top 5 thread'i**: ilk tweet liste metnini + 1. şarkının videosunu taşır; 2-5. şarkılar yanıt olarak gelir.
 - X'te video tweet'i Buffer'da hata verirse otomatik olarak eski görselli tweet'e düşülür.
 - **X'te her gönderi video olur:** Trend olayları dahil her tweet için kare oynatıcı videosu üretilir. TikTok videosu ise çalıştırma başına en fazla 1 trend olayı için (ve günlük 3 sınırı içinde) üretilir; sınır dolunca olay yine X'e videolu gider.
-- **Önizleme (ses) bulma:** Deezer parça → iTunes parça → Deezer düz arama → parantez/" - Live" ekleri temizlenmiş ad → albümün ilk parçası (iTunes/Deezer). Hiçbir kaynakta ses yoksa tweet görselli gider (log'da "video üretilemedi" uyarısı olur).
+- **Önizleme (ses) bulma:** Deezer parça → iTunes parça → Deezer düz arama → parantez/" - Live" ekleri temizlenmiş ad → albümün ilk parçası (iTunes/Deezer). Hiçbir kaynakta ses yoksa X'e foto yerine **sessiz kapak videosu** (8 sn, "SPOTIFY'DA DİNLE" etiketi, oynatıcı çubuğu yok) gider; TikTok'a ses olmadan video gönderilmez.
 - **Spotify linki X'te ilk yanıtta:** Ana tweet'teki dış link erişimi düşürdüğü için tekli paylaşımlarda (yeni şarkı, yıl dönümü, trend olayları)
   link ana tweet'ten çıkarılıp "🎧 Spotify'da dinle:" yanıtına konur (thread olarak). Top 5 thread'inde zaten her şarkının linki yanıttadır.
-- **Tek harfli soru:** Her paylaşımın sonunda "E / H yaz 👇", "Puanın kaç? 1-10 yaz 👇" gibi kolay cevaplanan bir soru olur (`src/cta.js`).
+- **Kolay cevaplanan soru:** Her paylaşımın sonunda "Hit olur mu? 👇", "Puanın kaç? 1-10 yaz 👇" gibi kısa bir soru olur; "E / H yaz" komutu eklenmez (`src/cta.js`).
   Top 5 / haftalık liste tweetinde yer kalmadığı için soru thread'in son tweetinde sorulur; TikTok açıklamasında liste altındadır.
 - **TikTok hacmi:** Son 24 saatte en fazla 3 TikTok gönderisi (trend olayları için en fazla 2; yeni şarkı ve liste için yer kalsın diye).
   Sayı Buffer'dan okunur; sınıra gelince o olay yalnızca X'e gider. Hashtag sayısı gönderi başına 5.

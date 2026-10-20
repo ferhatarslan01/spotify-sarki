@@ -45,7 +45,7 @@ const STUBS = {
     durationSeconds: 17,
     bands: [],
   },
-  player: { artist: '', title: '', hue: 30, fps: 30, durationSeconds: 20, hookStart: 0, bands: [] },
+  player: { artist: '', title: '', hue: 30, fps: 30, durationSeconds: 20, hookStart: 0, silent: false, label: '', bands: [] },
   eraintro: { introSeconds: 8, scene1End: 5, knobAt: 3, fps: 30, label: '', accent: '#ffb42a', bands: [] },
   duel: {
     fps: 30,

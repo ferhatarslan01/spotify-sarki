@@ -1,26 +1,26 @@
 // Gonderi sonuna eklenen, tek harf / tek sayiyla cevaplanabilen sorular (yorum surtunmesini dusurur).
-// "Begen/takip et" demiyoruz; "E / H yaz" gibi kolay bir cevap ve kendi fikrini soyleme firsati veriyoruz.
+// "Begen/takip et" demiyoruz; "Hit olur mu?" gibi kolay cevaplanan bir soru ve kendi fikrini soyleme firsati veriyoruz ("E / H yaz" gibi komut eklenmez).
 // CTA_QUESTIONS=0 ile kapatilir.
 
 const QUESTIONS = {
   release: [
-    'Hit olur mu? E / H yaz 👇',
+    'Hit olur mu? 👇',
     'Puanın kaç? 1-10 yaz 👇',
-    "Repeat'e alır mısın? E / H yaz 👇",
+    "Repeat'e alır mısın? 👇",
     'İlk dinleyişte nasıl? 1-10 yaz 👇',
   ],
   anniversary: [
-    'Hâlâ çalma listende mi? E / H yaz 👇',
-    'Bu şarkıyı ilk sen mi keşfetmiştin? E / H yaz 👇',
-    'Şarkı hâlâ eskimedi mi? E / H yaz 👇',
+    'Hâlâ çalma listende mi? 👇',
+    'Bu şarkıyı ilk sen mi keşfetmiştin? 👇',
+    'Şarkı hâlâ eskimedi mi? 👇',
   ],
-  'trend-jump': ['Sence zirveye çıkar mı? E / H yaz 👇', "Top 10'a girer mi? E / H yaz 👇"],
-  'trend-top10': ['Sence kaçıncı olur? Sayı yaz 👇', 'Zirveye çıkar mı? E / H yaz 👇'],
-  'trend-milestone': ['Sen de dinledin mi? E / H yaz 👇', 'Sence hak etti mi? E / H yaz 👇'],
-  'trend-global': ['Gurur duydun mu? E / H yaz 👇', 'Dünyada da büyür mü? E / H yaz 👇'],
-  'daily-tr': ['Yarın 1 numara değişir mi? E / H yaz 👇', 'Yarın da zirvede kalır mı? E / H yaz 👇'],
-  'weekly-tr': ['Haftaya 1 numara değişir mi? E / H yaz 👇', 'Haftaya da zirvede kalır mı? E / H yaz 👇'],
-  'daily-global': ['Yarın 1 numara değişir mi? E / H yaz 👇'],
+  'trend-jump': ['Sence zirveye çıkar mı? 👇', "Top 10'a girer mi? 👇"],
+  'trend-top10': ['Sence kaçıncı olur? Sayı yaz 👇', 'Zirveye çıkar mı? 👇'],
+  'trend-milestone': ['Sen de dinledin mi? 👇', 'Sence hak etti mi? 👇'],
+  'trend-global': ['Gurur duydun mu? 👇', 'Dünyada da büyür mü? 👇'],
+  'daily-tr': ['Yarın 1 numara değişir mi? 👇', 'Yarın da zirvede kalır mı? 👇'],
+  'weekly-tr': ['Haftaya 1 numara değişir mi? 👇', 'Haftaya da zirvede kalır mı? 👇'],
+  'daily-global': ['Yarın 1 numara değişir mi? 👇'],
   'weekly-digest': ['Haftanın şarkısı hangisi? Sanatçı adını yaz 👇'],
   duel: ['A mı B mi? A / B yaz 👇', 'Sen hangisini seçerdin? A / B yaz 👇'],
 };

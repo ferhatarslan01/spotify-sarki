@@ -272,13 +272,25 @@ export async function makeEventVideos(params) {
   const { kind, artist, title, caption } = params;
   try {
     const preview = await findPreview(artist, title);
-    if (!preview) {
-      console.log(`  Ses önizlemesi bulunamadı (${artist} - ${title}).`);
-      return none;
-    }
     const coverSrc = params.coverUrl ?? (await getTrackThumbnail(params.trackUrl));
     if (!coverSrc) throw new Error('Kapak gorseli bulunamadi');
     const cover = await fetchBuffer(coverSrc);
+    if (!preview) {
+      // Hicbir kaynakta ses yok: TikTok'a video gitmez (statik/sessiz risk), ama X'e foto yerine sessiz kapak videosu gider.
+      console.log(`  Ses önizlemesi bulunamadı (${artist} - ${title}); X için sessiz kapak videosu hazırlanıyor.`);
+      if (needX && remotionEnabled()) {
+        try {
+          const video = await renderSquare({ artist, title, cover, audioUrl: null });
+          return {
+            tiktok: null,
+            x: { kind: `${kind}-x`, video, caption: caption ?? `${artist} - ${title}`, artists: [artist], note: 'remotion:CoverPlayer (sessiz)' },
+          };
+        } catch (err) {
+          console.error(`  Sessiz video hatası (${kind}): ${String(err.message).split('\n')[0]}`);
+        }
+      }
+      return none;
+    }
 
     let tiktok = null;
     if (needTikTok) tiktok = await makeEventVideo(params);
@@ -442,21 +454,20 @@ export async function makeChartThread({ kind, entries }) {
       if (coverUrl) {
         try {
           const preview = await findPreview(e.artists[0].name, e.trackName);
-          if (preview) {
-            const video = await renderSquare({
-              artist,
-              title: e.trackName,
-              cover: await fetchBuffer(coverUrl),
-              audioUrl: preview.url,
-            });
-            handle = {
-              kind: `${kind}-x${e.rank}`,
-              video,
-              caption: `${artist} - ${e.trackName}`,
-              artists: [artist],
-              note: `remotion:CoverPlayer, ses: ${preview.source}`,
-            };
-          }
+          // onizleme yoksa da video (sessiz kapak hareketi): thread'in hicbir tweeti foto kalmasin
+          const video = await renderSquare({
+            artist,
+            title: e.trackName,
+            cover: await fetchBuffer(coverUrl),
+            audioUrl: preview?.url ?? null,
+          });
+          handle = {
+            kind: `${kind}-x${e.rank}`,
+            video,
+            caption: `${artist} - ${e.trackName}`,
+            artists: [artist],
+            note: preview ? `remotion:CoverPlayer, ses: ${preview.source}` : 'remotion:CoverPlayer (sessiz)',
+          };
         } catch (err) {
           console.error(`  Kare video hatası (${kind} #${e.rank}): ${err.message.split('\n')[0]}`);
         }
@@ -573,7 +584,7 @@ export async function makeDigestVideo({ log, description, artists = [] }) {
         audioUrl: preview?.url ?? null,
       });
     }
-    if (items.length < 2 || items.every((i) => !i.audioUrl)) throw new Error('Yeterli sesli sarki yok');
+    if (items.length < 2) throw new Error('Yeterli sarki yok'); // ses olmasa da video (sessiz liste) uretilir
 
     let video = null;
     let engine = '';

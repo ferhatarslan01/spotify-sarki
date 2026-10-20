@@ -1,9 +1,9 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,era70,era80,era90,era2000,era2010,era2020,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,era70,era80,era90,era2000,era2010,era2020,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES, prepRiseVariant, RISE_TEMPLATES } from './videoPrep.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 
@@ -137,6 +137,20 @@ async function main() {
     jobs.push([
       `yeni-${name}`,
       async () => prepNewReleaseVariant(name, { ...(await trackInput(entries[5])), dateText: today() }),
+    ]);
+  }
+  // "Yukselen sarki" sablon ailesi: --only rv (hepsi) ya da rv-terminal gibi tek tek
+  for (const name of Object.keys(RISE_TEMPLATES)) {
+    if (!want('rv') && !want(`rv-${name}`)) continue;
+    jobs.push([
+      `yukselis-${name}`,
+      async () => {
+        const featured =
+          [...entries].filter((e) => typeof e.positionChange === 'number' && e.positionChange > 0).sort((a, b) => b.positionChange - a.positionChange)[0] ?? null;
+        if (!featured) throw new Error('bugun yukselen sarki yok');
+        const pv = await findPreview(featured.artists[0].name, featured.trackName);
+        return prepRiseVariant(name, { entries, featured, date, audioUrl: pv.url });
+      },
     ]);
   }
   // Donem girisli yil donumu onizlemeleri: era90 (1990-1999) ve era2000 (2000-2009); klipleri hazir olan donemler calisir.

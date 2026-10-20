@@ -98,6 +98,7 @@ async function main() {
           title: entry.trackName,
           subtitle: artistNames(entry),
           template: 'RankRise',
+          variantSeed: entry.trackId, // sarkiya gore yukselis sablonu (sirali donus)
           templateData: { entries, featured: entry, date },
           scene: 'rise',
           palette: 'altin',

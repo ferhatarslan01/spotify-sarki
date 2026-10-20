@@ -16,8 +16,8 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, nrVariantUsesAi } from './videoPrep.js';
-import { nextNewReleaseVariant, rememberNewReleaseVariant } from './nrTemplateState.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, nrVariantUsesAi, prepRiseVariant } from './videoPrep.js';
+import { nextNewReleaseVariant, rememberNewReleaseVariant, nextRiseVariant, rememberRiseVariant } from './nrTemplateState.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -157,8 +157,18 @@ async function renderTemplate(template, input) {
     }
     prepared ??= await prepNewRelease(input);
   } else if (template === 'Anniversary') prepared = await prepAnniversaryAuto(input); // 90lar vb. icin donem girisi otomatik
-  else if (template === 'RankRise') prepared = await prepRankRise(input);
-  else throw new Error(`Bilinmeyen sablon: ${template}`);
+  else if (template === 'RankRise') {
+    // yukselen sarki: profesyonel sablon ailesi (piyasa raporu, canli yayin...); hata olursa klasik siralama merdivenine doner
+    if (input.variant && input.variant !== 'rise') {
+      try {
+        prepared = await prepRiseVariant(input.variant, input);
+      } catch (err) {
+        input.variant = 'rise'; // hazirlik basarisiz: gercekte klasik sablon kullanilacak
+        console.error(`  Yükselen şarkı şablonu hazırlanamadı, klasik şablona dönülüyor: ${String(err.message).split('\n')[0]}`);
+      }
+    }
+    prepared ??= await prepRankRise(input);
+  } else throw new Error(`Bilinmeyen sablon: ${template}`);
   return renderPrepared(prepared);
 }
 
@@ -241,13 +251,15 @@ export async function makeEventVideo({
     let aiGenerated = false; // ComfyUI (yapay zeka) goruntusu kullanildi mi -> TikTok "AI ile uretildi" etiketi
     if (template && remotionEnabled()) {
       try {
-        const input = { artist, title, cover, audioUrl: preview.url, ...templateData, variant: template === 'NewRelease' ? await nextNewReleaseVariant(variantSeed) : null };
+        const input = { artist, title, cover, audioUrl: preview.url, ...templateData, variant: template === 'NewRelease' ? await nextNewReleaseVariant(variantSeed) : template === 'RankRise' ? await nextRiseVariant(variantSeed) : null };
         video = await renderTemplate(template, input);
         const variant = input.variant;
-        engine = `remotion:${template}${variant && variant !== 'drop' ? `/${variant}` : ''}`;
+        engine = `remotion:${template}${variant && variant !== 'drop' && variant !== 'rise' ? `/${variant}` : ''}`;
         if (template === 'NewRelease') {
           aiGenerated = Boolean(variant) && nrVariantUsesAi(variant);
           await rememberNewReleaseVariant(variantSeed, variant); // sirali donus: kullanilan sablon kaydedilir
+        } else if (template === 'RankRise') {
+          await rememberRiseVariant(variantSeed, variant);
         }
         if (template === 'Anniversary') aiGenerated = annivUsesAiFootage(Number(String(templateData?.releaseDate).slice(0, 4)));
       } catch (err) {

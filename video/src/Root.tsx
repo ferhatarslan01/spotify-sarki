@@ -14,6 +14,9 @@ import { NRKaset } from "./NRKaset";
 import { NRTahmin } from "./NRTahmin";
 import { NRRadyo } from "./NRRadyo";
 import { NRMesaj } from "./NRMesaj";
+import { RiseKart } from "./RiseKart";
+import { RiseYayin } from "./RiseYayin";
+import { RiseTerminal } from "./RiseTerminal";
 import board from "./data-board.json";
 import fresh from "./data-new.json";
 import rise from "./data-rise.json";
@@ -22,6 +25,7 @@ import player from "./data-player.json";
 import duel from "./data-duel.json";
 import eraintro from "./data-eraintro.json";
 import nrvar from "./data-nrvar.json";
+import risev from "./data-risev.json";
 
 const FPS = 30;
 const frames = (seconds: number) => Math.max(1, Math.round(seconds * FPS));
@@ -138,6 +142,30 @@ export const RemotionRoot: React.FC = () => {
         id="NRMesaj"
         component={NRMesaj}
         durationInFrames={frames(nrvar.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="RiseTerminal"
+        component={RiseTerminal}
+        durationInFrames={frames(risev.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="RiseYayin"
+        component={RiseYayin}
+        durationInFrames={frames(risev.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="RiseKart"
+        component={RiseKart}
+        durationInFrames={frames(risev.durationSeconds)}
         fps={FPS}
         width={1080}
         height={1920}

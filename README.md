@@ -11,7 +11,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 |---|---|---|
 | Yeni şarkı/albüm (3 saatte bir) | kare oynatıcı videosu | **NewRelease** ailesi: 9 şablon (aşağıda), şarkıya göre dönüşümlü |
 | Yıl dönümü | kare oynatıcı videosu | **Anniversary**: VHS geri sarma |
-| Sırada +10 ve üstü yükseliş | kare oynatıcı videosu | **RankRise**: sıralama yarışı |
+| Sırada +10 ve üstü yükseliş | kare oynatıcı videosu | **RankRise** ailesi: 4 şablon (aşağıda), sıralı döngü |
 | İlk kez Top 10 / stream rekoru / dünya listesi | kare oynatıcı videosu | **NewRelease** (özel metinlerle) |
 | Günlük / haftalık Türkiye Top 5 | **5 tweetlik thread**: her şarkı kendi kare videosu | **TopBoard**: kalkış tablosu |
 | Pazar gecesi haftalık özet | thread (ilk tweet video) | **TopBoard** (haftanın yeni şarkıları) |
@@ -86,6 +86,25 @@ Gerçek yeni şarkı/albüm için TikTok videosu 9 şablondan birini alır. Seç
 - X'e yeni şablonlar gitmez: X kare "kapak + oynatıcı" videosunu alır.
 - Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj` (hepsi: `--only nr`) (çıktı `preview/yeni-*.mp4`).
 - Kod: `video/src/NR*.tsx`, ses/seçici `src/videoPrep.js` (`NR_TEMPLATES`), arka plan döngüleri `video/assets/nr-*-bg.mp4`, ComfyUI sahneleri `tools/comfy/bgGen.mjs`.
+
+## Yükselen şarkı şablonları
+
+"Sıra atladı" olayında (günlük listede +10 ve üstü yükseliş) TikTok videosu aşağıdaki şablonlardan birini alır. Seçim yeni çıktı ailesindeki gibi **sıralı döngü**dür
+(en uzun süredir kullanılmayan şablon, art arda tekrar yok; durum `data/riseTemplateState.json`, `chart-trends` workflow'u commit eder).
+
+| Şablon | Konsept |
+|---|---|
+| `rise` | Sıra merdiveni (ilk şablon): kart listede komşuları geçerek yükselir |
+| `terminal` | Piyasa raporu: finans terminali, ticker kodu, dün → bugün sıra grafiği, istatistik kartları, kayan komşu bandı |
+| `yayin` | Canlı yayın: TV/spor grafiği, dönen sıra göstergesi (DÜN → BUGÜN), "+N SIRA" slam'i, alt bant |
+| `kart` | Dergi kartı: düz renk blokları, dev tipografi, kart geçişleri, zirve ilerleme çubuğu |
+
+- Tüm rakamlar gerçek: dün/bugün sırası, günlük + toplam stream, zirveye kalan sıra, listedeki komşular. Grafikteki eğri yalnızca iki gerçek nokta arasındaki görsel geçiştir.
+- Kapatmak için `RISE_VARIANTS=0` (hep `rise`); havuzu kısıtlamak için `RISE_ONLY=terminal,yayin`.
+- Şablon hazırlanamazsa otomatik klasik `rise`'a, o da olmazsa yedek Node motoruna düşer. AI etiketi gerekmez (ComfyUI yok).
+- X'e kare "kapak + oynatıcı" videosu gitmeye devam eder.
+- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only rv` (ya da `rv-terminal`, `rv-yayin`, `rv-kart`); çıktı `preview/yukselis-*.mp4`.
+- Kod: `video/src/Rise*.tsx`, veri + ses `src/videoPrep.js` (`RISE_TEMPLATES`, `prepRiseVariant`).
 
 ## Paylaşım penceresi (Türkiye saati)
 

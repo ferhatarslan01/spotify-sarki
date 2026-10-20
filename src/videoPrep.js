@@ -951,3 +951,164 @@ export async function prepNewReleaseVariant(template, { artist, title, cover, au
     };
   });
 }
+
+// ---------------------------------------------------------------- "Yukselen sarki" sablon ailesi (RankRise'a ek profesyonel gorunumler)
+// Hepsi ayni gercek veriyi kullanir: dun/bugun sirasi, gunluk + toplam stream, listedeki komsu sarkilar. Uydurma veri yok.
+const invSmoothstep = (y) => 0.5 - Math.sin(Math.asin(1 - 2 * Math.min(1, Math.max(0, y))) / 3);
+
+// sira atlandikca tik: odometre ile ayni yumusak egri (smoothstep)
+function tickRanks(sfx, c, amp, freq) {
+  const n = Math.min(c.change, 28);
+  for (let i = 1; i <= n; i++) sfx.tick(c.START + invSmoothstep(i / n) * (c.ARRIVAL - c.START), amp, freq + i * 25);
+}
+
+export const RISE_TEMPLATES = {
+  // Piyasa raporu: finans terminali (ticker, sira grafigi, istatistik paneli, kayan komsu listesi)
+  terminal: {
+    composition: 'RiseTerminal',
+    DUR: 16,
+    START: 2.0,
+    ARRIVAL: 5.6,
+    OUTRO: 14.0,
+    sfx(sfx, c) {
+      for (let i = 0; i < 6; i++) sfx.tick(0.5 + i * 0.09, 0.3, 2400); // sembol yaziliyor
+      sfx.riser(c.START, c.ARRIVAL, 0.4);
+      tickRanks(sfx, c, 0.28, 2600);
+      sfx.boom(c.ARRIVAL, 0.8, 78);
+      [880, 1318.5, 1760].forEach((f, i) => sfx.ding(c.ARRIVAL + 0.05 + i * 0.08, f, 0.4, 0.6));
+      for (let i = 0; i < 8; i++) sfx.tick(c.ARRIVAL + 0.5 + i * 0.16, 0.22, 3000); // istatistik sayaclari
+      sfx.whoosh(c.OUTRO, 1.1, 0.35, 5000, 250);
+    },
+  },
+  // Canli yayin: TV/spor grafigi (DUN -> BUGUN, donen sira gostergesi, +N slam, alt bant)
+  yayin: {
+    composition: 'RiseYayin',
+    DUR: 16,
+    START: 2.6,
+    ARRIVAL: 5.6,
+    OUTRO: 14.0,
+    sfx(sfx, c) {
+      sfx.whoosh(0.2, 0.7, 0.55, 300, 6000);
+      sfx.boom(0.5, 0.85, 72); // SIRA ATLADI vurusu
+      sfx.whoosh(c.START - 0.4, 0.5, 0.35, 500, 3000);
+      tickRanks(sfx, c, 0.4, 1500);
+      sfx.whoosh(c.START, c.ARRIVAL - c.START, 0.4, 400, 4800);
+      sfx.boom(c.ARRIVAL, 1.0, 66);
+      [784, 1046.5, 1318.5, 1568].forEach((f, i) => sfx.ding(c.ARRIVAL + 0.04 + i * 0.07, f, 0.45, 0.7));
+      sfx.whoosh(c.ARRIVAL + 1.1, 0.5, 0.35, 700, 5200); // alt bant girisi
+      sfx.whoosh(c.OUTRO, 1.1, 0.35, 5000, 250);
+    },
+  },
+  // Dergi karti: duz renk bloklari + dev tipografi, kart gecisleri
+  kart: {
+    composition: 'RiseKart',
+    DUR: 17,
+    START: 3.5,
+    ARRIVAL: 5.3,
+    OUTRO: 12.8,
+    marks: { c2: 3.0, c3: 7.0 },
+    sfx(sfx, c) {
+      [0.2, 0.6, 1.0].forEach((t, i) => sfx.whoosh(t, 0.35, 0.3, 700 + i * 200, 3600));
+      sfx.whoosh(c.marks.c2 - 0.3, 0.55, 0.5, 300, 5500);
+      tickRanks(sfx, c, 0.3, 2000);
+      sfx.boom(c.ARRIVAL, 0.9, 74);
+      sfx.whoosh(c.marks.c3 - 0.3, 0.55, 0.5, 300, 5500);
+      [7.4, 7.7, 8.0].forEach((t, i) => sfx.ding(t, 987.8 * (1 + i * 0.25), 0.3, 0.3));
+      sfx.whoosh(c.OUTRO - 0.3, 0.55, 0.5, 300, 5500);
+      sfx.whoosh(c.OUTRO + 3, 0.9, 0.3, 4000, 300);
+    },
+  },
+};
+
+// Yukselen sarki sablonlari ('rise' = mevcut siralama merdiveni). RISE_ONLY=terminal,yayin,... ile kisitlanabilir.
+export function risePool(names = ['rise', ...Object.keys(RISE_TEMPLATES)]) {
+  const only = (process.env.RISE_ONLY ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  return only.length ? names.filter((n) => only.includes(n)) : names;
+}
+
+// Durumsuz yedek secim: sarki kimligine gore sabit.
+export function riseVariantFor(seed) {
+  if (process.env.RISE_VARIANTS === '0' || !seed) return 'rise';
+  const pool = risePool();
+  if (pool.length === 0) return 'rise';
+  let h = 0;
+  for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return pool[h % pool.length];
+}
+
+export async function prepRiseVariant(template, { entries, featured, date, audioUrl }) {
+  const cfg = RISE_TEMPLATES[template];
+  if (!cfg) throw new Error(`Bilinmeyen yukselis sablonu: ${template}`);
+  const change = featured.positionChange;
+  if (!(typeof change === 'number' && change > 0)) throw new Error('Yukselis degeri yok');
+  const to = featured.rank;
+  const from = to + change;
+  const { DUR, START, ARRIVAL, OUTRO } = cfg;
+  const MUSIC_AT = 0.3;
+  const names = (e) => e.artists.map((a) => a.name).join(' & ');
+
+  const heroUrl = await getTrackThumbnail(featured.trackUrl);
+  const heroBuf = await squareJpeg(await fetchBuf(heroUrl), 800, 92);
+  const hue = await hueOf(sharp, heroBuf);
+  // listedeki komsular (gercek siralama): kayan bant icin
+  const neighbors = entries
+    .filter((e) => e.rank >= Math.max(1, to - 4) && e.rank <= to + 6)
+    .map((e) => ({
+      rank: e.rank,
+      title: e.trackName,
+      artist: names(e),
+      change: typeof e.positionChange === 'number' ? e.positionChange : e.positionChange === 'NEW' ? 'NEW' : null,
+      featured: e.trackId === featured.trackId,
+    }));
+
+  return withTmp(async (dir) => {
+    const prev = join(dir, 'prev.bin');
+    await writeFile(prev, await fetchBuf(audioUrl));
+    const segD = DUR - MUSIC_AT - 0.6;
+    const hookSS = await findHookStart(prev, segD);
+
+    const sfx = makeSfx(DUR, 29);
+    cfg.sfx(sfx, { ...cfg, change });
+    await sfx.writeWav(join(dir, 'sfx.wav'));
+    await buildMusic({
+      prev,
+      hookSS,
+      segD,
+      delayMs: Math.round(MUSIC_AT * 1000),
+      dur: DUR,
+      out: join(dir, 'music.wav'),
+      filterSweep: { from: START, to: Math.max(START + 0.5, ARRIVAL - MUSIC_AT), lowpass: 700 },
+    });
+    await mixMusicAndSfx(join(dir, 'music.wav'), join(dir, 'sfx.wav'), join(dir, 'mix.wav'));
+    const bands = await analyzeBands(join(dir, 'music.wav'), DUR);
+
+    return {
+      composition: cfg.composition,
+      dataKey: 'risev',
+      data: {
+        date,
+        artist: names(featured),
+        title: featured.trackName,
+        from,
+        to,
+        change,
+        daily: Number.isFinite(featured.streams) ? featured.streams : 0,
+        total: Number.isFinite(featured.totalStreams) ? featured.totalStreams : 0,
+        hue,
+        neighbors,
+        start: START,
+        arrival: ARRIVAL,
+        outro: OUTRO,
+        marks: cfg.marks ?? {},
+        fps: FPS,
+        durationSeconds: DUR,
+        hookStart: hookSS,
+        bands,
+      },
+      assets: [
+        { name: 'risev-cover.jpg', buffer: heroBuf },
+        { name: 'risev-soundtrack.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) },
+      ],
+    };
+  });
+}

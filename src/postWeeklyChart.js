@@ -1,3 +1,4 @@
+import { postWindowOpen } from './postWindow.js';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchWeeklyChart, formatWeeklyChartPost, pickFittingTopNWeekly } from './weeklyChart.js';
 import { loadChartState, saveChartState } from './chartState.js';
@@ -10,6 +11,9 @@ import { tagText } from './artistHandles.js';
 const STATE_FILE = 'weeklyChartState.json';
 
 async function main() {
+  // Paylaşım penceresi (TRT): pencere dışındaysa hiçbir şey paylaşılmaz, durum dosyalarına dokunulmaz.
+  if (!postWindowOpen('Haftalık liste')) return;
+
   const { date, entries } = await fetchWeeklyChart();
 
   if (!date || entries.length === 0) {

@@ -1,3 +1,4 @@
+import { postWindowOpen } from './postWindow.js';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, formatChartPost, pickFittingTopN } from './dailyChart.js';
 import { loadChartState, saveChartState } from './chartState.js';
@@ -8,6 +9,9 @@ import { makeChartVideo, makeChartThread, buildChartThreadItems, tiktokChartPost
 import { tagText } from './artistHandles.js';
 
 async function main() {
+  // Paylaşım penceresi (TRT): pencere dışındaysa hiçbir şey paylaşılmaz, durum dosyalarına dokunulmaz.
+  if (!postWindowOpen('Günlük liste')) return;
+
   const { date, entries } = await fetchDailyChart();
 
   if (!date || entries.length === 0) {

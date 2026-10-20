@@ -60,6 +60,11 @@ Pencereler: **A 12:30-13:30**, **B 20:30-22:30**, (TikTok testi için) **C 08:00
 | **Top 50 sanatçı sayımı (yeni, haftalık)** | Cumartesi 21:30 | kanıtlanmış en iyi içerik, aynı saat |
 | TikTok (günde 3) | 12:45, 21:00 + 1 deneme (08:30 / 17:30 dönüşümlü) | TR kaynakları; coğrafya doğrulanana kadar deneme |
 
+## 4b. Uygulanan (20 Ekim 2026)
+Kullanıcı ABD'de yaşıyor; tüm çalışma Türkiye saatine göre. Gece paylaşımları (ör. 02:00 TRT) kaldırıldı: **paylaşım penceresi 09:00-23:30 TRT**
+(`src/postWindow.js`, ayar: Actions değişkeni `POST_WINDOW`). Pencere dışında tüm paylaşım betikleri atlanır; elle çalıştırma pencereyi yok sayar.
+Saat bazlı zamanlama (12:45, 21:00 gibi sabit saatler) ve trend olaylarının 30 dk arayla yayılması henüz uygulanmadı; ayrı onay bekliyor.
+
 ## 5. Test planı
 
 - 14 gün aynı kural; ölçüt: X'te gösterim ve etkileşim medyanı, TikTok'ta **48 saat dolmuş** gönderilerin izlenmesi (yaşa göre normalize).

@@ -1,3 +1,4 @@
+import { postWindowOpen } from './postWindow.js';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { fetchGlobalChart } from './globalChart.js';
 import { loadTrendsState, saveTrendsState, emptyTrendsState, highestMilestone } from './trendsState.js';
@@ -39,6 +40,9 @@ async function postEvent(text, trackUrl, handle) {
 }
 
 async function main() {
+  // Paylaşım penceresi (TRT): pencere dışındaysa hiçbir şey paylaşılmaz, durum dosyalarına dokunulmaz.
+  if (!postWindowOpen('Trend kontrolü')) return;
+
   const { date, entries } = await fetchDailyChart();
   if (!date || entries.length === 0) {
     console.error('Chart verisi alinamadi, cikiliyor.');

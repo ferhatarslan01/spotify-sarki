@@ -47,6 +47,18 @@ node tools/comfy/makeLoop.mjs temiz.mp4 video/assets/anniv-bg.mp4
 
 Dosya yoksa şablon eski (ızgara) arka planla çalışır.
 
+## Paylaşım penceresi (Türkiye saati)
+
+Tüm saatler **Türkiye saatiyle** (Europe/Istanbul, UTC+3) hesaplanır; kullanıcının ya da makinenin yerel saati (ör. ABD) hiçbir yerde kullanılmaz.
+**Varsayılan pencere 09:00-23:30 TRT.** Bu aralığın dışında çalışan paylaşım betikleri hiçbir şey paylaşmadan ve durum dosyalarına dokunmadan çıkar;
+gece biriken olaylar (yeni şarkı, liste değişimi) sabah pencere açılınca yakalanıp paylaşılır. Pencere açılış turunda (ilk 3 saat) yeni şarkı kontrolü
+tüm sanatçıları tarar, böylece gece çıkan şarkı sabah gecikmeden bulunur.
+
+- Pencereyi değiştirmek: GitHub → Settings → Secrets and variables → Actions → **Variables** → `POST_WINDOW` = örn. `10:00-23:00` (kodda değişiklik gerekmez).
+- Elle çalıştırma (Actions → Run workflow) pencereyi **yok sayar** (`POST_WINDOW=off`), test için.
+- Yerelde: `POST_WINDOW=off node --env-file=.env src/postDuel.js` gibi.
+- Mantık `src/postWindow.js` içinde; gece yarısını aşan pencereler (örn. `22:00-02:00`) de desteklenir.
+
 ## Klasörler
 
 - `src/` bot kodu. `videoPrep.js` (veri + ses), `remotionRender.js` (render), `tiktokVideo.js` (karar + paylaşım).

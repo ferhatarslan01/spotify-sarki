@@ -1,3 +1,4 @@
+import { postWindowOpen, isOpeningRun } from './postWindow.js';
 import { artists } from './artists.js';
 import { getAccessToken, getRecentReleases, QuotaError } from './spotify.js';
 import { loadSpotifyBlock, saveSpotifyBlock } from './spotifyBlock.js';
@@ -33,6 +34,9 @@ function checkAnniversary(release, today) {
 }
 
 async function main() {
+  // Paylaşım penceresi (TRT): pencere dışındaysa hiçbir şey paylaşılmaz, durum dosyalarına dokunulmaz.
+  if (!postWindowOpen('Yeni şarkı kontrolü')) return;
+
   const block = await loadSpotifyBlock();
   if (block) {
     console.log(`Spotify kotası dolu; engel ${block.until} tarihine kadar sürüyor (~${Math.round(block.remainingSeconds / 3600)} saat), bu tur atlanıyor.`);
@@ -55,11 +59,13 @@ async function main() {
   // Spotify kotasini (QUOTA_EXCEEDED) zorlamamak icin sanatcilar iki gruba bolunur,
   // her calistirma siradaki grubu kontrol eder (her sanatci yine ~6 saatte bir kontrol edilir).
   // CHECK_ALL=1 ile hepsi tek seferde kontrol edilir.
+  // Paylaşım penceresi açıldığında (TRT) gece atlanan turları telafi etmek için ilk turda da hepsi kontrol edilir.
   const slot = Math.floor(Date.now() / BATCH_WINDOW_MS) % BATCH_COUNT;
+  const openingRun = isOpeningRun();
   const batch =
-    process.env.CHECK_ALL === '1' ? artists : artists.filter((_, i) => i % BATCH_COUNT === slot);
+    process.env.CHECK_ALL === '1' || openingRun ? artists : artists.filter((_, i) => i % BATCH_COUNT === slot);
   console.log(
-    `Bu çalıştırmada ${batch.length}/${artists.length} sanatçı kontrol ediliyor (grup ${slot + 1}/${BATCH_COUNT}).\n`
+    `Bu çalıştırmada ${batch.length}/${artists.length} sanatçı kontrol ediliyor (${openingRun ? 'pencere açılış turu: hepsi' : `grup ${slot + 1}/${BATCH_COUNT}`}).\n`
   );
 
   const token = await getAccessToken();

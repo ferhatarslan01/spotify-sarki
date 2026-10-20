@@ -1,3 +1,4 @@
+import { postWindowOpen } from './postWindow.js';
 import { loadWeeklyLog, clearWeeklyLog } from './weeklyLog.js';
 import { publishThread, publishThreadWithVideo } from './bufferPost.js';
 import { makeDigestVideo, hostVideo, tiktokDigestPostPrepared } from './tiktokVideo.js';
@@ -5,6 +6,9 @@ import { tagText, trackedByName } from './artistHandles.js';
 import { ctaFor } from './cta.js';
 
 async function main() {
+  // Paylaşım penceresi (TRT): pencere dışındaysa hiçbir şey paylaşılmaz, durum dosyalarına dokunulmaz.
+  if (!postWindowOpen('Haftalık özet')) return;
+
   const log = await loadWeeklyLog();
 
   if (log.length === 0) {

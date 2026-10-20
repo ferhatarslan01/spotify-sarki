@@ -11,7 +11,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 |---|---|---|
 | Yeni şarkı/albüm (3 saatte bir) | kare oynatıcı videosu | **NewRelease** ailesi: 9 şablon (aşağıda), şarkıya göre dönüşümlü |
 | Yıl dönümü | kare oynatıcı videosu | **Anniversary**: VHS geri sarma |
-| Sırada +10 ve üstü yükseliş | kare oynatıcı videosu | **RankRise** ailesi: 4 şablon (aşağıda), sıralı döngü |
+| Sırada +10 ve üstü yükseliş | kare oynatıcı videosu | **RankRise** ailesi: 7 şablon (aşağıda), sıralı döngü |
 | İlk kez Top 10 / stream rekoru / dünya listesi | kare oynatıcı videosu | **NewRelease** (özel metinlerle) |
 | Günlük / haftalık Türkiye Top 5 | **5 tweetlik thread**: her şarkı kendi kare videosu | **TopBoard**: kalkış tablosu |
 | Pazar gecesi haftalık özet | thread (ilk tweet video) | **TopBoard** (haftanın yeni şarkıları) |
@@ -98,12 +98,15 @@ Gerçek yeni şarkı/albüm için TikTok videosu 9 şablondan birini alır. Seç
 | `terminal` | Piyasa raporu: finans terminali, ticker kodu, dün → bugün sıra grafiği, istatistik kartları, kayan komşu bandı |
 | `yayin` | Canlı yayın: TV/spor grafiği, dönen sıra göstergesi (DÜN → BUGÜN), "+N SIRA" slam'i, alt bant |
 | `kart` | Dergi kartı: düz renk blokları, dev tipografi, kart geçişleri, zirve ilerleme çubuğu |
+| `roket` | Görev kontrol: sıra = irtifa; geri sayım, kalkış, akan irtifa cetveli, kapak "yük" olarak, "yörüngeye X sıra kaldı" |
+| `transfer` | Transfer haberi: SON DAKİKA → sözleşme + imza → RESMEN damgası + konfeti → forma (numara = yeni sıra) ve oyuncu kartı |
+| `radar` | Hız radarı: sınır 10 sıra/gün, kapak yaklaşır, radar okuması +N, flaş, ceza makbuzu (aşım = N/10) |
 
 - Tüm rakamlar gerçek: dün/bugün sırası, günlük + toplam stream, zirveye kalan sıra, listedeki komşular. Grafikteki eğri yalnızca iki gerçek nokta arasındaki görsel geçiştir.
-- Kapatmak için `RISE_VARIANTS=0` (hep `rise`); havuzu kısıtlamak için `RISE_ONLY=terminal,yayin`.
+- Kapatmak için `RISE_VARIANTS=0` (hep `rise`); havuzu kısıtlamak için `RISE_ONLY=terminal,roket`.
 - Şablon hazırlanamazsa otomatik klasik `rise`'a, o da olmazsa yedek Node motoruna düşer. AI etiketi gerekmez (ComfyUI yok).
 - X'e kare "kapak + oynatıcı" videosu gitmeye devam eder.
-- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only rv` (ya da `rv-terminal`, `rv-yayin`, `rv-kart`); çıktı `preview/yukselis-*.mp4`.
+- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only rv` (ya da `rv-terminal`, `rv-yayin`, `rv-kart`, `rv-roket`, `rv-transfer`, `rv-radar`); çıktı `preview/yukselis-*.mp4`.
 - Kod: `video/src/Rise*.tsx`, veri + ses `src/videoPrep.js` (`RISE_TEMPLATES`, `prepRiseVariant`).
 
 ## Paylaşım penceresi (Türkiye saati)

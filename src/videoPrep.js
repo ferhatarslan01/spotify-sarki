@@ -999,6 +999,81 @@ export const RISE_TEMPLATES = {
       sfx.whoosh(c.OUTRO, 1.1, 0.35, 5000, 250);
     },
   },
+  // Roket (gorev kontrol): sira = irtifa; geri sayim, kalkis, yuk teslimi
+  roket: {
+    composition: 'RiseRoket',
+    DUR: 17,
+    START: 2.6,
+    ARRIVAL: 6.0,
+    OUTRO: 14.2,
+    sfx(sfx, c) {
+      [0.2, 0.9, 1.6].forEach((t) => sfx.tick(t, 0.5, 900)); // geri sayim
+      sfx.tick(c.START, 0.7, 1500);
+      sfx.motor(1.9, c.ARRIVAL + 0.2, 38, 110, 0.3); // motor
+      sfx.hiss(1.9, c.ARRIVAL + 0.6, 0.11); // ates
+      sfx.boom(c.START, 1.0, 58);
+      sfx.whoosh(c.START, c.ARRIVAL - c.START, 0.35, 300, 4200);
+      tickRanks(sfx, c, 0.2, 2200);
+      sfx.slowdown(c.ARRIVAL + 0.1, 0.6, 400, 0.2); // motor kesildi
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => sfx.ding(c.ARRIVAL + 0.1 + i * 0.12, f, 0.42, 0.7)); // misyon basarili
+      sfx.tick(c.ARRIVAL + 1.0, 0.4, 2800);
+      sfx.whoosh(c.OUTRO, 1.1, 0.35, 5000, 250);
+    },
+  },
+  // Transfer haberi: SON DAKIKA -> sozlesme + imza -> RESMEN damgasi -> forma (numara = yeni sira)
+  transfer: {
+    composition: 'RiseTransfer',
+    DUR: 17,
+    START: 3.2,
+    ARRIVAL: 5.8,
+    OUTRO: 14.2,
+    sfx(sfx, c) {
+      sfx.boom(0.2, 0.8, 78);
+      sfx.whoosh(0.1, 0.5, 0.5, 300, 5500);
+      [523.25, 659.25, 783.99].forEach((f, i) => sfx.ding(0.35 + i * 0.15, f, 0.5, 0.45)); // haber jenerigi
+      for (let i = 0; i < 32; i++) sfx.tick(1.55 + i * 0.04, 0.16, 2600 + (i % 5) * 80); // haber yaziliyor
+      sfx.whoosh(2.6, 0.6, 0.4, 400, 3500); // sozlesme kagidi
+      sfx.hiss(c.ARRIVAL - 1.15, c.ARRIVAL - 0.15, 0.06); // kalem
+      tickRanks(sfx, c, 0.2, 2400);
+      sfx.boom(c.ARRIVAL, 1.0, 66); // damga
+      sfx.tick(c.ARRIVAL, 0.9, 500);
+      sfx.whoosh(c.ARRIVAL + 0.05, 0.9, 0.5, 600, 7000); // konfeti / tribun
+      [880, 1108.7, 1318.5, 1760].forEach((f, i) => sfx.ding(c.ARRIVAL + 0.1 + i * 0.08, f, 0.4, 0.6));
+      sfx.whoosh(6.9, 0.6, 0.35, 500, 4000); // forma
+      sfx.ding(7.7, 1046.5, 0.4, 0.6);
+      sfx.whoosh(c.OUTRO, 1.1, 0.35, 5000, 250);
+    },
+  },
+  // Hiz radari: sinir 10 sira/gun, radar okumasi, flas, ceza makbuzu
+  radar: {
+    composition: 'RiseRadar',
+    DUR: 17,
+    START: 2.4,
+    ARRIVAL: 5.2,
+    OUTRO: 14.0,
+    marks: { print: 6.8, step: 0.36, stamp: 11.5 },
+    sfx(sfx, c) {
+      sfx.hiss(0.0, 1.2, 0.04); // gece ortami
+      sfx.whoosh(1.1, c.ARRIVAL - 1.1, 0.45, 200, 3800); // arac yaklasiyor
+      let tt = c.START;
+      let gap = 0.34;
+      while (tt < c.ARRIVAL) {
+        sfx.tick(tt, 0.32, 2300 + (tt - c.START) * 400); // radar bipleri hizlanir
+        gap = Math.max(0.07, gap * 0.88);
+        tt += gap;
+      }
+      sfx.tick(c.ARRIVAL, 0.9, 600); // deklansor
+      sfx.tick(c.ARRIVAL + 0.05, 0.7, 1300);
+      sfx.whoosh(c.ARRIVAL - 0.15, 0.5, 0.5, 7000, 300); // flas sarji
+      sfx.boom(c.ARRIVAL, 0.8, 90);
+      [0, 1, 2].forEach((i) => sfx.ding(c.ARRIVAL + 0.25 + i * 0.18, 1568, 0.32, 0.15)); // alarm
+      sfx.whoosh(c.marks.print - 0.6, 0.5, 0.35, 500, 3000); // makbuz
+      sfx.clatter(c.marks.print, 12 * c.marks.step, 22, 0.12); // yazici
+      sfx.boom(c.marks.stamp, 0.7, 100);
+      sfx.tick(c.marks.stamp, 0.8, 500);
+      sfx.whoosh(c.OUTRO, 1.1, 0.35, 5000, 250);
+    },
+  },
   // Dergi karti: duz renk bloklari + dev tipografi, kart gecisleri
   kart: {
     composition: 'RiseKart',

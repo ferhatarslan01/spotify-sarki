@@ -14,6 +14,9 @@ import { NRKaset } from "./NRKaset";
 import { NRTahmin } from "./NRTahmin";
 import { NRRadyo } from "./NRRadyo";
 import { NRMesaj } from "./NRMesaj";
+import { RiseRadar } from "./RiseRadar";
+import { RiseTransfer } from "./RiseTransfer";
+import { RiseRoket } from "./RiseRoket";
 import { RiseKart } from "./RiseKart";
 import { RiseYayin } from "./RiseYayin";
 import { RiseTerminal } from "./RiseTerminal";
@@ -165,6 +168,30 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="RiseKart"
         component={RiseKart}
+        durationInFrames={frames(risev.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="RiseRoket"
+        component={RiseRoket}
+        durationInFrames={frames(risev.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="RiseTransfer"
+        component={RiseTransfer}
+        durationInFrames={frames(risev.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="RiseRadar"
+        component={RiseRadar}
         durationInFrames={frames(risev.durationSeconds)}
         fps={FPS}
         width={1080}

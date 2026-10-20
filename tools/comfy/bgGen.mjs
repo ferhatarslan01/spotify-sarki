@@ -1,6 +1,6 @@
 // Yerel ComfyUI (Wan 2.2 TI2V 5B) ile arka plan videosu uretir. Tek seferlik: sonuc repoya konur, bulutta GPU gerekmez.
 // Kullanim: node tools/comfy/bgGen.mjs <stil> [--draft] [--seed N] [--frames 121]
-//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2 | phone1 | phone2   (asagidaki STYLES)
+//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2 | phone1 | phone2 | vinyl1 | vinyl1b | vinyl2   (asagidaki STYLES)
 //   --draft: kucuk boyut (480x864) hizli onizleme; yoksa 704x1280.
 //   --cool N / --rest S: GPU N C altinda ve S sn bosta kalana kadar bekle (varsayilan 50 C / 0 sn: GPU 50 C altina inince baslar; --cool 0 = bekleme yok).
 //   --tiled: VAE'yi parcali cozer (8 GB VRAM'de buyuk boyutta takilmayi onler).
@@ -27,6 +27,32 @@ const NEGATIVE_BACK =
   NEGATIVE_PERSON + ', profile view, side view, visible face, face visible, open mouth, smiling, looking sideways, turning head';
 
 const STYLES = {
+  vinyl1: {
+    note: '80ler girisi, sahne 1: pikabin kolunu plaga indiren, sirti donuk',
+    negative: NEGATIVE_BACK,
+    prompt:
+      'Cinematic vertical shot from directly behind: a young person in 1980s clothes, a loose bright windbreaker jacket and a headband, with big voluminous hair, ' +
+      'kneels beside a wooden hi-fi cabinet in a 1980s living room with wood-paneled walls and an orange tulip lamp, seen only from behind. ' +
+      'They carefully lower the tonearm onto a spinning vinyl record on the turntable, a stack of vinyl records beside them. ' +
+      'Warm amber lamp light, dust floating in the light, analog film grain, shallow depth of field, ' +
+      'slow camera push-in from behind the shoulder, nostalgic mood.',
+  },
+  vinyl1b: {
+    note: '80ler girisi, sahne 1 (v2): genis kadraj, yerde oturan, pikabin kolunu indiren, sade ceket',
+    negative: NEGATIVE_BACK + ', logo on clothes, writing on jacket, scribbles',
+    prompt:
+      'Cinematic vertical wide shot from behind and slightly to the side: a young person in 1980s clothes, a plain solid teal windbreaker jacket without any logos or writing, and jeans, ' +
+      'with big voluminous curly hair, sits cross-legged on the floor of a 1980s living room with wood-paneled walls, facing a wooden hi-fi cabinet where a turntable with a spinning vinyl record ' +
+      'sits at eye level next to a glowing orange tulip lamp. They reach up and lower the tonearm onto the record, a stack of vinyl records on the floor beside them. ' +
+      'Warm amber lamp light, dust floating in the light, analog film grain, shallow depth of field, slow camera push-in, nostalgic mood, the face is never visible.',
+  },
+  vinyl2: {
+    note: '80ler girisi, sahne 2: donen plak ve igne yakin plan',
+    negative: NEGATIVE_PERSON,
+    prompt:
+      'Extreme close-up of a vintage 1980s vinyl record spinning on a turntable, the tonearm needle riding the groove, warm golden light reflecting on the black vinyl grooves, ' +
+      'tiny dust particles floating, a red record label, shallow depth of field, analog film grain, slow camera push-in, nostalgic mood, no hands, no text.',
+  },
   phone1: {
     note: '2010lar girisi, sahne 1: sirti donuk, yatak kenarinda telefonuyla muzik acan (yuz gorunmez)',
     negative: NEGATIVE_BACK,

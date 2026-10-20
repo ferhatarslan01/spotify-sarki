@@ -1,5 +1,5 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era90,era2000,era2010,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era80,era90,era2000,era2010,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
@@ -133,6 +133,12 @@ async function main() {
   }
   // Donem girisli yil donumu onizlemeleri: era90 (1990-1999) ve era2000 (2000-2009); klipleri hazir olan donemler calisir.
   const ERA_PREVIEWS = [
+    {
+      key: 'era80',
+      name: 'yildonumu-80ler',
+      decade: /^198\d/,
+      queries: ['Baris Manco Gul Pembe', 'Sezen Aksu Hadi Bakalim', 'MFO Ele Gune Karsi Yapayalniz', 'Ajda Pekkan Yakar Gecerim', 'Cem Karaca Resimdeki Gozyaslari', 'Ibrahim Tatlises', 'Ferdi Tayfur Huzurum Kalmadi', 'Baris Manco Can Bedenden Cikmayinca', 'Sezen Aksu Gulumse'],
+    },
     {
       key: 'era90',
       name: 'yildonumu-90lar',

@@ -1,5 +1,6 @@
 // ComfyUI sahne klibini dönem girişi için hazırlar: kırp, 30 fps, 1080x1920, (ops.) parlaklık/ısı düzeltmesi ve film greni.
-// Kullanım: node tools/comfy/makeEraClip.mjs <girdi.mp4> <cikti.mp4> [--start 0] [--dur 5] [--gamma 1] [--sat 1] [--warm 0] [--grain 0]
+// Kullanım: node tools/comfy/makeEraClip.mjs <girdi.mp4> <cikti.mp4> [--start 0] [--dur 5] [--gamma 1] [--sat 1] [--warm 0] [--grain 0] [--crop x,y,w,h]
+//   --crop: kadrajin bir kismini (oran 0-1) alir, sonra 1080x1920'ye olcekler (en-boy orani korunmali). Ornek: --crop 0.1,0,0.9,0.9 (alt %10 ve sol %10 atilir).
 //   --gamma 2.2  : karanlık sahneyi açar (ör. hoparlör sahnesi)   --warm 0.1: kırmızı/sarı yönüne ısıtır (yeşilimsi tonu giderir)
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -18,10 +19,12 @@ const gamma = opt('--gamma', 1);
 const sat = opt('--sat', 1);
 const warm = opt('--warm', 0);
 const grain = opt('--grain', 0);
+const cropArg = args.includes('--crop') ? args[args.indexOf('--crop') + 1].split(',').map(Number) : null;
 
 const filters = [
   `trim=start=${start}:duration=${dur}`,
   'setpts=PTS-STARTPTS',
+  ...(cropArg ? [`crop=iw*${cropArg[2]}:ih*${cropArg[3]}:iw*${cropArg[0]}:ih*${cropArg[1]}`] : []),
   'fps=30',
   'scale=1080:1920:flags=lanczos',
   'setsar=1',

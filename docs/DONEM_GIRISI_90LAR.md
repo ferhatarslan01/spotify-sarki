@@ -37,3 +37,10 @@ başında filtre tam banda açılır. Mevcut `Anniversary` kompozisyonu `Sequenc
 - Sahne 1: yatak kenarında oturan, sırtı dönük, ters şapkalı ve kapüşonlu biri (sarı led ışık zinciri, polaroidler, mor led şerit); sonunda telefonunu kaldırır. Sahne 2: pembe halkalı silindirik bluetooth hoparlör, yanında ekranı yanan telefon, altın/pembe bokeh.
 - İlk sahne denemesi profilden çekimdi ve yüz görünüyordu (reddedildi); yeniden sırtı dönük olarak üretildi (`NEGATIVE_BACK` ile).
 - Klipler: `video/assets/era2010-s1.mp4` (leke temizliği `cleanBlobs.py --region 0,0,0.6,0.28`), `era2010-s2.mp4`. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era2010`.
+
+## 80'ler (hazır, 19 Ekim 2026)
+- `ERAS['80s']`: vurgu kırmızı-turuncu `#ff5a36`, plak profili hp 60 / lp 12000 Hz, plak cızırtısı (`crackle`), S1_END 4.8 sn, şarkı girişi 2.2. sn. Dönem etiketi artık gösterilmiyor (yalnızca "KAÇ YIL OLDU?" kancası).
+- Sahne 1: yerde bağdaş kurmuş, sırtı dönük, kıvırcık saçlı, petrol yeşili ceketli biri pikabın başında (ahşap panel, turuncu abajur). İlk deneme (kamburlaşmış poz, ceket sırtında logo karalaması) reddedildi; `vinyl1b` istemi (geniş kadraj, sade ceket, `NEGATIVE_BACK` + logo engeli) ile yeniden üretildi.
+- Sahne 2: dönen, turuncu etiketli plak ve pikap (soluk benek artefaktları `cleanBlobs.py --region 0,0,1,0.3` ile temizlendi).
+- Klipler: `video/assets/era80-s1.mp4`, `era80-s2.mp4`. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only era80`.
+- Canlıya açmak: `ERA_INTROS=80s,90s,2000s,2010s` (ya da `1`).

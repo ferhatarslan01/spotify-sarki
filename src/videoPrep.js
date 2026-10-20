@@ -684,3 +684,177 @@ export async function prepAnniversaryEra(args) {
 export async function prepAnniversaryAuto(args) {
   return eraClipsFor(Number(String(args.releaseDate).slice(0, 4))) ? prepAnniversaryEra(args) : prepAnniversary(args);
 }
+
+// ---------------------------------------------------------------- "Yeni cikti" sablon ailesi
+// Her sablon: Remotion bileseni + sure/acilis zamani + ses efekti tasarimi (+ ops. ComfyUI arka plan dongusu: video/assets/<bg>).
+// Hepsi ortak veri dosyasini (nrvar) ve ayni ses kurgusunu (acilistan once yukselis/vuruslar, acilista sarki baslar) kullanir.
+export const NR_TEMPLATES = {
+  fragman: {
+    composition: 'NRFragman',
+    DUR: 15,
+    REVEAL: 6.2,
+    OUTRO: 13.0,
+    bg: 'nr-fragman-bg.mp4',
+    sfx(sfx, c) {
+      sfx.riser(0.2, c.REVEAL - 0.12, 0.7);
+      sfx.boom(1.0, 0.5, 62); // BU HAFTA
+      sfx.boom(2.5, 0.7, 60); // YENI BIR SARKI
+      sfx.boom(4.1, 0.95, 56); // SANATCI
+      sfx.boom(c.REVEAL, 1.0, 72);
+      sfx.whoosh(c.REVEAL, 0.9, 0.5, 400, 7000);
+      sfx.whoosh(c.OUTRO, 1.2, 0.4, 5000, 250);
+    },
+  },
+};
+
+NR_TEMPLATES.bulten = {
+  composition: 'NRBulten',
+  DUR: 15,
+  REVEAL: 2.6,
+  OUTRO: 13.2,
+  bg: 'nr-bulten-bg.mp4',
+  sfx(sfx, c) {
+    // haber jenerigi: acilis vurusu + uc notalik jingle, sonra acilista vurus
+    sfx.boom(0.15, 0.8, 80);
+    sfx.whoosh(0.1, 0.4, 0.5, 300, 5000);
+    [523.25, 659.25, 783.99].forEach((f, i) => sfx.ding(0.3 + i * 0.16, f, 0.55, 0.45));
+    sfx.riser(1.3, c.REVEAL - 0.1, 0.5);
+    sfx.boom(c.REVEAL, 0.9, 70);
+    sfx.whoosh(c.REVEAL + 0.3, 0.6, 0.35, 500, 4500);
+    sfx.whoosh(c.OUTRO, 1.2, 0.35, 5000, 250);
+  },
+};
+
+NR_TEMPLATES.kilit = {
+  composition: 'NRKilit',
+  DUR: 15,
+  REVEAL: 3.4,
+  OUTRO: 13.2,
+  bg: null,
+  sfx(sfx, c) {
+    // telefon bildirimi: iki kisa titresim + bildirim tonu, dokunus tiki, acilista yumusak vurus
+    sfx.motor(1.1, 1.22, 70, 70, 0.35);
+    sfx.motor(1.3, 1.42, 70, 70, 0.35);
+    sfx.ding(1.12, 1318.5, 0.5, 0.45);
+    sfx.ding(1.3, 1760, 0.4, 0.5);
+    sfx.tick(c.REVEAL - 0.5, 0.6, 900);
+    sfx.whoosh(c.REVEAL - 0.1, 0.5, 0.3, 300, 3500);
+    sfx.boom(c.REVEAL, 0.55, 90);
+    sfx.whoosh(c.OUTRO, 1.2, 0.3, 5000, 250);
+  },
+};
+
+NR_TEMPLATES.neon = {
+  composition: 'NRNeon',
+  DUR: 15,
+  REVEAL: 5.2,
+  OUTRO: 13.0,
+  bg: 'nr-neon-bg.mp4',
+  sfx(sfx, c) {
+    // neon tupler: ariza cizirtilari + harflerin yanisi, sonra acilis vurusu
+    sfx.hiss(0.9, 1.8, 0.07);
+    [0.9, 1.0, 1.12, 1.25, 1.45].forEach((x) => sfx.tick(x, 0.5, 2600));
+    sfx.boom(1.5, 0.5, 66);
+    for (let i = 0; i < 7; i++) sfx.tick(2.4 + i * 0.07, 0.35, 3200);
+    sfx.riser(3.4, c.REVEAL - 0.08, 0.6);
+    sfx.boom(c.REVEAL, 1.0, 68);
+    sfx.whoosh(c.REVEAL, 0.8, 0.45, 600, 7000);
+    sfx.whoosh(c.OUTRO, 1.2, 0.35, 5000, 250);
+  },
+};
+
+NR_TEMPLATES.kaset = {
+  composition: 'NRKaset',
+  DUR: 15,
+  REVEAL: 3.2,
+  OUTRO: 13.2,
+  bg: 'nr-kaset-bg.mp4',
+  sfx(sfx, c) {
+    // kaset: masaya dusus, kalem hissi, PLAY tusu (tik-tak) + bant sesi (hiss + motor), sonra sarki
+    sfx.boom(0.9, 0.5, 120);
+    sfx.clatter(1.3, 1.0, 14, 0.12);
+    sfx.tick(c.REVEAL - 0.35, 0.9, 700);
+    sfx.tick(c.REVEAL - 0.3, 0.5, 1500);
+    sfx.hiss(c.REVEAL - 0.3, c.REVEAL + 1.4, 0.08);
+    sfx.motor(c.REVEAL - 0.3, c.REVEAL + 0.7, 60, 140, 0.18);
+    sfx.whoosh(c.OUTRO, 1.2, 0.3, 5000, 250);
+  },
+};
+
+// Varsa ComfyUI arka plan dongusu (video/assets/<dosya>)
+async function loadNrBackground(file) {
+  if (!file) return null;
+  const path = join(process.cwd(), 'video', 'assets', file);
+  if (!existsSync(path)) return null;
+  const { stdout } = await run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', path]);
+  return { buffer: await readFileBuf(path), seconds: Number(stdout.trim()) };
+}
+
+// Sarki/albüm kimligine gore sablon: ayni sarki hep ayni sablonu alir, farkli sarkilar dagilir ('drop' = ilk, yukleniyor->DROP sablonu).
+// NR_ONLY=fragman,drop,... ile kisitlanabilir.
+export function pickNewReleaseTemplate(seed, names = ['drop', ...Object.keys(NR_TEMPLATES)]) {
+  const only = (process.env.NR_ONLY ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  const pool = only.length ? names.filter((n) => only.includes(n)) : names;
+  if (pool.length === 0) return null;
+  let h = 0;
+  for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return pool[h % pool.length];
+}
+
+// Gercek yeni cikti icin sablon adi: sarki kimligine gore 'drop' ya da NR_TEMPLATES anahtari. NR_VARIANTS=0 -> hep 'drop'.
+export function newReleaseVariantFor(seed) {
+  if (process.env.NR_VARIANTS === '0' || !seed) return 'drop';
+  return pickNewReleaseTemplate(seed) ?? 'drop';
+}
+
+// ComfyUI (yapay zeka) arka plani kullanan sablonlar TikTok/X'te "AI ile uretildi" etiketi alir.
+export function nrVariantUsesAi(name) {
+  return Boolean(NR_TEMPLATES[name]?.bg);
+}
+
+export async function prepNewReleaseVariant(template, { artist, title, cover, audioUrl, dateText }) {
+  const cfg = NR_TEMPLATES[template];
+  if (!cfg) throw new Error(`Bilinmeyen yeni cikti sablonu: ${template}`);
+  const { DUR, REVEAL, OUTRO } = cfg;
+  const cover800 = await squareJpeg(cover, 800, 92);
+  const hue = await hueOf(sharp, cover800);
+  const bg = await loadNrBackground(cfg.bg);
+
+  return withTmp(async (dir) => {
+    const prev = join(dir, 'prev.bin');
+    await writeFile(prev, await fetchBuf(audioUrl));
+    const segD = DUR - REVEAL - 1.2;
+    const hookSS = await findHookStart(prev, segD);
+
+    const sfx = makeSfx(DUR, 17);
+    cfg.sfx(sfx, cfg);
+    await sfx.writeWav(join(dir, 'sfx.wav'));
+    await buildMusic({ prev, hookSS, segD, delayMs: Math.round(REVEAL * 1000), dur: DUR, out: join(dir, 'music.wav') });
+    await mixMusicAndSfx(join(dir, 'music.wav'), join(dir, 'sfx.wav'), join(dir, 'mix.wav'));
+    const bands = await analyzeBands(join(dir, 'music.wav'), DUR);
+
+    return {
+      composition: cfg.composition,
+      dataKey: 'nrvar',
+      data: {
+        artist,
+        title,
+        dateText,
+        hue,
+        fps: FPS,
+        durationSeconds: DUR,
+        reveal: REVEAL,
+        outro: OUTRO,
+        hookStart: hookSS,
+        bands,
+        bg: Boolean(bg),
+        bgSeconds: bg?.seconds ?? 0,
+      },
+      assets: [
+        { name: 'nrvar-cover.jpg', buffer: cover800 },
+        { name: 'nrvar-soundtrack.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) },
+        ...(bg ? [{ name: 'nrvar-bg.mp4', buffer: bg.buffer }] : []),
+      ],
+    };
+  });
+}

@@ -1,6 +1,6 @@
 // Yerel ComfyUI (Wan 2.2 TI2V 5B) ile arka plan videosu uretir. Tek seferlik: sonuc repoya konur, bulutta GPU gerekmez.
 // Kullanim: node tools/comfy/bgGen.mjs <stil> [--draft] [--seed N] [--frames 121]
-//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2 | phone1 | phone2 | vinyl1 | vinyl1b | vinyl2   (asagidaki STYLES)
+//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2 | phone1 | phone2 | vinyl1 | vinyl1b | vinyl2 | projector | newsroom | neonstage | deskwarm   (asagidaki STYLES)
 //   --draft: kucuk boyut (480x864) hizli onizleme; yoksa 704x1280.
 //   --cool N / --rest S: GPU N C altinda ve S sn bosta kalana kadar bekle (varsayilan 50 C / 0 sn: GPU 50 C altina inince baslar; --cool 0 = bekleme yok).
 //   --tiled: VAE'yi parcali cozer (8 GB VRAM'de buyuk boyutta takilmayi onler).
@@ -27,6 +27,32 @@ const NEGATIVE_BACK =
   NEGATIVE_PERSON + ', profile view, side view, visible face, face visible, open mouth, smiling, looking sideways, turning head';
 
 const STYLES = {
+  // ---- "Yeni cikti" sablonlarinin arka plan dongüleri (insansiz, yazisiz)
+  projector: {
+    note: 'Fragman sablonu: projektor huzmesi, toz ve duman',
+    prompt:
+      'Cinematic vertical shot inside a dark old cinema projection room: a bright warm-white projector light beam cuts diagonally through thick haze, ' +
+      'countless dust particles float and swirl inside the beam, volumetric light, deep black shadows, subtle flicker, analog film grain, ' +
+      'slow gentle drift, no people, no text.',
+  },
+  newsroom: {
+    note: 'Muzik Bulteni sablonu: bos yayin studyosu',
+    prompt:
+      'Cinematic vertical shot of an empty modern TV news studio at night: a wall of large glowing blue and red screens showing blurred abstract graphics, ' +
+      'a glossy reflective floor, soft studio spotlights, shallow depth of field, slow camera push-in, no people, nothing readable on the screens, no text.',
+  },
+  neonstage: {
+    note: 'Neon sahne sablonu: duman icinde neon huzmeler',
+    prompt:
+      'Cinematic vertical shot of an empty concert stage in thick haze: magenta, cyan and purple neon light beams sweep through the smoke, ' +
+      'a glowing neon tube rectangle frame hangs in the center, a reflective floor, floating particles, analog film grain, slow camera push-in, no people, no text.',
+  },
+  deskwarm: {
+    note: 'Kaset sablonu: sicak masa, kasetler',
+    prompt:
+      'Cinematic vertical close-up of a warm wooden desk at night: a vintage cassette player and scattered cassette tapes in the light of a desk lamp, soft golden glow, ' +
+      'dust particles floating in the light, shallow depth of field, slow camera push-in, nostalgic mood, no people, no text.',
+  },
   vinyl1: {
     note: '80ler girisi, sahne 1: pikabin kolunu plaga indiren, sirti donuk',
     negative: NEGATIVE_BACK,

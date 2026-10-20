@@ -120,6 +120,7 @@ async function main() {
             coverUrl: latest.imageUrl,
             caption: text,
             template: 'NewRelease',
+            variantSeed: latest.id, // sarkiya gore yeni cikti sablonu (ayni sarki hep ayni sablon)
             templateData: {
               dateText: formatDate(latest.releaseDate),
             },

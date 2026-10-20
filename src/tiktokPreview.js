@@ -1,9 +1,9 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,era70,era80,era90,era2000,era2010,era2020,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,era70,era80,era90,era2000,era2010,era2020,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES } from './videoPrep.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 
@@ -129,6 +129,14 @@ async function main() {
         const side = async (e) => ({ ...(await trackInput(e)), rank: e.rank, streams: e.streams });
         return prepDuel({ a: await side(pair.a), b: await side(pair.b), dateShort: `${dd}.${mm}.${yyyy.slice(2)}` });
       },
+    ]);
+  }
+  // "Yeni cikti" sablon ailesi: --only nr (hepsi) ya da nr-fragman gibi tek tek
+  for (const name of Object.keys(NR_TEMPLATES)) {
+    if (!want('nr') && !want(`nr-${name}`)) continue;
+    jobs.push([
+      `yeni-${name}`,
+      async () => prepNewReleaseVariant(name, { ...(await trackInput(entries[5])), dateText: today() }),
     ]);
   }
   // Donem girisli yil donumu onizlemeleri: era90 (1990-1999) ve era2000 (2000-2009); klipleri hazir olan donemler calisir.

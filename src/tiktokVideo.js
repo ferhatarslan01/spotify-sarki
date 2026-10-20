@@ -16,7 +16,7 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, newReleaseVariantFor, nrVariantUsesAi } from './videoPrep.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -144,8 +144,17 @@ function remotionEnabled() {
 
 async function renderTemplate(template, input) {
   let prepared;
-  if (template === 'NewRelease') prepared = await prepNewRelease(input);
-  else if (template === 'Anniversary') prepared = await prepAnniversaryAuto(input); // 90lar vb. icin donem girisi otomatik
+  if (template === 'NewRelease') {
+    // yeni cikti: sarkiya gore sablon ailesi (fragman, bulten, kilit ekrani...); hata olursa klasik DROP sablonuna doner
+    if (input.variant && input.variant !== 'drop') {
+      try {
+        prepared = await prepNewReleaseVariant(input.variant, input);
+      } catch (err) {
+        console.error(`  Yeni çıktı şablonu hazırlanamadı (${input.variant}), DROP şablonuna dönülüyor: ${String(err.message).split('\n')[0]}`);
+      }
+    }
+    prepared ??= await prepNewRelease(input);
+  } else if (template === 'Anniversary') prepared = await prepAnniversaryAuto(input); // 90lar vb. icin donem girisi otomatik
   else if (template === 'RankRise') prepared = await prepRankRise(input);
   else throw new Error(`Bilinmeyen sablon: ${template}`);
   return renderPrepared(prepared);
@@ -211,6 +220,7 @@ export async function makeEventVideo({
   trackUrl,
   caption,
   sceneData,
+  variantSeed,
 }) {
   if (!wantVideo() || !(scene || template)) return null;
   try {
@@ -229,8 +239,10 @@ export async function makeEventVideo({
     let aiGenerated = false; // ComfyUI (yapay zeka) goruntusu kullanildi mi -> TikTok "AI ile uretildi" etiketi
     if (template && remotionEnabled()) {
       try {
-        video = await renderTemplate(template, { artist, title, cover, audioUrl: preview.url, ...templateData });
-        engine = `remotion:${template}`;
+        const variant = template === 'NewRelease' ? newReleaseVariantFor(variantSeed) : null;
+        video = await renderTemplate(template, { artist, title, cover, audioUrl: preview.url, ...templateData, variant });
+        engine = `remotion:${template}${variant && variant !== 'drop' ? `/${variant}` : ''}`;
+        if (template === 'NewRelease') aiGenerated = Boolean(variant) && nrVariantUsesAi(variant);
         if (template === 'Anniversary') aiGenerated = annivUsesAiFootage(Number(String(templateData?.releaseDate).slice(0, 4)));
       } catch (err) {
         console.error(`  Remotion hatası (${kind}), dahili motora geçiliyor: ${err.message.split('\n')[0]}`);

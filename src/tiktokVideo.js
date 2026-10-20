@@ -423,7 +423,7 @@ export async function makeChartVideo({ kind, header, date, entries }) {
           pill: `${region} ${period} LİSTE`,
           outroHead: weekly ? "HAFTANIN TOP 5'İ" : "BUGÜNÜN TOP 5'İ",
           showRank: true,
-          cta: 'Sence sıralama doğru mu? Yaz!',
+          cta: 'Sence sıralama doğru mu?',
         },
       });
       engine = 'top5';

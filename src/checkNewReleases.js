@@ -126,7 +126,7 @@ async function main() {
               hook2: 'GELDİ!!!',
               sub: latest.albumType === 'album' ? 'yeni albümü çıktı!' : 'yeni şarkısı çıktı!',
               badge: 'YENİ',
-              cta: 'Dinledin mi? Yorumlara yaz!',
+              cta: 'Dinledin mi?',
             },
           };
         const handle = await makeEventVideos(tiktokParams);

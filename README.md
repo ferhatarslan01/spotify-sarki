@@ -26,7 +26,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 - **Önizleme (ses) bulma:** Deezer parça → iTunes parça → Deezer düz arama → parantez/" - Live" ekleri temizlenmiş ad → albümün ilk parçası (iTunes/Deezer). Hiçbir kaynakta ses yoksa X'e foto yerine **sessiz kapak videosu** (8 sn, "SPOTIFY'DA DİNLE" etiketi, oynatıcı çubuğu yok) gider; TikTok'a ses olmadan video gönderilmez.
 - **Spotify linki X'te ilk yanıtta:** Ana tweet'teki dış link erişimi düşürdüğü için tekli paylaşımlarda (yeni şarkı, yıl dönümü, trend olayları)
   link ana tweet'ten çıkarılıp "🎧 Spotify'da dinle:" yanıtına konur (thread olarak). Top 5 thread'inde zaten her şarkının linki yanıttadır.
-- **Kolay cevaplanan soru:** Her paylaşımın sonunda "Hit olur mu? 👇", "Puanın kaç? 1-10 yaz 👇" gibi kısa bir soru olur; "E / H yaz" komutu eklenmez (`src/cta.js`).
+- **Kolay cevaplanan soru:** Her paylaşımın sonunda "Hit olur mu? 👇", "Puanın kaç? 👇" gibi kısa bir soru olur; "yaz" gibi komut eklenmez (`src/cta.js`).
   Top 5 / haftalık liste tweetinde yer kalmadığı için soru thread'in son tweetinde sorulur; TikTok açıklamasında liste altındadır.
 - **TikTok hacmi:** Son 24 saatte en fazla 3 TikTok gönderisi (trend olayları için en fazla 2; yeni şarkı ve liste için yer kalsın diye).
   Sayı Buffer'dan okunur; sınıra gelince o olay yalnızca X'e gider. Hashtag sayısı gönderi başına 5.

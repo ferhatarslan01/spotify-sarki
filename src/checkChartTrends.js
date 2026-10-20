@@ -259,21 +259,21 @@ async function main() {
   console.log(`${events.length} olay bulundu, ${toPost.length} tanesi paylaşılacak.`);
 
   let tiktokSent = 0;
-  let videosMade = 0;
   for (const event of toPost) {
     console.log(`- ${event.text.split('\n')[0]}`);
-    // Video (X + TikTok ortak) calistirma basina en fazla MAX_TIKTOK_PER_RUN olay icin uretilir.
+    // X'e HER olay icin video (kare oynatici) uretilir; TikTok videosu calistirma basina en fazla MAX_TIKTOK_PER_RUN olay icin.
     const params = {
       ...event.card,
       artist: event.card.subtitle,
       trackUrl: event.trackUrl,
       caption: event.text,
+      wantTikTok: tiktokSent < MAX_TIKTOK_PER_RUN,
     };
-    const handles = videosMade < MAX_TIKTOK_PER_RUN ? await makeEventVideos(params) : { tiktok: null, x: null };
+    const handles = await makeEventVideos(params);
+    if (!handles.x) console.log('  Uyarı: bu olay için video üretilemedi, X\'e görselli tweet gidecek.');
     const ok = await postEvent(await tagText(event.text, event.artists), event.trackUrl, handles.x);
     if (ok) {
       event.onCommit();
-      if (handles.x || handles.tiktok) videosMade += 1;
       if (tiktokSent < MAX_TIKTOK_PER_RUN) {
         const sent = await tiktokPostPrepared(handles.tiktok, params);
         if (sent) tiktokSent += 1;

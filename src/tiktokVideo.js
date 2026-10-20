@@ -70,9 +70,71 @@ async function fromItunes(artist, title) {
   return hit ? { url: hit.previewUrl, source: 'itunes' } : null;
 }
 
-// Sarkinin 30 sn'lik halka acik onizlemesini bulur; hem sanatci hem sarki adi eslesmeli.
+// Deezer'in kati (artist:"" track:"") sorgusu yeni cikan sarkilari bulamayabiliyor; duz metin aramasi bulur.
+async function fromDeezerPlain(artist, title) {
+  const res = await fetch(`https://api.deezer.com/search?q=${encodeURIComponent(`${mainArtist(artist)} ${title}`)}&limit=15`, {
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  const hit = (data.data ?? []).find((t) => t.preview && matches(artist, title, t.artist?.name ?? '', t.title ?? ''));
+  return hit ? { url: hit.preview, source: 'deezer' } : null;
+}
+
+// Albumler: ad bir parca degil albumun adidir (ornek: "BİPOLAR"). iTunes'ta albumun parcalari collectionName ile listelenir;
+// ilk parcanin onizlemesi kullanilir.
+async function fromItunesAlbum(artist, title) {
+  const res = await fetch(
+    `https://itunes.apple.com/search?term=${encodeURIComponent(`${mainArtist(artist)} ${title}`)}&entity=song&limit=25&country=TR`,
+    { signal: AbortSignal.timeout(10_000) }
+  );
+  if (!res.ok) return null;
+  const data = await res.json();
+  const hit = (data.results ?? []).find(
+    (t) => t.previewUrl && norm(t.collectionName ?? '').includes(norm(title)) && norm(t.artistName ?? '').includes(norm(mainArtist(artist)))
+  );
+  return hit ? { url: hit.previewUrl, source: 'itunes-album' } : null;
+}
+
+async function fromDeezerAlbum(artist, title) {
+  const res = await fetch(`https://api.deezer.com/search/album?q=${encodeURIComponent(`${mainArtist(artist)} ${title}`)}&limit=10`, {
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) return null;
+  const album = ((await res.json()).data ?? []).find(
+    (a) => norm(a.title ?? '').includes(norm(title)) && norm(a.artist?.name ?? '').includes(norm(mainArtist(artist)))
+  );
+  if (!album) return null;
+  const tr = await fetch(`https://api.deezer.com/album/${album.id}/tracks?limit=10`, { signal: AbortSignal.timeout(10_000) });
+  if (!tr.ok) return null;
+  const hit = ((await tr.json()).data ?? []).find((t) => t.preview);
+  return hit ? { url: hit.preview, source: 'deezer-album' } : null;
+}
+
+// Parantez ici ekler ve " - Live / Remastered" gibi son ekler eslesmeyi bozmasin.
+function baseTitle(t) {
+  const s = String(t).replace(/\s*[(\[].*?[)\]]\s*/g, ' ').replace(/\s+-\s+.*$/, '').trim();
+  return s.length >= 2 ? s : String(t);
+}
+
+// Sarkinin (albumse ilk parcasinin) 30 sn'lik halka acik onizlemesini bulur; hem sanatci hem ad eslesmeli.
+// Sira: Deezer parca -> iTunes parca -> Deezer duz arama -> (temiz adla tekrar) -> albumler. X'te foto yerine video cikabilsin diye cok kaynakli.
 export async function findPreview(artist, title) {
-  return (await fromDeezer(artist, title).catch(() => null)) ?? (await fromItunes(artist, title).catch(() => null));
+  const attempts = [
+    () => fromDeezer(artist, title),
+    () => fromItunes(artist, title),
+    () => fromDeezerPlain(artist, title),
+    ...(baseTitle(title) !== String(title)
+      ? [() => fromItunes(artist, baseTitle(title)), () => fromDeezerPlain(artist, baseTitle(title))]
+      : []),
+    () => fromItunesAlbum(artist, title),
+    () => fromDeezerAlbum(artist, title),
+  ];
+  for (const attempt of attempts) {
+    const found = await attempt().catch(() => null);
+    if (found) return found;
+  }
+  return null;
 }
 
 // TIKTOK_REMOTION=0 ise Remotion sahneleri kapatilir, dahili (Node) video motoru kullanilir.
@@ -202,7 +264,8 @@ async function renderSquare({ artist, title, cover, audioUrl }) {
 // Hicbiri uretilemezse { tiktok: null, x: null }.
 export async function makeEventVideos(params) {
   const none = { tiktok: null, x: null };
-  const needTikTok = videoEnabled() && tiktokEnabled() && (await tiktokSlotAvailable(params.kind));
+  // params.wantTikTok === false: bu olay icin TikTok videosu uretilmez (calistirma basina TikTok siniri); X videosu yine uretilir.
+  const needTikTok = videoEnabled() && tiktokEnabled() && params.wantTikTok !== false && (await tiktokSlotAvailable(params.kind));
   const needX = videoEnabled() && xVideoEnabled();
   if (!(needTikTok || needX) || !(params.scene || params.template)) return none;
 

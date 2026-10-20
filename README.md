@@ -22,7 +22,8 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
   oynatıcı düğmeleri; şarkının en enerjili 20 saniyesi çalar.
 - **Top 5 thread'i**: ilk tweet liste metnini + 1. şarkının videosunu taşır; 2-5. şarkılar yanıt olarak gelir.
 - X'te video tweet'i Buffer'da hata verirse otomatik olarak eski görselli tweet'e düşülür.
-- Trend olayları için çalıştırma başına en fazla 1 video üretilir.
+- **X'te her gönderi video olur:** Trend olayları dahil her tweet için kare oynatıcı videosu üretilir. TikTok videosu ise çalıştırma başına en fazla 1 trend olayı için (ve günlük 3 sınırı içinde) üretilir; sınır dolunca olay yine X'e videolu gider.
+- **Önizleme (ses) bulma:** Deezer parça → iTunes parça → Deezer düz arama → parantez/" - Live" ekleri temizlenmiş ad → albümün ilk parçası (iTunes/Deezer). Hiçbir kaynakta ses yoksa tweet görselli gider (log'da "video üretilemedi" uyarısı olur).
 - **Spotify linki X'te ilk yanıtta:** Ana tweet'teki dış link erişimi düşürdüğü için tekli paylaşımlarda (yeni şarkı, yıl dönümü, trend olayları)
   link ana tweet'ten çıkarılıp "🎧 Spotify'da dinle:" yanıtına konur (thread olarak). Top 5 thread'inde zaten her şarkının linki yanıttadır.
 - **Tek harfli soru:** Her paylaşımın sonunda "E / H yaz 👇", "Puanın kaç? 1-10 yaz 👇" gibi kolay cevaplanan bir soru olur (`src/cta.js`).

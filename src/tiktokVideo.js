@@ -16,8 +16,8 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, nrVariantUsesAi, prepRiseVariant } from './videoPrep.js';
-import { nextNewReleaseVariant, rememberNewReleaseVariant, nextRiseVariant, rememberRiseVariant } from './nrTemplateState.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, nrVariantUsesAi, prepRiseVariant, prepWeeklyVariant } from './videoPrep.js';
+import { nextNewReleaseVariant, rememberNewReleaseVariant, nextRiseVariant, rememberRiseVariant, nextWeeklyVariant, rememberWeeklyVariant } from './nrTemplateState.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -403,6 +403,30 @@ export async function makeChartVideo({ kind, header, date, entries }) {
   try {
     const top = entries.slice(0, 5);
     const { region, period, periodWord, weekly } = headerParts(header);
+
+    // Haftalik TR liste: sablon ailesi (hit listesi geri sayimi, haftanin raporu); hata olursa klasik TopBoard'a doner
+    if (weekly && kind === 'weekly-tr' && remotionEnabled()) {
+      const wv = await nextWeeklyVariant(date);
+      if (wv !== 'board') {
+        try {
+          const pv = await findPreview(entries[0].artists[0].name, entries[0].trackName);
+          const prepared = await prepWeeklyVariant(wv, { entries, date, audioUrl: pv?.url ?? null });
+          const wvideo = await renderPrepared(prepared);
+          await rememberWeeklyVariant(date, wv);
+          return {
+            kind,
+            video: wvideo,
+            caption: chartDescription(`${header} TOP ${top.length}`, date, top, kind),
+            artists: chartArtists(top),
+            note: `remotion:Weekly/${wv}, ${pv ? `ses: ${pv.source}` : 'sessiz'}`,
+          };
+        } catch (err) {
+          console.error(`  Haftalık şablon (${wv}) hazırlanamadı, klasik TopBoard'a dönülüyor: ${String(err.message).split('\n')[0]}`);
+        }
+      }
+      await rememberWeeklyVariant(date, 'board');
+    }
+
     const items = [];
     for (const e of [...top].reverse()) {
       const coverUrl = await getTrackThumbnail(e.trackUrl).catch(() => null);

@@ -309,11 +309,11 @@ export async function analyzeBands(wavPath, dur, nBands = 24) {
 }
 
 // muzik + efekt -> tek WAV (alimiter ile)
-export async function mixMusicAndSfx(musicWav, sfxWav, outWav, sfxVolume = 0.8) {
+export async function mixMusicAndSfx(musicWav, sfxWav, outWav, sfxVolume = 0.8, musicVolume = 1.0) {
   await run('ffmpeg', [
     '-y', '-v', 'error', '-i', musicWav, '-i', sfxWav,
     '-filter_complex',
-    `[0:a]volume=1.0[a];[1:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=${sfxVolume}[b];[a][b]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[o]`,
+    `[0:a]volume=${musicVolume}[a];[1:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=${sfxVolume}[b];[a][b]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.95[o]`,
     '-map', '[o]', '-ar', '44100', '-ac', '2', outWav,
   ]);
 }

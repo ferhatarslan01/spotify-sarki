@@ -1,10 +1,11 @@
 // Sablon donusu: hangi sablonlarin son kullanildigini ve hangi sarkiya hangisinin verildigini tutar.
 //  - "Yeni cikti" ailesi: data/nrTemplateState.json   (NR_STATE_FILE, NR_VARIANTS=0 kapatir, NR_ONLY havuzu kisitlar)
 //  - "Yukselen sarki" ailesi: data/riseTemplateState.json (RISE_STATE_FILE, RISE_VARIANTS=0 kapatir, RISE_ONLY havuzu kisitlar)
+//  - "Haftalik liste" ailesi: data/weeklyTemplateState.json (WEEKLY_STATE_FILE, WEEKLY_VARIANTS=0 kapatir, WEEKLY_ONLY havuzu kisitlar)
 // Sarki daha once atandiysa ayni sablon verilir; yoksa en uzun suredir kullanilmayan sablon secilir (bir oncekiyle ayni olmaz).
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { chooseLeastRecentTemplate, newReleasePool, newReleaseVariantFor, risePool, riseVariantFor } from './videoPrep.js';
+import { chooseLeastRecentTemplate, newReleasePool, newReleaseVariantFor, risePool, riseVariantFor, weeklyPool, weeklyVariantFor } from './videoPrep.js';
 
 const MAX_HISTORY = 60;
 const MAX_ASSIGNED = 300;
@@ -76,7 +77,17 @@ const rise = makeRotation({
   defaultName: 'rise',
 });
 
+const weekly = makeRotation({
+  file: () => process.env.WEEKLY_STATE_FILE || fileURLToPath(new URL('../data/weeklyTemplateState.json', import.meta.url)),
+  off: () => process.env.WEEKLY_VARIANTS === '0',
+  pool: weeklyPool,
+  fallback: weeklyVariantFor,
+  defaultName: 'board',
+});
+
 export const nextNewReleaseVariant = nr.next;
 export const rememberNewReleaseVariant = nr.remember;
 export const nextRiseVariant = rise.next;
 export const rememberRiseVariant = rise.remember;
+export const nextWeeklyVariant = weekly.next;
+export const rememberWeeklyVariant = weekly.remember;

@@ -31,6 +31,19 @@ export async function fetchWeeklyChart() {
     if (!trackMatch || artists.length === 0) continue;
 
     const streams = Number(cells[6].replace(/[^\d-]/g, ''));
+    // Haftalik rapor sablonlari icin ek alanlar (mevcut akis bunlari kullanmaz; adlar bilerek positionChange degil)
+    const strip = (c) => c.replace(/<[^>]+>/g, '').trim();
+    const posRaw = strip(cells[1]);
+    let weekChange = null;
+    if (posRaw === 'NEW') weekChange = 'NEW';
+    else if (posRaw === '=') weekChange = 0;
+    else if (/^[+-]?\d+$/.test(posRaw)) weekChange = Number(posRaw);
+    const weeks = Number(strip(cells[3]).replace(/\D/g, '')) || null;
+    const peak = Number(strip(cells[4]).replace(/\D/g, '')) || null;
+    const peakTimes = Number((strip(cells[5]).match(/x(\d+)/) ?? [])[1]) || 1;
+    const scRaw = strip(cells[7]).replace(/[^\d+-]/g, '');
+    const streamsChange = /^[+-]?\d+$/.test(scRaw) ? Number(scRaw) : null;
+    const totalStreams = Number(strip(cells[8]).replace(/\D/g, '')) || null;
 
     entries.push({
       rank,
@@ -38,6 +51,12 @@ export async function fetchWeeklyChart() {
       trackId: trackMatch[1],
       trackName: trackMatch[2],
       streams,
+      weekChange,
+      weeks,
+      peak,
+      peakTimes,
+      streamsChange,
+      totalStreams,
       trackUrl: `https://open.spotify.com/track/${trackMatch[1]}`,
     });
   }

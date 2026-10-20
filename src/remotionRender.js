@@ -46,6 +46,7 @@ const STUBS = {
     bands: [],
   },
   risev: { date: '', artist: '', title: '', from: 8, to: 5, change: 3, daily: 0, total: 0, hue: 30, neighbors: [], start: 2, arrival: 5.6, outro: 14, marks: {}, fps: 30, durationSeconds: 16, hookStart: 0, bands: [] },
+  wk: { date: '', kind: 'countdown', items: [], cards: [], cardStarts: [], start: 2.4, step: 1.15, hero: 12.75, outro: 18.5, intro: 2.4, cardLen: 3, top5Len: 4.2, hue: 30, fps: 30, durationSeconds: 21, hookStart: 0, bands: [] },
   player: { artist: '', title: '', hue: 30, fps: 30, durationSeconds: 20, hookStart: 0, silent: false, label: '', bands: [] },
   nrvar: { artist: '', title: '', dateText: '', hue: 30, fps: 30, durationSeconds: 15, reveal: 6.2, outro: 13, hookStart: 0, bands: [], bg: false, bgSeconds: 0 },
   eraintro: { introSeconds: 8, scene1End: 5, knobAt: 3, fps: 30, label: '', accent: '#ffb42a', bands: [] },

@@ -1,9 +1,10 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,era70,era80,era90,era2000,era2010,era2020,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,era70,era80,era90,era2000,era2010,era2020,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES, prepRiseVariant, RISE_TEMPLATES } from './videoPrep.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES, prepRiseVariant, RISE_TEMPLATES, prepWeeklyVariant, WEEKLY_TEMPLATES } from './videoPrep.js';
+import { fetchWeeklyChart } from './weeklyChart.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 
@@ -137,6 +138,18 @@ async function main() {
     jobs.push([
       `yeni-${name}`,
       async () => prepNewReleaseVariant(name, { ...(await trackInput(entries[5])), dateText: today() }),
+    ]);
+  }
+  // Haftalik liste sablon ailesi: --only wk (hepsi) ya da wk-countdown / wk-rapor
+  for (const name of Object.keys(WEEKLY_TEMPLATES)) {
+    if (!want('wk') && !want(`wk-${name}`)) continue;
+    jobs.push([
+      `haftalik-${name}`,
+      async () => {
+        const { date: wdate, entries: wentries } = await fetchWeeklyChart();
+        const pv = await findPreview(wentries[0].artists[0].name, wentries[0].trackName);
+        return prepWeeklyVariant(name, { entries: wentries, date: wdate, audioUrl: pv?.url ?? null });
+      },
     ]);
   }
   // "Yukselen sarki" sablon ailesi: --only rv (hepsi) ya da rv-terminal gibi tek tek

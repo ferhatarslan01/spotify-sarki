@@ -18,6 +18,8 @@ import { RiseRadar } from "./RiseRadar";
 import { RiseTransfer } from "./RiseTransfer";
 import { RiseRoket } from "./RiseRoket";
 import { RiseKart } from "./RiseKart";
+import { WeeklyRapor } from "./WeeklyRapor";
+import { WeeklyCountdown } from "./WeeklyCountdown";
 import { RiseYayin } from "./RiseYayin";
 import { RiseTerminal } from "./RiseTerminal";
 import board from "./data-board.json";
@@ -29,6 +31,7 @@ import duel from "./data-duel.json";
 import eraintro from "./data-eraintro.json";
 import nrvar from "./data-nrvar.json";
 import risev from "./data-risev.json";
+import wk from "./data-wk.json";
 
 const FPS = 30;
 const frames = (seconds: number) => Math.max(1, Math.round(seconds * FPS));
@@ -193,6 +196,22 @@ export const RemotionRoot: React.FC = () => {
         id="RiseRadar"
         component={RiseRadar}
         durationInFrames={frames(risev.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="WeeklyCountdown"
+        component={WeeklyCountdown}
+        durationInFrames={frames(wk.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="WeeklyRapor"
+        component={WeeklyRapor}
+        durationInFrames={frames(wk.durationSeconds)}
         fps={FPS}
         width={1080}
         height={1920}

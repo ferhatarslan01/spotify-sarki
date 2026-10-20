@@ -109,6 +109,23 @@ Gerçek yeni şarkı/albüm için TikTok videosu 9 şablondan birini alır. Seç
 - Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only rv` (ya da `rv-terminal`, `rv-yayin`, `rv-kart`, `rv-roket`, `rv-transfer`, `rv-radar`); çıktı `preview/yukselis-*.mp4`.
 - Kod: `video/src/Rise*.tsx`, veri + ses `src/videoPrep.js` (`RISE_TEMPLATES`, `prepRiseVariant`).
 
+## Haftalık liste şablonları
+
+Türkiye haftalık listesinin TikTok videosu (`weekly-tr`) üç şablondan birini alır; seçim diğer ailelerdeki gibi **sıralı döngü**dür (haftada bir paylaşım, durum `data/weeklyTemplateState.json`, `weekly-chart` workflow'u commit eder).
+
+| Şablon | Konsept |
+|---|---|
+| `board` | Klasik Top 5 "kalkış tablosu" (ilk şablon) |
+| `countdown` | Hit listesi geri sayımı: 10 → 1; üstte o anki şarkı (geçen haftaya göre sıra değişimi, kaçıncı hafta, haftalık dinlenme), altta liste aşağıdan yukarı dolar, #1 final sahnesi |
+| `rapor` | Haftanın raporu (story formatı): haftanın zirvesi (2.'ye oranı), en çok yükselen, en yüksek yeni giriş, listenin kıdemlisi, Top 5 özeti |
+
+- Veri kworb haftalık listesinden: `weekChange` (geçen haftaya göre sıra, `NEW` dahil), `weeks`, `peak`/`peakTimes`, `streams`, `streamsChange`, `totalStreams` (`src/weeklyChart.js`). Rapor kartları bu veriden türetilir; olmayan kart (örn. yeni giriş yoksa) atlanır. Tüm rakamlar gerçektir.
+- Müzik: haftanın 1 numaralı şarkısının önizlemesi (bulunamazsa sessiz, yalnızca efektler).
+- Kapatmak için `WEEKLY_VARIANTS=0` (hep `board`); havuzu kısıtlamak için `WEEKLY_ONLY=rapor,countdown`. Şablon hazırlanamazsa otomatik klasik TopBoard'a, o da olmazsa yedek motora düşer.
+- X tarafı değişmez (5 tweetlik kare video thread'i).
+- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only wk` (ya da `wk-countdown`, `wk-rapor`); çıktı `preview/haftalik-*.mp4`.
+- Kod: `video/src/Weekly*.tsx`, veri + ses `src/videoPrep.js` (`WEEKLY_TEMPLATES`, `weeklyCards`, `prepWeeklyVariant`).
+
 ## Paylaşım penceresi (Türkiye saati)
 
 Tüm saatler **Türkiye saatiyle** (Europe/Istanbul, UTC+3) hesaplanır; kullanıcının ya da makinenin yerel saati (ör. ABD) hiçbir yerde kullanılmaz.

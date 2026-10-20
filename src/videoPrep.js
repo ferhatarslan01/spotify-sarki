@@ -1187,3 +1187,229 @@ export async function prepRiseVariant(template, { entries, featured, date, audio
     };
   });
 }
+
+// ---------------------------------------------------------------- Haftalik liste sablon ailesi (TopBoard'a ek)
+// Haftalik veriden (kworb): sira degisimi (weekChange), listede kac hafta (weeks), en yuksek sira (peak/peakTimes), haftalik stream (+ fark) ve toplam.
+// Tum rakamlar gercek; kartlar veriden turetilir (en cok yukselen, yeni giris, kidemli...).
+const wkFmt = (n) => (n >= 1e7 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e6 ? `${(n / 1e6).toFixed(2)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}K` : String(Math.round(n)));
+const wkNames = (e) => e.artists.map((a) => a.name).join(' & ');
+
+export const WEEKLY_TEMPLATES = {
+  // Hit listesi geri sayimi: 10 -> 1, ustte o anki sarki karti, altta liste asagidan yukari dolar
+  countdown: {
+    composition: 'WeeklyCountdown',
+    N: 10,
+    INTRO: 2.4,
+    STEP: 1.15,
+    HERO_LEN: 5.6,
+    TAIL: 2.4,
+  },
+  // Haftanin raporu: story kartlari (zirve, en cok yukselen, yeni giris, kidemli, Top 5)
+  rapor: {
+    composition: 'WeeklyRapor',
+    INTRO: 1.8,
+    CARD: 3.0,
+    TOP5: 4.2,
+    TAIL: 2.4,
+  },
+};
+
+export function weeklyPool(names = ['board', ...Object.keys(WEEKLY_TEMPLATES)]) {
+  const only = (process.env.WEEKLY_ONLY ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  return only.length ? names.filter((n) => only.includes(n)) : names;
+}
+
+export function weeklyVariantFor(seed) {
+  if (process.env.WEEKLY_VARIANTS === '0' || !seed) return 'board';
+  const pool = weeklyPool();
+  if (pool.length === 0) return 'board';
+  let h = 0;
+  for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return pool[h % pool.length];
+}
+
+// Rapor kartlari: veriden turetilir; olmayan kart atlanir. En fazla 4 bilgi karti + Top 5 ozeti.
+export function weeklyCards(entries) {
+  const top = entries[0];
+  const second = entries[1];
+  const cards = [];
+  const used = new Set();
+  const take = (e) => used.add(e.trackId);
+
+  // 1) zirve
+  const ratio = second && second.streams > 0 ? top.streams / second.streams : null;
+  const zPills = [];
+  if (ratio && ratio >= 1.2) zPills.push(`2. SIRADAKİNİN ${ratio.toFixed(1).replace('.', ',')} KATI`);
+  if (top.weekChange === 'NEW') zPills.push('ZİRVEYE DOĞRUDAN GİRİŞ');
+  else if (top.peak === 1 && top.peakTimes > 1) zPills.push(`${top.peakTimes} HAFTADIR ZİRVEDE`);
+  else if (top.weeks) zPills.push(`${top.weeks}. HAFTA LİSTEDE`);
+  cards.push({ type: 'zirve', label: 'HAFTANIN ZİRVESİ', entry: top, big: { value: top.streams / 1e6, decimals: 2, prefix: '', suffix: 'M' }, caption: 'HAFTALIK DİNLENME', pills: zPills.slice(0, 2) });
+  take(top);
+
+  const cands = [];
+  // 2) en cok yukselen (ilk 100 icinde, yeni giris degil)
+  const riser = entries
+    .filter((e) => e.rank <= 100 && typeof e.weekChange === 'number' && e.weekChange > 0 && !used.has(e.trackId))
+    .sort((a, b) => b.weekChange - a.weekChange || a.rank - b.rank)[0];
+  if (riser) cands.push({ type: 'yukselen', label: 'EN ÇOK YÜKSELEN', entry: riser, big: { value: riser.weekChange, decimals: 0, prefix: '+', suffix: '' }, caption: 'SIRA YÜKSELDİ', pills: [`#${riser.rank + riser.weekChange} → #${riser.rank}`, `${wkFmt(riser.streams)} DİNLENME`] });
+  // 3) en yuksek yeni giris (zirvedeki haric)
+  const news = entries.filter((e) => e.weekChange === 'NEW');
+  const newBest = news.filter((e) => !used.has(e.trackId)).sort((a, b) => a.rank - b.rank)[0];
+  if (newBest) cands.push({ type: 'yeni', label: 'EN YÜKSEK YENİ GİRİŞ', entry: newBest, big: { value: newBest.rank, decimals: 0, prefix: '#', suffix: '' }, caption: 'LİSTEYE YENİ GİRDİ', pills: [`BU HAFTA ${news.length} YENİ ŞARKI`, `${wkFmt(newBest.streams)} DİNLENME`] });
+  // 4) kidemli (ilk 20, en cok hafta)
+  const vet = entries
+    .slice(0, 20)
+    .filter((e) => e.weeks && e.weeks >= 8 && !used.has(e.trackId))
+    .sort((a, b) => b.weeks - a.weeks || a.rank - b.rank)[0];
+  if (vet) cands.push({ type: 'kidemli', label: 'LİSTENİN KIDEMLİSİ', entry: vet, big: { value: vet.weeks, decimals: 0, prefix: '', suffix: '' }, caption: 'HAFTADIR LİSTEDE', pills: [vet.peak === 1 ? `${vet.peakTimes} HAFTA ZİRVEDE` : `EN YÜKSEK #${vet.peak}`, `ŞU AN #${vet.rank}`] });
+  // 5) haftalik dinlenmesi en cok artan (yedek kart)
+  const gainer = entries
+    .slice(0, 50)
+    .filter((e) => typeof e.streamsChange === 'number' && e.streamsChange > 0 && !used.has(e.trackId))
+    .sort((a, b) => b.streamsChange - a.streamsChange)[0];
+  if (gainer) cands.push({ type: 'artan', label: 'EN ÇOK İVMELENEN', entry: gainer, big: { value: gainer.streamsChange / 1e6, decimals: 2, prefix: '+', suffix: 'M' }, caption: 'GEÇEN HAFTAYA GÖRE DİNLENME', pills: [`ŞU AN #${gainer.rank}`, `${wkFmt(gainer.streams)} DİNLENME`] });
+
+  // ayni sarki birden cok kartta tekrarlanmasin
+  for (const c of cands) {
+    if (cards.length >= 4) break;
+    if (used.has(c.entry.trackId)) continue;
+    cards.push(c);
+    take(c.entry);
+  }
+  return cards;
+}
+
+export async function prepWeeklyVariant(template, { entries, date, audioUrl }) {
+  const cfg = WEEKLY_TEMPLATES[template];
+  if (!cfg) throw new Error(`Bilinmeyen haftalik sablon: ${template}`);
+  if (entries.length < 6) throw new Error('Haftalik liste cok kisa');
+
+  const coverOf = async (e, size, quality = 88) => squareJpeg(await fetchBuf(await getTrackThumbnail(e.trackUrl)), size, quality);
+  const assets = [];
+  let data;
+  let DUR;
+  let sfxPlan;
+  let sweep = null;
+  const MUSIC_AT = 0.3;
+
+  if (template === 'countdown') {
+    const { N, INTRO, STEP, HERO_LEN, TAIL } = cfg;
+    const top = entries.slice(0, N);
+    const items = [];
+    for (const e of [...top].reverse()) {
+      const file = `wk-c${e.rank}.jpg`;
+      const buf = await coverOf(e, 600);
+      assets.push({ name: file, buffer: buf });
+      items.push({
+        rank: e.rank,
+        title: e.trackName,
+        artist: wkNames(e),
+        streams: wkFmt(e.streams),
+        change: e.weekChange,
+        weeks: e.weeks,
+        peak: e.peak,
+        peakTimes: e.peakTimes,
+        cover: file,
+        hue: await hueOf(sharp, buf),
+      });
+    }
+    const HERO = INTRO + (items.length - 1) * STEP;
+    const OUTRO = HERO + HERO_LEN;
+    DUR = Math.round((OUTRO + TAIL) * 10) / 10;
+    data = { kind: 'countdown', items, cards: [], cardStarts: [], start: INTRO, step: STEP, hero: HERO, outro: OUTRO, intro: INTRO, cardLen: 0, top5Len: 0 };
+    sweep = { from: Math.max(0, INTRO - MUSIC_AT), to: HERO - MUSIC_AT, lowpass: 600 };
+    sfxPlan = (sfx) => {
+      sfx.boom(0.2, 0.8, 76);
+      sfx.whoosh(0.1, 0.6, 0.5, 300, 5500);
+      [523.25, 659.25, 783.99].forEach((f, i) => sfx.ding(0.4 + i * 0.14, f, 0.4, 0.45));
+      for (let i = 0; i < items.length - 1; i++) {
+        const t = INTRO + i * STEP;
+        sfx.whoosh(t - 0.05, 0.35, 0.34, 300, 4200);
+        sfx.tick(t + 0.1, 0.4, 1800 + i * 90);
+        sfx.ding(t + 0.12, 440 * Math.pow(2, (i * 2) / 12), 0.22, 0.25);
+      }
+      sfx.riser(HERO - 1.3, HERO, 0.6);
+      sfx.boom(HERO, 1.0, 66);
+      [784, 1046.5, 1318.5, 1568].forEach((f, i) => sfx.ding(HERO + 0.05 + i * 0.08, f, 0.45, 0.8));
+      sfx.whoosh(OUTRO, 1.1, 0.35, 5000, 250);
+    };
+  } else {
+    const { INTRO, CARD, TOP5, TAIL } = cfg;
+    const cards = weeklyCards(entries);
+    const out = [];
+    for (const [i, c] of cards.entries()) {
+      const file = `wk-r${i}.jpg`;
+      const buf = await coverOf(c.entry, 720, 90);
+      assets.push({ name: file, buffer: buf });
+      out.push({
+        type: c.type,
+        label: c.label,
+        title: c.entry.trackName,
+        artist: wkNames(c.entry),
+        rank: c.entry.rank,
+        cover: file,
+        hue: await hueOf(sharp, buf),
+        big: c.big,
+        caption: c.caption,
+        pills: c.pills,
+        rows: [],
+      });
+    }
+    // Top 5 ozeti
+    const rows = [];
+    for (const e of entries.slice(0, 5)) {
+      const file = `wk-t${e.rank}.jpg`;
+      assets.push({ name: file, buffer: await coverOf(e, 220, 84) });
+      rows.push({ rank: e.rank, title: e.trackName, artist: wkNames(e), change: e.weekChange, weeks: e.weeks, cover: file });
+    }
+    out.push({ type: 'top5', label: "HAFTANIN TOP 5'İ", title: '', artist: '', rank: 1, cover: rows[0].cover, hue: out[0].hue, big: { value: 0, decimals: 0, prefix: '', suffix: '' }, caption: '', pills: [], rows });
+    const cardStarts = out.map((c, i) => INTRO + i * CARD);
+    const top5Start = cardStarts[out.length - 1];
+    const OUTRO = top5Start + TOP5;
+    DUR = Math.round((OUTRO + TAIL) * 10) / 10;
+    data = { kind: 'rapor', items: [], cards: out, cardStarts, start: INTRO, step: CARD, hero: top5Start, outro: OUTRO, intro: INTRO, cardLen: CARD, top5Len: TOP5 };
+    sfxPlan = (sfx) => {
+      sfx.boom(0.2, 0.8, 76);
+      sfx.whoosh(0.05, 0.6, 0.5, 300, 5500);
+      for (const [i, st] of cardStarts.entries()) {
+        sfx.whoosh(st - 0.18, 0.4, 0.4, 300, 4500);
+        if (i < cardStarts.length - 1) {
+          sfx.ding(st + 0.2, 659.25 * Math.pow(2, (i * 3) / 12), 0.4, 0.5);
+          for (let k = 0; k < 9; k++) sfx.tick(st + 0.45 + k * 0.09, 0.22, 2200 + k * 70); // sayac
+          sfx.boom(st + 1.35, 0.5, 90);
+        } else {
+          for (let k = 0; k < 5; k++) sfx.ding(st + 0.35 + k * 0.45, 523.25 * Math.pow(2, (k * 2) / 12), 0.3, 0.3);
+        }
+      }
+      sfx.whoosh(OUTRO, 1.1, 0.35, 5000, 250);
+    };
+  }
+
+  const bg = {};
+  return withTmp(async (dir) => {
+    const music = join(dir, 'music.wav');
+    if (audioUrl) {
+      const prev = join(dir, 'prev.bin');
+      await writeFile(prev, await fetchBuf(audioUrl));
+      const segD = DUR - MUSIC_AT - 0.6;
+      const hookSS = await findHookStart(prev, segD);
+      bg.hookSS = hookSS;
+      await buildMusic({ prev, hookSS, segD, delayMs: Math.round(MUSIC_AT * 1000), dur: DUR, out: music, filterSweep: sweep ?? undefined });
+    } else {
+      bg.hookSS = 0;
+      await run('ffmpeg', ['-y', '-v', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo', '-t', String(DUR), music]);
+    }
+    const sfx = makeSfx(DUR, 31);
+    sfxPlan(sfx);
+    await sfx.writeWav(join(dir, 'sfx.wav'));
+    await mixMusicAndSfx(music, join(dir, 'sfx.wav'), join(dir, 'mix.wav'), 0.8, 0.78); // uzun sure surekli muzik: biraz kisik
+    const bands = await analyzeBands(music, DUR);
+
+    return {
+      composition: cfg.composition,
+      dataKey: 'wk',
+      data: { date, hue: data.items?.length ? data.items[data.items.length - 1].hue : data.cards[0].hue, fps: FPS, durationSeconds: DUR, hookStart: bg.hookSS, bands, ...data },
+      assets: [...assets, { name: 'wk-soundtrack.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) }],
+    };
+  });
+}

@@ -28,7 +28,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
   link ana tweet'ten çıkarılıp "🎧 Spotify'da dinle:" yanıtına konur (thread olarak). Top 5 thread'inde zaten her şarkının linki yanıttadır.
 - **Kolay cevaplanan soru:** Her paylaşımın sonunda "Hit olur mu? 👇", "Puanın kaç? 👇" gibi kısa bir soru olur; "yaz" gibi komut eklenmez (`src/cta.js`).
   Top 5 / haftalık liste tweetinde yer kalmadığı için soru thread'in son tweetinde sorulur; TikTok açıklamasında liste altındadır.
-- **TikTok hacmi:** Son 24 saatte en fazla 3 TikTok gönderisi (trend olayları için en fazla 2; yeni şarkı ve liste için yer kalsın diye).
+- **TikTok hacmi:** Son 24 saatte en fazla 8 TikTok gönderisi (TikTok'un resmi limiti ~15, Buffer'ın 25; trend olayları en fazla 4 slot kullanır, geri kalanı Top 5, düello, yeni şarkı ve yıl dönümü için ayrılır).
   Sayı Buffer'dan okunur; sınıra gelince o olay yalnızca X'e gider. Hashtag sayısı gönderi başına 5.
 - **Sanatçı etiketleme (X):** Tüm X paylaşımlarında sanatçı adının yanına `(@hesap)` eklenir: yeni şarkı, yıl dönümü, trend olayları (en fazla 2 kişi), liste ve haftalık özet (280 karaktere sığdığı kadar, sırayla). Takip edilen sanatçıların hesapları
   `src/artistHandles.js` içinde elle doğrulanmış listede; liste dışı sanatçılar (liste girdileri) MusicBrainz + Wikidata ile çapraz kontrol
@@ -178,7 +178,7 @@ tüm sanatçıları tarar, böylece gece çıkan şarkı sabah gecikmeden bulunu
 - `X_TAGS=0` X tweetlerinde sanatçı etiketlemeyi (@hesap) kapatır.
 - `X_LINK_REPLY=0` Spotify linkini ana tweet'te bırakır (yanıta taşımaz).
 - `CTA_QUESTIONS=0` paylaşımlara soru eklemeyi kapatır.
-- `TIKTOK_DAILY_MAX=N` son 24 saatteki TikTok sınırı (varsayılan 3, `0` = sınırsız).
+- `TIKTOK_DAILY_MAX=N` son 24 saatteki TikTok sınırı (varsayılan 8, `0` = sınırsız); GitHub → Settings → Secrets and variables → Actions → **Variables** → `TIKTOK_DAILY_MAX` ile kodsuz değiştirilebilir. `TIKTOK_TREND_RESERVE=N` trend olaylarına kapalı tutulan slot sayısı (varsayılan 4).
 
 ## Önizleme
 

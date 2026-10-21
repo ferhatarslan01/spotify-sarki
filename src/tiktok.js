@@ -15,10 +15,14 @@ export function tiktokEnabled() {
   return Boolean(process.env.BUFFER_TIKTOK_CHANNEL_ID);
 }
 
-// Yeni hesapta gunde 1-3 video onerildigi icin son 24 saatteki TikTok gonderisi sayisi sinirlanir.
-// TIKTOK_DAILY_MAX (varsayilan 3); 0 = sinirsiz. Trend olaylari bir slot geride kalir (yeni sarki/liste icin yer kalsin).
+// Son 24 saatteki TikTok gonderisi sayisi sinirlanir. TikTok'un resmi bir "gunde N video" cezasi yok
+// (Direct Post API ~15/24 sa, Buffer 25/24 sa); bu sinir bilerek bunlarin cok altinda tutulur.
+// TIKTOK_DAILY_MAX (varsayilan 8); 0 = sinirsiz. Bos/tanimsiz deger varsayilana doner.
+// Trend olaylari (liste degisimleri) en fazla TIKTOK_DAILY_MAX - TIKTOK_TREND_RESERVE (varsayilan 8 - 4 = 4) slot kullanir;
+// geri kalani Top 5, duello, yeni sarki ve yil donumu icin ayrilir.
 // Sayim Buffer'dan okunur (workflow'lar arasi ortak dosya yok); okunamazsa sinir uygulanmaz.
-const DAILY_MAX = Number(process.env.TIKTOK_DAILY_MAX ?? 3);
+const DAILY_MAX = Number(process.env.TIKTOK_DAILY_MAX || 8);
+const TREND_RESERVE = Number(process.env.TIKTOK_TREND_RESERVE || 4);
 let baseline = null; // bu calistirmanin basinda Buffer'daki sayi
 let sentThisRun = 0;
 
@@ -29,7 +33,7 @@ export async function tiktokSlotAvailable(kind = '') {
   if (remote === null) return true;
   if (baseline === null) baseline = remote;
   const used = Math.max(remote, baseline + sentThisRun);
-  const limit = String(kind).startsWith('trend-') ? Math.max(1, DAILY_MAX - 1) : DAILY_MAX;
+  const limit = String(kind).startsWith('trend-') ? Math.max(1, DAILY_MAX - TREND_RESERVE) : DAILY_MAX;
   if (used >= limit) {
     console.log(`  TikTok günlük sınırı dolu (son 24 saatte ${used}/${limit}), ${kind} TikTok'a gönderilmeyecek.`);
     return false;

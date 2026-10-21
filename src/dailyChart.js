@@ -50,6 +50,16 @@ export async function fetchDailyChart() {
 
     const streams = Number(cells[6].replace(/[^\d-]/g, ''));
     const totalStreams = Number(cells[10].replace(/[^\d-]/g, ''));
+    // Gunluk sablonlar icin ek alanlar (mevcut akis bunlari kullanmaz)
+    const strip = (c) => c.replace(/<[^>]+>/g, '').trim();
+    const dcRaw = strip(cells[1]);
+    const dayChange = dcRaw === 'NEW' ? 'NEW' : dcRaw === '=' ? 0 : /^[+-]?\d+$/.test(dcRaw) ? Number(dcRaw) : null;
+    const days = Number(strip(cells[3]).replace(/\D/g, '')) || null;
+    const peak = Number(strip(cells[4]).replace(/\D/g, '')) || null;
+    const peakTimes = Number((strip(cells[5]).match(/x(\d+)/) ?? [])[1]) || 1;
+    const scRaw = strip(cells[7]).replace(/[^\d+-]/g, '');
+    const streamsChange = /^[+-]?\d+$/.test(scRaw) ? Number(scRaw) : null;
+    const weekStreams = Number(strip(cells[8]).replace(/\D/g, '')) || null;
 
     const posChangeRaw = cells[1].trim();
     let positionChange = null;
@@ -63,6 +73,12 @@ export async function fetchDailyChart() {
       trackName: trackMatch[2],
       streams,
       totalStreams,
+      dayChange,
+      days,
+      peak,
+      peakTimes,
+      streamsChange,
+      weekStreams,
       positionChange,
       trackUrl: `https://open.spotify.com/track/${trackMatch[1]}`,
     });

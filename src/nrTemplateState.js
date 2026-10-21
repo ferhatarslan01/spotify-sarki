@@ -2,10 +2,11 @@
 //  - "Yeni cikti" ailesi: data/nrTemplateState.json   (NR_STATE_FILE, NR_VARIANTS=0 kapatir, NR_ONLY havuzu kisitlar)
 //  - "Yukselen sarki" ailesi: data/riseTemplateState.json (RISE_STATE_FILE, RISE_VARIANTS=0 kapatir, RISE_ONLY havuzu kisitlar)
 //  - "Haftalik liste" ailesi: data/weeklyTemplateState.json (WEEKLY_STATE_FILE, WEEKLY_VARIANTS=0 kapatir, WEEKLY_ONLY havuzu kisitlar)
+//  - "Gunluk Top 5" ailesi: data/dailyTemplateState.json (DAILY_STATE_FILE, DAILY_VARIANTS=0 kapatir, DAILY_ONLY havuzu kisitlar)
 // Sarki daha once atandiysa ayni sablon verilir; yoksa en uzun suredir kullanilmayan sablon secilir (bir oncekiyle ayni olmaz).
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { chooseLeastRecentTemplate, newReleasePool, newReleaseVariantFor, risePool, riseVariantFor, weeklyPool, weeklyVariantFor } from './videoPrep.js';
+import { chooseLeastRecentTemplate, newReleasePool, newReleaseVariantFor, risePool, riseVariantFor, weeklyPool, weeklyVariantFor, dailyPool, dailyVariantFor } from './videoPrep.js';
 
 const MAX_HISTORY = 60;
 const MAX_ASSIGNED = 300;
@@ -85,9 +86,19 @@ const weekly = makeRotation({
   defaultName: 'board',
 });
 
+const daily = makeRotation({
+  file: () => process.env.DAILY_STATE_FILE || fileURLToPath(new URL('../data/dailyTemplateState.json', import.meta.url)),
+  off: () => process.env.DAILY_VARIANTS === '0',
+  pool: dailyPool,
+  fallback: dailyVariantFor,
+  defaultName: 'board',
+});
+
 export const nextNewReleaseVariant = nr.next;
 export const rememberNewReleaseVariant = nr.remember;
 export const nextRiseVariant = rise.next;
 export const rememberRiseVariant = rise.remember;
 export const nextWeeklyVariant = weekly.next;
 export const rememberWeeklyVariant = weekly.remember;
+export const nextDailyVariant = daily.next;
+export const rememberDailyVariant = daily.remember;

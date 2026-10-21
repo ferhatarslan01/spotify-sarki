@@ -16,8 +16,8 @@ import {
 import { ctaFor } from './cta.js';
 import { withHashtags } from './hashtags.js';
 import { renderVideo } from './videoEngine.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, nrVariantUsesAi, prepRiseVariant, prepWeeklyVariant } from './videoPrep.js';
-import { nextNewReleaseVariant, rememberNewReleaseVariant, nextRiseVariant, rememberRiseVariant, nextWeeklyVariant, rememberWeeklyVariant } from './nrTemplateState.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, annivUsesAiFootage, eraClipsFor, prepNewReleaseVariant, nrVariantUsesAi, prepRiseVariant, prepWeeklyVariant, prepDailyVariant } from './videoPrep.js';
+import { nextNewReleaseVariant, rememberNewReleaseVariant, nextRiseVariant, rememberRiseVariant, nextWeeklyVariant, rememberWeeklyVariant, nextDailyVariant, rememberDailyVariant } from './nrTemplateState.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
@@ -425,6 +425,30 @@ export async function makeChartVideo({ kind, header, date, entries }) {
         }
       }
       await rememberWeeklyVariant(date, 'board');
+    }
+
+    // Gunluk TR Top 5: sablon ailesi (podyum, gazete, galeri); her sarki kendi hook'uyla calar. Hata olursa klasik TopBoard'a doner
+    if (!weekly && kind === 'daily-tr' && remotionEnabled()) {
+      const dv = await nextDailyVariant(date);
+      if (dv !== 'board') {
+        try {
+          const audioUrls = {};
+          for (const e of top) audioUrls[e.rank] = (await findPreview(e.artists[0].name, e.trackName).catch(() => null))?.url ?? null;
+          const prepared = await prepDailyVariant(dv, { entries, date, audioUrls });
+          const dvideo = await renderPrepared(prepared);
+          await rememberDailyVariant(date, dv);
+          return {
+            kind,
+            video: dvideo,
+            caption: chartDescription(`${header} TOP ${top.length}`, date, top, kind),
+            artists: chartArtists(top),
+            note: `remotion:Daily/${dv}, ${Object.values(audioUrls).filter(Boolean).length} sesli`,
+          };
+        } catch (err) {
+          console.error(`  Günlük şablon (${dv}) hazırlanamadı, klasik TopBoard'a dönülüyor: ${String(err.message).split('\n')[0]}`);
+        }
+      }
+      await rememberDailyVariant(date, 'board');
     }
 
     const items = [];

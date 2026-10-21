@@ -126,6 +126,24 @@ Türkiye haftalık listesinin TikTok videosu (`weekly-tr`) üç şablondan birin
 - Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only wk` (ya da `wk-countdown`, `wk-rapor`); çıktı `preview/haftalik-*.mp4`.
 - Kod: `video/src/Weekly*.tsx`, veri + ses `src/videoPrep.js` (`WEEKLY_TEMPLATES`, `weeklyCards`, `prepWeeklyVariant`).
 
+## Günlük Top 5 şablonları
+
+Türkiye günlük listesinin TikTok videosu (`daily-tr`) dört şablondan birini alır; seçim diğer ailelerdeki gibi **sıralı döngü**dür (günde bir paylaşım, durum `data/dailyTemplateState.json`, `daily-chart` workflow'u commit eder).
+
+| Şablon | Konsept |
+|---|---|
+| `board` | Klasik Top 5 "kalkış tablosu" (ilk şablon) |
+| `podyum` | Podyum: 5 → 1 basamaklar yükselir, kapaklar tepeye konar; #1'de spot ışığı, taç ve konfeti |
+| `gazete` | Gazete: günün ilk sayfası dönerek gelir; #1 manşet ("Rakamlarla zirve" kutusu), 2-5 sütun haberleri |
+| `galeri` | Galeri: müze sergisi; kamera duvar boyunca 5'ten 1'e kayar, kapaklar altın çerçevede, her eserin müze etiketi |
+
+- Veri kworb günlük listesinden: `dayChange` (`=` dahil), `days` (listede kaç gün), `peak`/`peakTimes`, `streamsChange` (dünden fark), `weekStreams`, `totalStreams` (`src/dailyChart.js`). Başlık ve etiket metinleri bu veriden türetilir; tüm rakamlar gerçektir.
+- Müzik: her şarkı kendi gösterim anında kendi önizleme hook'uyla çalar (önizlemesi bulunamayan şarkıda yedek olarak başka bir şarkı kullanılır).
+- Kapatmak için `DAILY_VARIANTS=0` (hep `board`); havuzu kısıtlamak için `DAILY_ONLY=podyum,gazete`. Şablon hazırlanamazsa otomatik klasik TopBoard'a, o da olmazsa yedek motora düşer.
+- X tarafı değişmez (5 tweetlik kare video thread'i). Yalnızca `daily-tr` etkilenir; dünya günlük listesi klasik kalır.
+- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only dy` (ya da `dy-podyum`, `dy-gazete`, `dy-galeri`); çıktı `preview/gunluk-*.mp4`.
+- Kod: `video/src/Daily*.tsx`, veri + ses `src/videoPrep.js` (`DAILY_TEMPLATES`, `prepDailyVariant`, `buildSequenceMusic`).
+
 ## Paylaşım penceresi (Türkiye saati)
 
 Tüm saatler **Türkiye saatiyle** (Europe/Istanbul, UTC+3) hesaplanır; kullanıcının ya da makinenin yerel saati (ör. ABD) hiçbir yerde kullanılmaz.

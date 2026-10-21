@@ -1413,3 +1413,187 @@ export async function prepWeeklyVariant(template, { entries, date, audioUrl }) {
     };
   });
 }
+
+// ---------------------------------------------------------------- Gunluk Top 5 sablon ailesi (TopBoard'a ek)
+// Gunluk veriden (kworb): sira degisimi (positionChange), listede kac gun (days), en yuksek sira (peak/peakTimes), dunden fark (streamsChange), 7 gun (weekStreams).
+// Her sarki kendi gosterim aninda kendi hook'uyla calar. Tum rakamlar gercek; metinler veriden turetilir.
+export const DAILY_TEMPLATES = {
+  // Podyum: 5 -> 1 basamaklar yukselir, kapaklar tepeye konar, #1'de spot + konfeti
+  podyum: { composition: 'DailyPodyum', INTRO: 1.8, STEP: 2.0, HERO_HOLD: 4.4, TAIL: 2.2 },
+  // Gazete: gunun ilk sayfasi (donerek gelir); #1 manset, 2-5 sutun haberleri
+  gazete: { composition: 'DailyGazete', INTRO: 1.6, LEAD: 3.4, STEP: 2.0, TAIL: 2.6 },
+  // Galeri: muze sergisi; kamera duvar boyunca kayar, her kapak cerceveli eser + muze etiketi
+  galeri: { composition: 'DailyGaleri', INTRO: 1.6, STEP: 2.6, HERO_HOLD: 4.2, TAIL: 2.4 },
+};
+
+export function dailyPool(names = ['board', ...Object.keys(DAILY_TEMPLATES)]) {
+  const only = (process.env.DAILY_ONLY ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  return only.length ? names.filter((n) => only.includes(n)) : names;
+}
+
+export function dailyVariantFor(seed) {
+  if (process.env.DAILY_VARIANTS === '0' || !seed) return 'board';
+  const pool = dailyPool();
+  if (pool.length === 0) return 'board';
+  let h = 0;
+  for (const ch of String(seed)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return pool[h % pool.length];
+}
+
+// veriden turetilen kisa metinler
+function dailyTexts(e) {
+  const ch = e.dayChange;
+  const moveText = ch === 'NEW' ? 'LİSTEYE YENİ GİRDİ' : typeof ch === 'number' ? (ch > 0 ? `${ch} SIRA YÜKSELDİ` : ch < 0 ? `${Math.abs(ch)} SIRA GERİLEDİ` : 'YERİNİ KORUDU') : '';
+  const daysText = e.days ? (e.days === 1 ? 'İLK GÜN' : `${e.days}. GÜN`) : '';
+  const peakText = e.peak === 1 ? `ZİRVEDE ${e.peakTimes}. GÜN` : e.peak ? `EN YÜKSEK #${e.peak}` : '';
+  const prevStreams = typeof e.streamsChange === 'number' ? e.streams - e.streamsChange : null;
+  const deltaPct = prevStreams && prevStreams > 0 ? Math.round((e.streamsChange / prevStreams) * 100) : null;
+  const deltaText = deltaPct === null ? '' : `DÜNE GÖRE ${deltaPct >= 0 ? '+' : '-'}%${Math.abs(deltaPct)}`;
+  return { moveText, daysText, peakText, deltaPct, deltaText };
+}
+
+// parcali muzik: her sarkinin hook'u kendi gosterim aninda baslar; kesikler kisa solmalarla
+async function buildSequenceMusic({ dir, segments, dur, out }) {
+  const files = [];
+  const fallback = segments.find((s) => s.url);
+  for (const [i, s] of segments.entries()) {
+    const url = s.url ?? fallback?.url;
+    if (!url) {
+      files.push(null);
+      continue;
+    }
+    const file = join(dir, `seg${i}.bin`);
+    await writeFile(file, await fetchBuf(url));
+    files.push(file);
+  }
+  const live = segments.map((s, i) => ({ s, f: files[i], i })).filter((x) => x.f);
+  if (live.length === 0) {
+    await run('ffmpeg', ['-y', '-v', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo', '-t', String(dur), out]);
+    return;
+  }
+  const args = ['-y', '-v', 'error'];
+  const parts = [];
+  for (const [k, x] of live.entries()) {
+    args.push('-i', x.f);
+    const len = x.s.len + 0.35;
+    const hook = await findHookStart(x.f, Math.min(len, 20));
+    // eksik sarkida yedek sarki: farkli bir bolumden basla
+    const ss = x.s.url ? hook : hook + 5;
+    const at = Math.round(x.s.at * 1000);
+    parts.push(`[${k}:a]atrim=start=${ss}:duration=${len},asetpts=PTS-STARTPTS,aformat=sample_rates=44100:channel_layouts=stereo,afade=t=in:d=0.05,afade=t=out:st=${Math.max(0, len - 0.4)}:d=0.4,adelay=${at}|${at}[s${k}]`);
+  }
+  const mixIn = live.map((_, k) => `[s${k}]`).join('');
+  const graph = `${parts.join(';')};${mixIn}amix=inputs=${live.length}:normalize=0:duration=longest,apad=whole_dur=${dur}[m]`;
+  await run('ffmpeg', [...args, '-filter_complex', graph, '-map', '[m]', '-t', String(dur), '-ar', '44100', '-ac', '2', out]);
+}
+
+export async function prepDailyVariant(template, { entries, date, audioUrls = {} }) {
+  const cfg = DAILY_TEMPLATES[template];
+  if (!cfg) throw new Error(`Bilinmeyen gunluk sablon: ${template}`);
+  const top = entries.slice(0, 5);
+  if (top.length < 5) throw new Error('Gunluk liste cok kisa');
+
+  // gosterim sirasi ve zamanlari
+  const order = template === 'gazete' ? [1, 2, 3, 4, 5] : [5, 4, 3, 2, 1];
+  const { INTRO, STEP } = cfg;
+  const items = [];
+  const assets = [];
+  for (const [i, rank] of order.entries()) {
+    const e = top.find((x) => x.rank === rank) ?? top[rank - 1];
+    const file = `dy-c${rank}.jpg`;
+    const buf = await squareJpeg(await fetchBuf(await getTrackThumbnail(e.trackUrl)), 720, 88);
+    assets.push({ name: file, buffer: buf });
+    const at = template === 'gazete' ? (i === 0 ? INTRO : INTRO + cfg.LEAD + (i - 1) * STEP) : INTRO + i * STEP;
+    items.push({
+      rank,
+      title: e.trackName,
+      artist: wkNames(e),
+      streams: wkFmt(e.streams),
+      streamsN: e.streams,
+      total: e.totalStreams ? wkFmt(e.totalStreams) : '',
+      weekStreams: e.weekStreams ? wkFmt(e.weekStreams) : '',
+      change: e.dayChange,
+      days: e.days,
+      peak: e.peak,
+      peakTimes: e.peakTimes,
+      ...dailyTexts(e),
+      cover: file,
+      hue: await hueOf(sharp, buf),
+      at,
+      len: 0,
+      url: audioUrls[rank] ?? null,
+    });
+  }
+  // son oge: sahne bitisine kadar kalir
+  const last = items[items.length - 1];
+  let OUTRO;
+  if (template === 'podyum') OUTRO = last.at + cfg.HERO_HOLD;
+  else if (template === 'galeri') OUTRO = last.at + cfg.HERO_HOLD;
+  else OUTRO = last.at + STEP + 0.6;
+  const DUR = Math.round((OUTRO + cfg.TAIL) * 10) / 10;
+  for (const [i, it] of items.entries()) it.len = (i < items.length - 1 ? items[i + 1].at : OUTRO) - it.at;
+
+  return withTmp(async (dir) => {
+    const music = join(dir, 'music.wav');
+    await buildSequenceMusic({
+      dir,
+      segments: items.map((it) => ({ url: it.url, at: it.at, len: it.len })),
+      dur: DUR,
+      out: music,
+    });
+
+    const sfx = makeSfx(DUR, 41);
+    sfx.boom(0.2, 0.8, 76);
+    sfx.whoosh(0.05, 0.6, 0.5, 300, 5500);
+    if (template === 'podyum') {
+      for (const [i, it] of items.entries()) {
+        const hero = i === items.length - 1;
+        if (hero) sfx.riser(it.at - 1.3, it.at, 0.6);
+        sfx.whoosh(it.at - 0.1, 0.5, 0.35, 150, 1800); // blok yukselir
+        sfx.boom(it.at + 0.4, hero ? 1.0 : 0.5, hero ? 66 : 90); // kapak konar
+        sfx.ding(it.at + 0.45, 440 * Math.pow(2, (i * 3) / 12), 0.3, 0.4);
+        if (hero) [784, 1046.5, 1318.5, 1568].forEach((f, k) => sfx.ding(it.at + 0.5 + k * 0.08, f, 0.42, 0.8));
+      }
+      sfx.whoosh(last.at + 0.5, 1.2, 0.5, 600, 7000); // konfeti
+    } else if (template === 'gazete') {
+      sfx.whoosh(0.1, 1.0, 0.55, 200, 5000); // donen gazete
+      sfx.boom(1.05, 0.8, 90);
+      for (const it of items) {
+        sfx.clatter(it.at, 0.55, 18, 0.1); // baski
+        sfx.tick(it.at + 0.55, 0.5, 700);
+      }
+      sfx.boom(OUTRO, 0.6, 90);
+    } else {
+      sfx.hiss(0.0, DUR, 0.012); // salon sessizligi
+      for (const [i, it] of items.entries()) {
+        sfx.whoosh(it.at - 0.45, 0.6, 0.25, 250, 2200); // kamera kayar
+        sfx.tick(it.at + 0.2, 0.5, 900); // spot acilir
+        sfx.ding(it.at + 0.3, 659.25 * Math.pow(2, (i * 2) / 12), 0.22, 0.6);
+      }
+      [784, 1046.5, 1318.5].forEach((f, k) => sfx.ding(last.at + 0.4 + k * 0.1, f, 0.35, 0.8));
+    }
+    sfx.whoosh(OUTRO, 1.1, 0.35, 5000, 250);
+    await sfx.writeWav(join(dir, 'sfx.wav'));
+    await mixMusicAndSfx(music, join(dir, 'sfx.wav'), join(dir, 'mix.wav'), 0.8, 0.85);
+    const bands = await analyzeBands(music, DUR);
+
+    return {
+      composition: cfg.composition,
+      dataKey: 'dy',
+      data: {
+        date,
+        items: items.map(({ url, ...rest }) => rest),
+        intro: INTRO,
+        step: STEP,
+        lead: cfg.LEAD ?? 0,
+        hold: cfg.HERO_HOLD ?? 0,
+        outro: OUTRO,
+        hue: (items.find((x) => x.rank === 1) ?? items[0]).hue,
+        fps: FPS,
+        durationSeconds: DUR,
+        bands,
+      },
+      assets: [...assets, { name: 'dy-soundtrack.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) }],
+    };
+  });
+}

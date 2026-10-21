@@ -13,7 +13,7 @@ TikTok'a **dikey** (1080×1920) sahne videoları, X'e **kare** (1080×1080) "kap
 | Yıl dönümü | kare oynatıcı videosu | **Anniversary**: VHS geri sarma |
 | Sırada +10 ve üstü yükseliş | kare oynatıcı videosu | **RankRise** ailesi: 7 şablon (aşağıda), sıralı döngü |
 | İlk kez Top 10 / stream rekoru / dünya listesi | kare oynatıcı videosu | **NewRelease** (özel metinlerle) |
-| Günlük / haftalık Türkiye Top 5 | **5 tweetlik thread**: her şarkı kendi kare videosu | **TopBoard**: kalkış tablosu |
+| Haftalık Türkiye Top 5 (günlük paylaşım kapalı) | **5 tweetlik thread**: her şarkı kendi kare videosu | **TopBoard**: kalkış tablosu |
 | Pazar gecesi haftalık özet | thread (ilk tweet video) | **TopBoard** (haftanın yeni şarkıları) |
 | **Düello** (her gün 20:00 TRT) | dikey video + ilk yanıtta 2 Spotify linki; cevap metinde yazılmaz, yalnızca videoda açıklanır | **Duel**: iki şarkı, "hangisi daha çok dinlendi?" tahmini, sonuç anı |
 | Dünya günlük Top 5 | 5 tweetlik thread | kapalı (açmak için `TIKTOK_GLOBAL=1`) |
@@ -127,6 +127,8 @@ Türkiye haftalık listesinin TikTok videosu (`weekly-tr`) üç şablondan birin
 - Kod: `video/src/Weekly*.tsx`, veri + ses `src/videoPrep.js` (`WEEKLY_TEMPLATES`, `weeklyCards`, `prepWeeklyVariant`).
 
 ## Günlük Top 5 şablonları
+
+> **Günlük Türkiye Top 5 paylaşımı şu an KAPALI** (yalnızca haftalık liste paylaşılır). `daily-chart.yml` içindeki `schedule` zamanlaması kaldırıldı; elle çalıştırma açık. Yeniden açmak için workflow dosyasındaki yorum satırlarındaki `schedule` bloğunu geri ekle. Aşağıdaki şablonlar hazır bekliyor.
 
 Türkiye günlük listesinin TikTok videosu (`daily-tr`) dört şablondan birini alır; seçim diğer ailelerdeki gibi **sıralı döngü**dür (günde bir paylaşım, durum `data/dailyTemplateState.json`, `daily-chart` workflow'u commit eder).
 

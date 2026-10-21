@@ -1,8 +1,10 @@
 name: Post daily chart
 
+# Günlük Türkiye Top 5 paylaşımı KAPALI: bundan sonra yalnızca haftalık liste paylaşılır (weekly-chart.yml).
+# Elle çalıştırma (workflow_dispatch) hâlâ mümkün. Yeniden açmak için `on:` altına şunu geri ekle:
+#   schedule:
+#     - cron: '0 */2 * * *'
 on:
-  schedule:
-    - cron: '0 */2 * * *'
   workflow_dispatch: {}
 
 permissions:

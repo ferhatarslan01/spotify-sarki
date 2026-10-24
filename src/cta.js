@@ -18,6 +18,7 @@ const QUESTIONS = {
   'trend-top10': ['Sence kaçıncı olur? 👇', 'Zirveye çıkar mı? 👇'],
   'trend-milestone': ['Sen de dinledin mi? 👇', 'Sence hak etti mi? 👇'],
   'trend-global': ['Gurur duydun mu? 👇', 'Dünyada da büyür mü? 👇'],
+  'trend-newentry': ['Dinledin mi? 👇', 'Sence kaçıncı olur? 👇'],
   'daily-tr': ['Yarın 1 numara değişir mi? 👇', 'Yarın da zirvede kalır mı? 👇'],
   'weekly-tr': ['Haftaya 1 numara değişir mi? 👇', 'Haftaya da zirvede kalır mı? 👇'],
   'daily-global': ['Yarın 1 numara değişir mi? 👇'],

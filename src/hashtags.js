@@ -14,6 +14,7 @@ const KIND_TAGS = {
   'trend-top10': ['#spotifytürkiye', '#top10', '#trend'],
   'trend-milestone': ['#spotifytürkiye', '#rekor', '#stream'],
   'trend-global': ['#spotifyglobal', '#dünyalistesi', '#türkçemüzik'],
+  'trend-newentry': ['#spotifytürkiye', '#yeniçıktı', '#yenişarkı'],
   'daily-tr': ['#spotifytürkiye', '#günlükliste', '#top5'],
   'weekly-tr': ['#spotifytürkiye', '#haftalıkliste', '#top5'],
   'daily-global': ['#spotifyglobal', '#dünyalistesi', '#top5'],

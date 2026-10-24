@@ -8,6 +8,7 @@ const EMPTY_STATE = {
   topTenSeen: [],
   milestonesSeen: {},
   crossoverSeen: [],
+  newEntrySeen: [],
 };
 
 export async function loadTrendsState() {

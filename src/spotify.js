@@ -76,3 +76,30 @@ export async function getLatestRelease(token, artistId) {
   const releases = await getRecentReleases(token, artistId);
   return releases[0] ?? null;
 }
+
+// --- Deezer ile tespit edilen yayinlar icin: Spotify'da tek albumu bulur (yalnizca paylasim aninda, kota dostu) ---
+function mapAlbum(item) {
+  return item ? { url: item.external_urls?.spotify ?? null, imageUrl: item.images?.[0]?.url ?? null, name: item.name, artists: (item.artists ?? []).map((a) => a.name), artistIds: (item.artists ?? []).map((a) => a.id) } : null;
+}
+
+// UPC ile tam eslesme (Deezer albumunun UPC'si Spotify'daki ayni albumle eslesir).
+export async function findAlbumByUpc(token, upc) {
+  const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(`upc:${upc}`)}&type=album&limit=1`;
+  const res = await fetchWithRetry(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`Spotify arama basarisiz (upc): ${res.status}`);
+  const data = await res.json();
+  return mapAlbum(data.albums?.items?.[0]);
+}
+
+// UPC bulunamazsa ad ile ara; yalnizca sanatci adi tutan sonuc kabul edilir.
+export async function findAlbumByName(token, albumName, artistName, artistId = null) {
+  const q = `album:"${albumName.replace(/"/g, '')}" artist:"${artistName.replace(/"/g, '')}"`;
+  const url = `https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=album&market=TR&limit=5`;
+  const res = await fetchWithRetry(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`Spotify arama basarisiz (ad): ${res.status}`);
+  const data = await res.json();
+  const norm = (x) => String(x ?? '').toLocaleLowerCase('tr').replace(/[^a-z0-9ğüşıöç]/g, '');
+  const items = data.albums?.items ?? [];
+  const hit = (artistId && items.find((it) => (it.artists ?? []).some((a) => a.id === artistId))) || items.find((it) => (it.artists ?? []).some((a) => norm(a.name) === norm(artistName)));
+  return mapAlbum(hit);
+}

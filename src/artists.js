@@ -1,4 +1,7 @@
-export const artists = [
+import { readFileSync } from 'node:fs';
+
+// Elle secilmis cekirdek liste (Spotify sanatci kimlikleri).
+const baseArtists = [
   { name: 'BLOK3', id: '1GMwSpFzrLd12jUX15bHB6' },
   { name: 'Ati242', id: '6bGOmNBU1AOgttgOjh0ldf' },
   { name: 'Semicenk', id: '1CcZoULzFHa8Uhwo6OlQcp' },
@@ -62,3 +65,14 @@ export const artists = [
   { name: 'Fettah Can', id: '17fJCykpa2EqIioh0zamN9' },
   { name: 'Cem Adrian', id: '2AWUCT9xtcvkjpFq1ZgpPj' },
 ];
+
+// Ek sanatcilar (tools/discoverArtists.mjs ile Turkiye listelerinden bulunur, data/extraArtists.json). Yalnizca Deezer'da dogrulanmis
+// olanlar takip edilir (Deezer kimligi data/deezerArtists.json'da yoksa atlanirlar); yeni cikti kontrolu ve yil donumu icin kullanilir.
+let extraArtists = [];
+try {
+  extraArtists = JSON.parse(readFileSync(new URL('../data/extraArtists.json', import.meta.url), 'utf8')).map((a) => ({ ...a, extra: true }));
+} catch {
+  /* dosya yoksa yalnizca cekirdek liste */
+}
+
+export const artists = [...baseArtists, ...extraArtists];

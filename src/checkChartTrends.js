@@ -6,6 +6,8 @@ import { publishPostWithVideo } from './bufferPost.js';
 import { tagText } from './artistHandles.js';
 import { ctaFor } from './cta.js';
 import { makeEventVideos, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
+import { artists as trackedArtists } from './artists.js';
+import { findTrackReleaseDate } from './deezer.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -13,6 +15,9 @@ const JUMP_THRESHOLD = 10;
 const MAX_POSTS_PER_RUN = 5;
 const MAX_TIKTOK_PER_RUN = 1;
 const RELEVANT_RANK_LIMIT = 100;
+const NEWENTRY_RANK_LIMIT = 100; // listeye yeni giren sarki bu siranin icindeyse "yeni cikti" olarak duyurulur
+const NEWENTRY_MAX_AGE_DAYS = 21; // Deezer'a gore yayin tarihi en fazla bu kadar eskiyse (eski sarkilarin listeye donusu haric)
+const TRACKED_IDS = new Set(trackedArtists.map((a) => a.id)); // takip edilen sanatcilarin yeni yayinlari release-check ile zaten duyurulur
 
 function artistNames(entry) {
   return entry.artists.map((a) => a.name).join(' & ');
@@ -62,6 +67,7 @@ async function main() {
   let state = await loadTrendsState();
   const isFirstRun = state === null;
   if (isFirstRun) state = emptyTrendsState();
+  state.newEntrySeen ??= [];
 
   if (state.date !== date) {
     state.jumpsAnnounced = [];
@@ -243,6 +249,64 @@ async function main() {
         });
       } else {
         state.crossoverSeen.push(entry.trackId);
+      }
+    }
+
+    // 5) Listeye yeni giren, gercekten yeni cikmis sarki (takip listesinde olmayan sanatcilar dahil)
+    if (
+      entry.positionChange === 'NEW' &&
+      entry.rank <= NEWENTRY_RANK_LIMIT &&
+      !state.newEntrySeen.includes(entry.trackId) &&
+      !entry.artists.some((a) => TRACKED_IDS.has(a.id))
+    ) {
+      if (!isFirstRun) {
+        const rel = await findTrackReleaseDate(entry.artists[0].name, entry.trackName).catch(() => null);
+        const ageDays = rel ? Math.round((Date.now() - new Date(`${rel.releaseDate}T12:00:00Z`).getTime()) / 86_400_000) : null;
+        if (rel && ageDays !== null && ageDays >= -1 && ageDays <= NEWENTRY_MAX_AGE_DAYS) {
+          const [yy, mm, dd] = rel.releaseDate.split('-');
+          const releaseText = `${dd}.${mm}.${yy}`;
+          events.push({
+            priority: 60 + (100 - entry.rank) / 100,
+            trackUrl: entry.trackUrl,
+            artists: entry.artists,
+            text: eventText('trend-newentry', `🆕 ${label}`, `Yeni çıktı ve Türkiye günlük listesine ${entry.rank}. sıradan girdi! 🔥`, entry.trackUrl),
+            card: {
+              kind: 'trend-newentry',
+              label: 'LİSTEYE YENİ GİRİŞ',
+              headline: `${entry.rank}. SIRA`,
+              title: entry.trackName,
+              subtitle: artistNames(entry),
+              template: 'NewRelease',
+              variantSeed: entry.trackId, // sarkiya gore yeni cikti sablonu (sirali donus)
+              templateData: {
+                dateText: releaseText,
+                pill: `YENİ ÇIKTI · LİSTEDE #${entry.rank}`,
+                loadingLabel: 'YENİ ŞARKI YÜKLENİYOR',
+                radarLabel: 'LİSTEYE YENİ GİRİŞ',
+              },
+              scene: 'new',
+              palette: 'studio',
+              sceneData: {
+                dateText: releaseText,
+                pill: 'LİSTEYE YENİ GİRİŞ',
+                hook1: 'YENİ ÇIKTI',
+                hook2: 'LİSTEDE!!!',
+                sub: `${entry.rank}. sıradan girdi!`,
+                badge: `#${entry.rank}`,
+                cta: 'Dinledin mi?',
+              },
+            },
+            onCommit: () => {
+              state.newEntrySeen.push(entry.trackId);
+              state.newEntrySeen = state.newEntrySeen.slice(-400);
+            },
+          });
+        } else {
+          console.log(`Liste girişi atlandı (yeni çıkmamış ya da tarih bulunamadı): ${label} (${rel?.releaseDate ?? '?'})`);
+          state.newEntrySeen.push(entry.trackId);
+        }
+      } else {
+        state.newEntrySeen.push(entry.trackId);
       }
     }
   }

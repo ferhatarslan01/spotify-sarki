@@ -2,15 +2,23 @@ name: Check new releases
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
+    # Her saat: yeni yayin tespiti Deezer ile yapildigi icin (Spotify kotasina bagli degil) ucuz; GitHub bir tetigi atlasa/geciktirse
+    # bile bir sonrakinde yakalanir. Paylasim penceresi (TRT) disindaki turlar agir adimlari calistirmadan hemen biter.
+    - cron: '17 * * * *'
   workflow_dispatch: {}
 
 permissions:
   contents: write
 
+# Ust uste binen calismalar (durum dosyasi cakismasi, cift paylasim) olmasin: sirayla calisir.
+concurrency:
+  group: release-check
+  cancel-in-progress: false
+
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -18,18 +26,44 @@ jobs:
         with:
           node-version: '20'
 
+      # Pencere kapaliysa npm ci / ffmpeg gibi agir adimlar atlanir (gereksiz bekleme ve ffmpeg kurulum takilmalari olmasin).
+      - name: Paylasim penceresi kontrolu
+        id: win
+        run: |
+          node --input-type=module -e "
+          import { postWindowOpen } from './src/postWindow.js';
+          import { appendFileSync } from 'node:fs';
+          const open = postWindowOpen('Pencere kontrolu');
+          appendFileSync(process.env.GITHUB_OUTPUT, 'open=' + open + '\n');
+          "
+        env:
+          # Elle (workflow_dispatch) calistirmada pencere kapali sayilir (her zaman devam); yoksa repo degiskeni POST_WINDOW, o da yoksa 09:00-23:30.
+          POST_WINDOW: ${{ github.event_name == 'workflow_dispatch' && 'off' || vars.POST_WINDOW }}
+
       - name: Cache Remotion dependencies
+        if: steps.win.outputs.open == 'true'
         uses: actions/cache@v4
         with:
           path: video/node_modules
           key: remotion-${{ runner.os }}-${{ hashFiles('video/package-lock.json') }}
 
-      - run: npm ci
+      - name: Install dependencies
+        if: steps.win.outputs.open == 'true'
+        run: npm ci
 
       - name: Ensure ffmpeg
-        run: which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+        if: steps.win.outputs.open == 'true'
+        run: |
+          which ffmpeg && exit 0
+          for i in 1 2 3; do
+            if sudo timeout 240 apt-get update -qq -o Acquire::Retries=2 -o Acquire::http::Timeout=30 && sudo timeout 420 apt-get install -y -qq ffmpeg; then exit 0; fi
+            echo "ffmpeg kurulum denemesi $i basarisiz, tekrar deneniyor"; sleep 10
+          done
+          exit 1
 
-      - run: npm run check
+      - name: Check releases
+        if: steps.win.outputs.open == 'true'
+        run: npm run check
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}

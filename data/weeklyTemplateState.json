@@ -1,4 +1,8 @@
 {
-  "history": [],
-  "assigned": {}
+  "history": [
+    "countdown"
+  ],
+  "assigned": {
+    "22.10.2026": "countdown"
+  }
 }

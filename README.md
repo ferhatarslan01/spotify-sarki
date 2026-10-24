@@ -158,6 +158,8 @@ tüm sanatçıları tarar, böylece gece çıkan şarkı sabah gecikmeden bulunu
 - Yerelde: `POST_WINDOW=off node --env-file=.env src/postDuel.js` gibi.
 - Mantık `src/postWindow.js` içinde; gece yarısını aşan pencereler (örn. `22:00-02:00`) de desteklenir.
 
+**Yeni çıkan kontrolü (`release-check`):** Spotify kotasını zorlamamak için her çalışma 61 sanatçının yarısını kontrol eder; hangi yarı olduğu saate değil `data/checkCursor.json` içindeki **kalıcı sıra imlecine** bağlıdır (kontrol edilen sanatçı sayısı kadar ilerler). Böylece GitHub zamanlayıcısı kaysa ya da bir çalışma atlansa bile ardışık iki çalışma tüm listeyi kapsar. Pencere açılış turunda (ve `CHECK_ALL=1` ile) hepsi bir seferde kontrol edilir.
+
 ## Klasörler
 
 - `src/` bot kodu. `videoPrep.js` (veri + ses), `remotionRender.js` (render), `tiktokVideo.js` (karar + paylaşım).

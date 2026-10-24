@@ -10,11 +10,11 @@ import { ctaFor } from './cta.js';
 import { appendToWeeklyLog } from './weeklyLog.js';
 import { loadAnniversaryState, saveAnniversaryState } from './anniversaryState.js';
 import { makeEventVideos, hostVideo, tiktokPostPrepared } from './tiktokVideo.js';
+import { loadCursor, saveCursor, pickBatch } from './checkCursor.js';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const BATCH_COUNT = 2;
-const BATCH_WINDOW_MS = 3 * 60 * 60 * 1000; // workflow her 3 saatte bir calisir
+const BATCH_COUNT = 2; // her calistirma listenin yarisini kontrol eder (imlec ile sirayla)
 
 function formatDate(iso) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso ?? '');
@@ -60,12 +60,14 @@ async function main() {
   // her calistirma siradaki grubu kontrol eder (her sanatci yine ~6 saatte bir kontrol edilir).
   // CHECK_ALL=1 ile hepsi tek seferde kontrol edilir.
   // Paylaşım penceresi açıldığında (TRT) gece atlanan turları telafi etmek için ilk turda da hepsi kontrol edilir.
-  const slot = Math.floor(Date.now() / BATCH_WINDOW_MS) % BATCH_COUNT;
+  // Sira imleci: GitHub zamanlayicisi kaysa bile ardisik iki calistirma tum listeyi kapsar (eski saat tabanli grup mantigi ayni yariyi tekrar edebiliyordu).
   const openingRun = isOpeningRun();
-  const batch =
-    process.env.CHECK_ALL === '1' || openingRun ? artists : artists.filter((_, i) => i % BATCH_COUNT === slot);
+  const checkAll = process.env.CHECK_ALL === '1' || openingRun;
+  const cursor = await loadCursor();
+  const batch = checkAll ? artists : pickBatch(artists, cursor, BATCH_COUNT);
+  let processed = 0; // bu turda gercekten kontrol edilen sanatci sayisi (imleci bu kadar ilerletiriz)
   console.log(
-    `Bu çalıştırmada ${batch.length}/${artists.length} sanatçı kontrol ediliyor (${openingRun ? 'pencere açılış turu: hepsi' : `grup ${slot + 1}/${BATCH_COUNT}`}).\n`
+    `Bu çalıştırmada ${batch.length}/${artists.length} sanatçı kontrol ediliyor (${openingRun ? 'pencere açılış turu: hepsi' : checkAll ? 'hepsi' : `sıradaki grup, imleç ${cursor}/${artists.length}`}).\n`
   );
 
   const token = await getAccessToken();
@@ -73,6 +75,7 @@ async function main() {
   let quotaStopped = false;
 
   for (const artist of batch) {
+    processed += 1;
     let releases;
     try {
       releases = await getRecentReleases(token, artist.id);
@@ -83,6 +86,7 @@ async function main() {
         // Kota doldu: kalan sanatcilari bosuna denemeyip turu burada birakiyoruz (ilerleme asagida kaydedilir).
         console.error('Spotify kotası doldu, tur erken bitiriliyor; kalan sanatçılar sonraki turda kontrol edilecek.');
         quotaStopped = true;
+        processed -= 1; // bu sanatci kontrol edilemedi
         if (err.retryAfter >= 60) {
           const until = await saveSpotifyBlock(err.retryAfter);
           console.error(`Spotify engeli ${until} tarihine kadar kaydedildi.`);
@@ -228,6 +232,7 @@ async function main() {
   if (succeeded > 0) {
     await saveState({ ...oldState, ...newState });
     await saveAnniversaryState(anniversaryState);
+    if (!checkAll) await saveCursor((cursor + processed) % artists.length);
     console.log(`\nDurum dosyası güncellendi (${succeeded} sanatçı).`);
   }
 

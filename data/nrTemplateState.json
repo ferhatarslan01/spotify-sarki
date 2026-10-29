@@ -1,8 +1,10 @@
 {
   "history": [
-    "radyo"
+    "radyo",
+    "neon"
   ],
   "assigned": {
-    "dz:1111063802": "radyo"
+    "dz:1111063802": "radyo",
+    "dz:1130882951": "neon"
   }
 }

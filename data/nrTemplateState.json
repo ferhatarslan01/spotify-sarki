@@ -1,10 +1,22 @@
 {
   "history": [
     "radyo",
-    "neon"
+    "neon",
+    "kaset",
+    "drop",
+    "mesaj",
+    "bulten",
+    "tahmin",
+    "kilit"
   ],
   "assigned": {
     "dz:1111063802": "radyo",
-    "dz:1130882951": "neon"
+    "dz:1130882951": "neon",
+    "dz:1131770381": "kaset",
+    "dz:1132902101": "drop",
+    "dz:1121275162": "mesaj",
+    "dz:1115939062": "bulten",
+    "dz:1128095041": "tahmin",
+    "dz:1119466762": "kilit"
   }
 }

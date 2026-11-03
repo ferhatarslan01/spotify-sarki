@@ -1,6 +1,6 @@
 // Yerel ComfyUI (Wan 2.2 TI2V 5B) ile arka plan videosu uretir. Tek seferlik: sonuc repoya konur, bulutta GPU gerekmez.
 // Kullanim: node tools/comfy/bgGen.mjs <stil> [--draft] [--seed N] [--frames 121]
-//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2 | phone1 | phone2 | vinyl1 | vinyl1b | vinyl2 | projector | newsroom | neonstage | deskwarm   (asagidaki STYLES)
+//   stil: room | vhs | film | radio1 | radio2 | pc1 | pc2 | phone1 | phone2 | vinyl1 | vinyl1b | vinyl2 | projector | newsroom | neonstage | deskwarm | stream1 | stream2 | stream2b | drive1 | drawer1 | drawer2 | drawer2b   (asagidaki STYLES)
 //   --draft: kucuk boyut (480x864) hizli onizleme; yoksa 704x1280.
 //   --cool N / --rest S: GPU N C altinda ve S sn bosta kalana kadar bekle (varsayilan 50 C / 0 sn: GPU 50 C altina inince baslar; --cool 0 = bekleme yok).
 //   --tiled: VAE'yi parcali cozer (8 GB VRAM'de buyuk boyutta takilmayi onler).
@@ -96,6 +96,69 @@ const STYLES = {
       'Close-up of a portable cylinder Bluetooth speaker on a bedside table pulsing with deep bass, its fabric grille vibrating, a small pink LED ring glowing, ' +
       'warm fairy lights bokeh in the background, a smartphone lying next to it with its screen lighting up, pink and purple neon glow, ' +
       'analog film grain, shallow depth of field, slow camera push-in, nostalgic mood, no hands, no text.',
+  },
+  stream1: {
+    note: 'Son 10 yil girisi, sahne 1: sirti donuk, kulakliklı biri gece masasinda (RGB isik, sehir manzarasi; yuz gorunmez)',
+    negative: NEGATIVE_BACK + ', logo on clothes, writing on jacket, readable text on screens, brand logos, headphones cable',
+    prompt:
+      'Cinematic vertical shot from directly behind: a young person in 2020s streetwear, a black oversized hoodie and large white wireless over-ear headphones, ' +
+      'sits at a modern desk in a dark apartment at night, seen only from behind, facing a large ultrawide monitor that glows with soft abstract colorful light. ' +
+      'Teal and magenta RGB LED strips glow along the wall and the desk edge, a city skyline with distant lights is visible through the window, ' +
+      'a smartphone lies on the desk and its screen lights up. ' +
+      'Slow camera push-in from behind the shoulder, subtle film grain, shallow depth of field, modern cozy late night mood.',
+  },
+  stream2: {
+    note: 'Son 10 yil girisi, sahne 2: kablosuz kulaklik kutusu acilir, yaninda parlayan telefon (insansiz)',
+    negative: NEGATIVE_PERSON + ', readable text, logo, brand name',
+    prompt:
+      'Close-up of a small white wireless earbuds charging case on a dark desk, its lid opens slowly and the two earbuds inside light up with a soft white LED, ' +
+      'a smartphone lies next to it with its screen glowing in soft colorful light, teal and magenta neon bokeh city lights in the background, ' +
+      'rain drops on a window, subtle film grain, shallow depth of field, slow camera push-in, modern late night mood, no hands, no text.',
+  },
+  stream2b: {
+    note: 'Son 10 yil girisi, sahne 2 (alternatif): isikli halkali akilli hoparlor bas ile titrer (insansiz)',
+    negative: NEGATIVE_PERSON + ', readable text, logo, brand name',
+    prompt:
+      'Close-up of a small round smart speaker on a dark desk pulsing with deep bass, a glowing violet and cyan light ring around its top gets brighter with every beat, ' +
+      'its fabric surface vibrates, teal and magenta neon bokeh city lights in the background, a smartphone beside it with a softly glowing screen, ' +
+      'subtle film grain, shallow depth of field, slow camera push-in, modern late night mood, no hands, no text.',
+  },
+  drive1: {
+    note: 'Son 10 yil girisi (B), sahne 1: gece arabanin icinden yagmurlu cam, sehir isiklari, torpidoda parlayan telefon (insansiz)',
+    negative: NEGATIVE_PERSON + ', readable text, logo, brand name, license plate, steering wheel hands',
+    prompt:
+      'Cinematic vertical shot from inside a slowly driving car at night, seen from the passenger seat: a smartphone in a dashboard holder glows with soft colorful light, ' +
+      'a modern touchscreen car display glows with abstract violet and cyan light, a thin violet ambient LED line runs along the dashboard, ' +
+      'rain drops run down the windshield, a wet city street outside with streaking headlights and neon signs melts into creamy teal and magenta bokeh. ' +
+      'Subtle film grain, shallow depth of field, slow camera push-in, modern late night mood, no people, no hands, no text.',
+  },
+  drawer1: {
+    note: '2006-2016 girisi, sahne 1: hatira cekmecesi — icinde dolasik kulaklik, MP3 calar, kapakli telefon, CD (insansiz)',
+    negative: NEGATIVE_PERSON + ', readable text, logo, brand name, apple logo, hands, fingers',
+    prompt:
+      'Cinematic vertical shot looking down at an angle into an open wooden desk drawer in a dim room at night, a time capsule of memories from around 2010: ' +
+      'tangled white earbuds with a thin cable, a small silver MP3 player whose little screen glows softly, an old flip phone, a burned CD in a clear plastic case, a USB flash drive, rubber bands. ' +
+      'Dust particles drift slowly in a soft beam of cool blue window light mixed with warm amber lamp glow, nostalgic and dreamy. ' +
+      'Slow camera push-in toward the glowing MP3 player, shallow depth of field, subtle film grain, no hands, no people, no text.',
+  },
+  drawer2: {
+    note: '2006-2016 girisi, sahne 2: MP3 calar ekrani uyanir, tiklama tekerlegi isik halkasiyla doner (makro, insansiz)',
+    negative: NEGATIVE_PERSON + ', readable text, logo, brand name, apple logo, hands, fingers',
+    prompt:
+      'Macro close-up of a small silver MP3 player lying on dark wood: its little screen wakes up and shows glowing abstract equalizer bars bouncing with the bass, ' +
+      'the round click wheel below it glows with a soft ring of light that slowly rotates, white earbuds cable curled beside it, ' +
+      'dust motes sparkle in a thin beam of warm light, cool blue background bokeh, nostalgic late night mood. ' +
+      'Slow camera push-in, very shallow depth of field, subtle film grain, no hands, no people, no text.',
+  },
+  drawer2b: {
+    note: '2006-2016 girisi, sahne 2 (siki kadraj): MP3 calarin ekrani ve tiklama tekerlegi kadraji doldurur, ekolayzer cubuklari bas ile oynar',
+    negative: NEGATIVE_PERSON + ', readable text, logo, brand name, apple logo, hands, fingers, wide shot, far away, tiny object, empty background, flash, overexposed light burst',
+    prompt:
+      'Extreme macro close-up, the camera is only a few centimeters away from a small silver MP3 player lying on a dark wooden desk, the player fills most of the frame. ' +
+      'Its small backlit screen glows teal and shows abstract equalizer bars jumping up and down with deep bass, ' +
+      'the round click wheel below the screen glows with a soft ring of light, a thin white earbuds cable curls across the wood in the foreground, ' +
+      'dust motes sparkle in the warm light, deep blue night bokeh far behind. ' +
+      'Slow gentle camera push-in, very shallow depth of field, subtle film grain, nostalgic late night mood, no hands, no people, no text.',
   },
   pc1: {
     note: "2000ler girisi, sahne 1: bilgisayar basinda oturan, fareye tiklayan",
@@ -220,7 +283,7 @@ async function waitCool(target, rest) {
   for (let i = 0; i < 240; i++) {
     const r = await read();
     if (!r) return;
-    if (r.t <= target && r.u < 10) {
+    if (r.t <= target && (rest <= 0 || r.u < 10)) {
       idleSince ??= Date.now();
       const idle = (Date.now() - idleSince) / 1000;
       if (idle >= rest) return;

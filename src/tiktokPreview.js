@@ -1,5 +1,5 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,era-son10,era-son10b,era-hatira,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
@@ -181,6 +181,27 @@ async function main() {
   // Donem girisli yil donumu onizlemeleri: era90 (1990-1999) ve era2000 (2000-2009); klipleri hazir olan donemler calisir.
   const ERA_PREVIEWS = [
     {
+      key: 'era-son10',
+      name: 'yildonumu-son10yil',
+      decade: /^20(1[6-9]|2[0-5])/, // son 10 yilin girisi (2010'lar girisiyle donusumlu); onizlemede yalnizca yeni giris zorlanir
+      recent: '2020s', // onizlemede zorlanan son 10 yil girisi
+      queries: ['Mabel Matiz Karmasik', 'Motive Akila', 'Poizi bi kahve yaptim', 'BLOK3 Sebebi Yar', 'Eypio Omrum', 'manifest Tralala', 'Model Mey', 'Murat Boz Janti'],
+    },
+    {
+      key: 'era-son10b',
+      name: 'yildonumu-son10yil-b',
+      decade: /^20(1[6-9]|2[0-5])/,
+      recent: '2020sb',
+      queries: ['Mabel Matiz Karmasik', 'Motive Akila', 'Poizi bi kahve yaptim', 'BLOK3 Sebebi Yar', 'Eypio Omrum', 'manifest Tralala', 'Model Mey', 'Murat Boz Janti'],
+    },
+    {
+      key: 'era-hatira',
+      name: 'yildonumu-2006-2016-hatira',
+      decade: /^20(0[6-9]|1[0-6])/,
+      recent: 'memory',
+      queries: ['Hadise Dum Tek Tek', 'Gulsen Be Adam', 'Murat Boz Janti', 'Tarkan Hepsi Senin Mi', 'Mabel Matiz Karmasik', 'Sila Yaz Bitmeden', 'Kenan Dogulu Yaparim Bilirsin', 'Mustafa Ceceli Sevdim Seni', 'Gokhan Ozen Bu Gece', 'Sezen Aksu Gulumse'],
+    },
+    {
       key: 'era2020',
       name: 'yildonumu-2020ler',
       decade: /^202[0-5]/, // en az 1 yil once cikmis olmali (yil donumu)
@@ -220,9 +241,11 @@ async function main() {
   for (const era of ERA_PREVIEWS) {
     if (!want(era.key)) continue;
     process.env.ERA_INTROS = '1'; // onizlemede donem girisi her zaman acik
+    // onizleme tek bir giris turunu gosterir: son 10 yil anahtari yeni girisi, digerleri (2010'lar dahil) eski davranisi
     jobs.push([
       era.name,
       async () => {
+        process.env.ERA_RECENT = era.recent ?? '0';
         // O donemde cikmis bir sarki bul (iTunes surumleri yeniden yayin tarihi gosterebilir; donem tarihli olani sec)
         for (const q of era.queries) {
           const r = await (await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&country=TR&entity=song&limit=10`)).json();

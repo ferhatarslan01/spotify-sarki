@@ -604,23 +604,54 @@ const ERAS = {
   '2010s': { years: [2010, 9999], // 2020 ve sonrası çıkışlar da bu şablonu kullanır
     label: "2010'LAR", accent: '#ff5fa2', files: 'era2010', INTRO: 8.0, S1_END: 4.4, KNOB: 3.5, hp: 120, lp: 10000, click: 1600 },
   '2000s': { years: [2000, 2009], label: "2000'LER", accent: '#4dd2ff', files: 'era2000', INTRO: 8.0, S1_END: 5.0, KNOB: 2.4, hp: 200, lp: 7000, click: 2200 },
+  // Son 10 yıl: yıl aralığı yok (RECENT_YEARS ile dinamik); bu pencerede 2010'lar girişiyle dönüşümlü kullanılır
+  '2020s': { years: null, label: 'SON 10 YIL', accent: '#8f6bff', files: 'era2020', INTRO: 8.0, S1_END: 4.6, KNOB: 3.5, hp: 70, lp: 16000, click: 2700, s2Sync: true },
+  // Son 10 yıl, 2. giriş: gece arabanın içinden + ışık halkalı akıllı hoparlör
+  '2020sb': { years: null, label: 'SON 10 YIL', accent: '#2ee6a6', files: 'era2020b', INTRO: 8.0, S1_END: 4.6, KNOB: 3.5, hp: 90, lp: 15000, click: 2400, s2Sync: true },
+  // 2006-2016, alternatif giriş: "hatıra çekmecesi" (dolaşık kulaklık, MP3 çalar, kapaklı telefon). 2000'ler / 2010'lar girişiyle dönüşümlü kullanılır
+  'memory': { years: null, label: "2006-2016", accent: '#c6ff3d', files: 'era2006', INTRO: 8.0, S1_END: 4.6, KNOB: 3.5, hp: 140, lp: 11000, click: 3000, s2Sync: true },
 };
 
 // Yayin yilina uygun dönem girisi varsa { id, cfg, s1, s2 }, yoksa null.
 // Varsayilan ACIK. ERA_INTROS=0 kapatir; ERA_INTROS=90s,2000s gibi secili donemler de verilebilir.
 // Yil araliklari disindakiler en yakin donemi kullanir: 1980 oncesi -> 80'ler, 2019 sonrasi -> 2010'lar.
-export function eraClipsFor(releaseYear) {
+// Son 10 yilda cikanlar icin (RECENT_YEARS) 2010'lar ve son 10 yil girisleri sarkiya gore dönüşümlü secilir: `seed` (sanatci|sarki)
+// ayni sarki icin hep ayni girisi verir (seed yoksa yalnizca var mi diye bakilir). ERA_RECENT icin asagiya bakin.
+const RECENT_YEARS = 10;
+// Alternatif girisler: ilgili yil penceresinde, o yilin esas girisiyle (2000'ler/2010'lar...) esit dönüşümlü kullanilir.
+const ALT_ERAS = {
+  '2020s': (y) => y >= new Date().getFullYear() - RECENT_YEARS,
+  '2020sb': (y) => y >= new Date().getFullYear() - RECENT_YEARS,
+  memory: (y) => y >= 2006 && y <= 2016,
+};
+const strHash = (s) => [...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+
+export function eraClipsFor(releaseYear, seed = '') {
   const flag = (process.env.ERA_INTROS ?? '').trim() || '1';
   if (flag === '0') return null;
-  for (const [id, cfg] of Object.entries(ERAS)) {
-    if (releaseYear < cfg.years[0] || releaseYear > cfg.years[1]) continue;
-    if (flag !== '1' && !flag.split(',').includes(id)) continue;
-    const dir = join(process.cwd(), 'video', 'assets');
+  const dir = join(process.cwd(), 'video', 'assets');
+  const clipsOf = (id) => {
+    const cfg = ERAS[id];
+    if (flag !== '1' && !flag.split(',').includes(id)) return null;
     const s1 = join(dir, `${cfg.files}-s1.mp4`);
     const s2 = join(dir, `${cfg.files}-s2.mp4`);
-    if (existsSync(s1) && existsSync(s2)) return { id, cfg, s1, s2 };
+    return existsSync(s1) && existsSync(s2) ? { id, cfg, s1, s2 } : null;
+  };
+  // ERA_RECENT: 0 = yalnizca esas girisler, only = yalnizca alternatif girisler, <kimlik> (2020s, 2020sb, memory) = o giris zorlanir (onizleme)
+  const altMode = (process.env.ERA_RECENT ?? '').trim();
+  const alts = altMode === '0' ? [] : Object.keys(ALT_ERAS).filter((id) => ALT_ERAS[id](releaseYear)).map(clipsOf).filter(Boolean);
+  if (altMode in ALT_ERAS) return alts.find((c) => c.id === altMode) ?? null;
+  if (alts.length) {
+    if (altMode === 'only') return alts[strHash(seed) % alts.length];
+    const k = seed ? strHash(seed) % (alts.length + 1) : alts.length;
+    if (k < alts.length) return alts[k];
   }
-  return null;
+  for (const [id, cfg] of Object.entries(ERAS)) {
+    if (!cfg.years || releaseYear < cfg.years[0] || releaseYear > cfg.years[1]) continue;
+    const clips = clipsOf(id);
+    if (clips) return clips;
+  }
+  return alts[0] ?? null; // esas giris klipleri yoksa alternatif giris (varsa) kullanilir
 }
 
 // Yil donumu videosunda yapay zeka (ComfyUI) goruntusu var mi? (donem girisi ya da oda arka plani) -> TikTok "AI ile uretildi" etiketi
@@ -629,7 +660,7 @@ export function annivUsesAiFootage(releaseYear) {
 }
 
 export async function prepAnniversaryEra(args) {
-  const clips = eraClipsFor(Number(String(args.releaseDate).slice(0, 4)));
+  const clips = eraClipsFor(Number(String(args.releaseDate).slice(0, 4)), `${args.artist}|${args.title}`);
   if (!clips) throw new Error('Donem giris klipleri bulunamadi');
   const { cfg } = clips;
   const { INTRO, S1_END, KNOB } = cfg;
@@ -668,7 +699,7 @@ export async function prepAnniversaryEra(args) {
     return {
       composition: 'EraIntro',
       dataKey: 'eraintro',
-      data: { introSeconds: INTRO, scene1End: S1_END, knobAt: KNOB, fps: FPS, label: cfg.label, accent: cfg.accent, bands },
+      data: { introSeconds: INTRO, scene1End: S1_END, knobAt: KNOB, fps: FPS, label: cfg.label, accent: cfg.accent, s2Sync: Boolean(cfg.s2Sync), bands },
       extras: [{ dataKey: base.dataKey, data: base.data }],
       assets: [
         ...base.assets,
@@ -682,7 +713,7 @@ export async function prepAnniversaryEra(args) {
 
 // Yayin yilina gore dönem girisli ya da duz yil donumu videosunu hazirlar.
 export async function prepAnniversaryAuto(args) {
-  return eraClipsFor(Number(String(args.releaseDate).slice(0, 4))) ? prepAnniversaryEra(args) : prepAnniversary(args);
+  return eraClipsFor(Number(String(args.releaseDate).slice(0, 4)), `${args.artist}|${args.title}`) ? prepAnniversaryEra(args) : prepAnniversary(args);
 }
 
 // ---------------------------------------------------------------- "Yeni cikti" sablon ailesi

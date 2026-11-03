@@ -3,7 +3,7 @@
 Mantik: secilen bolgede her piksel icin zaman boyunca alt yuzdelik (PCT) "taban" alinir; kare, tabanin +-TOL araligina sinirlanir.
 Gecici parlamalar ve koyu halkalar (lekeler) kalkar, kalici icerik (esyalar) ve bolge disindaki canli isiklar (lamba, TV) degismez.
 
-Kullanim: python -I tools/comfy/cleanBlobs.py girdi.mp4 cikti.mp4 [--region x0,y0,x1,y1]   (oranlar 0-1; varsayilan 0,0,0.62,0.68)
+Kullanim: python -I tools/comfy/cleanBlobs.py girdi.mp4 cikti.mp4 [--region x0,y0,x1,y1] [--pct 15] [--tol 4]   (oranlar 0-1; varsayilan 0,0,0.62,0.68)
 """
 import subprocess
 import sys
@@ -17,8 +17,8 @@ src, dst = args[0], args[1]
 region = (0.0, 0.0, 0.62, 0.68)
 if "--region" in args:
     region = tuple(float(v) for v in args[args.index("--region") + 1].split(","))
-PCT = 15  # taban: zaman boyunca bu alt yuzdelik (lekeler cogu zaman aciksa medyan onlari icerir)
-TOL = 4  # tabanin ustunde/altinda izin verilen sapma (0-255)
+PCT = float(args[args.index("--pct") + 1]) if "--pct" in args else 15  # taban: zaman boyunca bu alt yuzdelik (lekeler cogu zaman aciksa medyan onlari icerir)
+TOL = float(args[args.index("--tol") + 1]) if "--tol" in args else 4  # tabanin ustunde/altinda izin verilen sapma (0-255); kucuk deger daha siki temizler
 FEATHER = 0.02  # bolge kenari yumusatma (oran)
 
 probe = subprocess.run(

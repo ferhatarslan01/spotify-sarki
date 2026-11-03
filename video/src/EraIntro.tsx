@@ -21,6 +21,8 @@ const S1_END = data.scene1End; // 1. sahne bitisi / 2. sahne baslangici
 const KNOB = data.knobAt; // elin dugmeye dokundugu an: muzik ve ses cubugu buradan baslar
 const FADE = 0.45; // sahneler arasi capraz erime
 const ACCENT = data.accent; // donem rengi (etiket)
+// s2Sync: 2. sahne klibi gorunmeye basladigi anda basindan oynar (kapak acilisi gibi hareketli sahneler icin); yoksa klip kompozisyon saatiyle akar
+const S2_SYNC = Boolean((data as { s2Sync?: boolean }).s2Sync);
 const GREEN = "#3ddc84";
 const RED = "#ff5a5f";
 
@@ -79,12 +81,14 @@ const Intro: React.FC = () => {
       {/* sahne 2: hoparlor (bas ile atar) */}
       {s2 > 0 ? (
         <AbsoluteFill style={{ opacity: s2, overflow: "hidden" }}>
-          <OffthreadVideo
-            src={staticFile("eraintro-s2.mp4")}
-            muted
-            startFrom={0}
-            style={{ width: 1080, height: 1920, objectFit: "cover", scale: s2Pulse, filter: `brightness(${s2Bright})` }}
-          />
+          <Sequence from={S2_SYNC ? Math.floor((S1_END - FADE) * fps) : 0} layout="none">
+            <OffthreadVideo
+              src={staticFile("eraintro-s2.mp4")}
+              muted
+              startFrom={0}
+              style={{ width: 1080, height: 1920, objectFit: "cover", scale: s2Pulse, filter: `brightness(${s2Bright})` }}
+            />
+          </Sequence>
         </AbsoluteFill>
       ) : null}
 

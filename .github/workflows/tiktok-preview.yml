@@ -2,7 +2,12 @@ name: TikTok preview
 
 # Elle calistirilir. Hicbir yerde paylasim YAPMAZ; ornek videolari artifact olarak yukler.
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      only:
+        description: 'Yalnızca bu önizlemeler (örn. wk-clips); boşsa hepsi'
+        required: false
+        default: ''
 
 jobs:
   preview:
@@ -33,7 +38,7 @@ jobs:
           exit 1
 
       - name: Render sample videos
-        run: node src/tiktokPreview.js preview
+        run: node src/tiktokPreview.js preview ${{ inputs.only != '' && format('--only {0}', inputs.only) || '' }}
         env:
           # Modul yuklenirken kontrol ediliyor; onizleme Buffer'a hicbir sey gondermez.
           BUFFER_API_KEY: preview-only

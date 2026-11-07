@@ -10,7 +10,11 @@
     "kilit",
     "fragman",
     "radyo",
-    "neon"
+    "neon",
+    "kaset",
+    "drop",
+    "mesaj",
+    "bulten"
   ],
   "assigned": {
     "dz:1111063802": "radyo",
@@ -23,6 +27,10 @@
     "dz:1119466762": "kilit",
     "dz:1120380302": "fragman",
     "dz:1137540661": "radyo",
-    "dz:1139553181": "neon"
+    "dz:1139553181": "neon",
+    "dz:1123341892": "kaset",
+    "dz:1137798501": "drop",
+    "dz:1137917261": "mesaj",
+    "dz:1123409962": "bulten"
   }
 }

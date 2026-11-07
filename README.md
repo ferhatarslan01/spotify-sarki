@@ -126,6 +126,14 @@ Türkiye haftalık listesinin TikTok videosu (`weekly-tr`) üç şablondan birin
 - Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only wk` (ya da `wk-countdown`, `wk-rapor`); çıktı `preview/haftalik-*.mp4`.
 - Kod: `video/src/Weekly*.tsx`, veri + ses `src/videoPrep.js` (`WEEKLY_TEMPLATES`, `weeklyCards`, `prepWeeklyVariant`).
 
+## Haftalık klipli liste (her Pazar, 7 Kasım 2026)
+- Arkada **orijinal klipler** (tam ekran), solda 1-10 liste (10 → 1 aşağıdan yukarı dolar), üstte başlık ve haftanın tarih aralığı. Her sıra kendi klibinin kesitiyle ve sesiyle çalar; o anki satır vurgulanır. Kompozisyon `WeeklyClips` (`video/src/WeeklyClips.tsx`), hazırlık `prepWeeklyClips` (`src/videoPrep.js`), klip kaynağı `src/clipSource.js`.
+- **Klipler:** Apple/iTunes resmi klip önizlemeleri (~30 sn, 1080p). YouTube'dan indirme yapılmaz. Klibi olmayan sırada keskin kapak + şarkının ses önizlemesi gösterilir; en az 3 klip bulunamazsa video paylaşılmaz.
+- **Akış:** `.github/workflows/weekly-clips.yml` her Pazar 19:00 TRT (yeniden deneme 21:30), `npm run weekly:clips` (`src/postWeeklyClips.js`). Durum `data/weeklyClipsState.json` (liste tarihi; X ve TikTok için ayrı bayrak): aynı liste bir kez paylaşılır, yalnızca eksik kalan platform tekrar denenir. Haftalık listenin verisi her Perşembe güncellenir, Pazar çalıştırması o haftanın listesini paylaşır.
+- **Anahtarlar:** repo değişkeni `WEEKLY_CLIPS=0` bu akışı kapatır. Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only wk-clips`. TikTok günlük sınırı ve `data/TIKTOK_PAUSED` bu akış için de geçerlidir.
+- **Telif uyarısı:** gerçek klip görüntüsü X/TikTok'ta telif iddiasına (sessize alma, kaldırma, strike) yol açabilir; kullanım hesap sahibinin bilerek verdiği karardır. Sorun çıkarsa `WEEKLY_CLIPS=0` ile kapatın.
+- İlk paylaşım elle yapıldı (5 Kasım listesi, 7 Kasım); ilk otomatik paylaşım 15 Kasım Pazarı (12 Kasım listesi).
+
 ## Günlük Top 5 şablonları
 
 > **Günlük Türkiye Top 5 paylaşımı şu an KAPALI** (yalnızca haftalık liste paylaşılır). `daily-chart.yml` içindeki `schedule` zamanlaması kaldırıldı; elle çalıştırma açık. Yeniden açmak için workflow dosyasındaki yorum satırlarındaki `schedule` bloğunu geri ekle. Aşağıdaki şablonlar hazır bekliyor.

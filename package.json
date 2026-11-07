@@ -13,6 +13,7 @@
     "check:weekly": "node src/postWeeklyChart.js",
     "check:global": "node src/postGlobalChart.js",
     "weekly:digest": "node src/postWeeklyDigest.js",
+    "weekly:clips": "node src/postWeeklyClips.js",
     "check:trends": "node src/checkChartTrends.js",
     "post:duel": "node src/postDuel.js"
   },

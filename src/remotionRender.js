@@ -46,6 +46,7 @@ const STUBS = {
     bands: [],
   },
   risev: { date: '', artist: '', title: '', from: 8, to: 5, change: 3, daily: 0, total: 0, hue: 30, neighbors: [], start: 2, arrival: 5.6, outro: 14, marks: {}, fps: 30, durationSeconds: 16, hookStart: 0, bands: [] },
+  wkc: { date: '', range: '', hue: 30, fps: 30, durationSeconds: 44, intro: 2.4, step: 3.6, hero: 34.8, outro: 41.8, tail: 2.4, items: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map((rank, i) => ({ rank, title: '', artist: '', streams: '', change: null, weeks: null, peak: null, peakTimes: 0, cover: `wkc-c${rank}.jpg`, hue: 30, clip: null, at: 2.4 + i * 3.6, len: 3.6, main: 3.6, hero: rank === 1 })), bands: [] },
   wk: { date: '', kind: 'countdown', items: [], cards: [], cardStarts: [], start: 2.4, step: 1.15, hero: 12.75, outro: 18.5, intro: 2.4, cardLen: 3, top5Len: 4.2, hue: 30, fps: 30, durationSeconds: 21, hookStart: 0, bands: [] },
   dy: { date: '', items: [], intro: 1.8, step: 2, lead: 0, hold: 4.4, outro: 12, hue: 30, fps: 30, durationSeconds: 16, bands: [] },
   player: { artist: '', title: '', hue: 30, fps: 30, durationSeconds: 20, hookStart: 0, silent: false, label: '', bands: [] },
@@ -120,7 +121,7 @@ async function ensureStubs() {
   }
 }
 
-async function renderOne({ composition, dataKey, data, assets, extras = [] }) {
+async function renderOne({ composition, dataKey, data, assets, extras = [], timeoutMin = 15 }) {
   await ensureDeps();
   await ensureStubs();
 
@@ -136,7 +137,7 @@ async function renderOne({ composition, dataKey, data, assets, extras = [] }) {
     const t0 = Date.now();
     await sh(binPath(), ['render', 'src/index.ts', composition, out, '--codec=h264', '--crf=23', '--audio-codec=aac', '--log=warn'], {
       cwd: VIDEO_DIR,
-      timeout: 15 * 60_000,
+      timeout: timeoutMin * 60_000, // varsayilan 15 dk; agir sahneler (klipli liste) uzun sure ister
     });
     console.log(`  Remotion render tamam: ${composition} (${Math.round((Date.now() - t0) / 1000)} sn)`);
     return await readFile(out);

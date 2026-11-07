@@ -1,0 +1,63 @@
+name: Post weekly clips list
+
+# Her Pazar: arkada orijinal klipler, solda 1-10 liste (X ve TikTok videosu). Ayni liste (tarihe gore) bir kez paylasilir;
+# ikinci zamanlama yalnizca ilkinde bir sey eksik kaldiysa (ornegin TikTok sinir dolu) tamamlar. Kapatmak icin repo degiskeni WEEKLY_CLIPS=0.
+on:
+  schedule:
+    - cron: '0 16 * * 0' # Pazar 19:00 TRT
+    - cron: '30 18 * * 0' # Pazar 21:30 TRT (yeniden deneme)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-clips
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Remotion dependencies
+        uses: actions/cache@v4
+        with:
+          path: video/node_modules
+          key: remotion-${{ runner.os }}-${{ hashFiles('video/package-lock.json') }}
+
+      - run: npm ci
+
+      - name: Ensure ffmpeg
+        run: |
+          which ffmpeg && exit 0
+          for i in 1 2 3; do
+            if sudo timeout 240 apt-get update -qq -o Acquire::Retries=2 -o Acquire::http::Timeout=30 && sudo timeout 420 apt-get install -y -qq ffmpeg; then exit 0; fi
+            echo "ffmpeg kurulum denemesi $i basarisiz, tekrar deneniyor"; sleep 10
+          done
+          exit 1
+
+      - run: npm run weekly:clips
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_TIKTOK_CHANNEL_ID: ${{ secrets.BUFFER_TIKTOK_CHANNEL_ID }}
+          TIKTOK_DAILY_MAX: ${{ vars.TIKTOK_DAILY_MAX }}
+          WEEKLY_CLIPS: ${{ vars.WEEKLY_CLIPS }}
+          # Paylaşım penceresi (TRT). Elle (workflow_dispatch) çalıştırmada kapalı; yoksa repo değişkeni POST_WINDOW, o da yoksa 09:00-23:30.
+          POST_WINDOW: ${{ github.event_name == 'workflow_dispatch' && 'off' || vars.POST_WINDOW }}
+
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/weeklyClipsState.json
+          git diff --staged --quiet || git commit -m "Update weekly clips state [skip ci]"
+          git push || (git pull --rebase && git push)

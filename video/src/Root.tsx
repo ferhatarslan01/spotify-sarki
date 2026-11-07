@@ -23,6 +23,7 @@ import { DailyGaleri } from "./DailyGaleri";
 import { DailyGazete } from "./DailyGazete";
 import { DailyPodyum } from "./DailyPodyum";
 import { WeeklyCountdown } from "./WeeklyCountdown";
+import { WeeklyClips } from "./WeeklyClips";
 import { RiseYayin } from "./RiseYayin";
 import { RiseTerminal } from "./RiseTerminal";
 import board from "./data-board.json";
@@ -35,6 +36,7 @@ import eraintro from "./data-eraintro.json";
 import nrvar from "./data-nrvar.json";
 import risev from "./data-risev.json";
 import wk from "./data-wk.json";
+import wkc from "./data-wkc.json";
 import dy from "./data-dy.json";
 
 const FPS = 30;
@@ -216,6 +218,14 @@ export const RemotionRoot: React.FC = () => {
         id="WeeklyRapor"
         component={WeeklyRapor}
         durationInFrames={frames(wk.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="WeeklyClips"
+        component={WeeklyClips}
+        durationInFrames={frames(wkc.durationSeconds)}
         fps={FPS}
         width={1080}
         height={1920}

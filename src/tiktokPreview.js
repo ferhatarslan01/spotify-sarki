@@ -1,9 +1,10 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,era-son10,era-son10b,era-hatira,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,wk-clips,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,era-son10,era-son10b,era-hatira,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES, prepRiseVariant, RISE_TEMPLATES, prepWeeklyVariant, WEEKLY_TEMPLATES, prepDailyVariant, DAILY_TEMPLATES } from './videoPrep.js';
+import { fetchMusicVideo } from './clipSource.js';
+import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES, prepRiseVariant, RISE_TEMPLATES, prepWeeklyVariant, WEEKLY_TEMPLATES, prepDailyVariant, DAILY_TEMPLATES, prepWeeklyClips, WEEKLY_CLIPS } from './videoPrep.js';
 import { fetchWeeklyChart } from './weeklyChart.js';
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
@@ -161,6 +162,28 @@ async function main() {
         const { date: wdate, entries: wentries } = await fetchWeeklyChart();
         const pv = await findPreview(wentries[0].artists[0].name, wentries[0].trackName);
         return prepWeeklyVariant(name, { entries: wentries, date: wdate, audioUrl: pv?.url ?? null });
+      },
+    ]);
+  }
+  // Haftalik liste, arkada ORIJINAL KLIPLER (iTunes resmi klip onizlemeleri): --only wk-clips
+  if (want('wk-clips')) {
+    jobs.push([
+      'haftalik-klipli',
+      async () => {
+        const { date: wdate, entries: wentries } = await fetchWeeklyChart();
+        const clips = {};
+        const audioUrls = {};
+        for (const e of wentries.slice(0, WEEKLY_CLIPS.N)) {
+          const c = await fetchMusicVideo(e.artists[0].name, e.trackName);
+          if (c) {
+            clips[e.rank] = c;
+            console.log(`  klip: #${e.rank} ${c.artist} - ${c.title}`);
+          } else {
+            audioUrls[e.rank] = (await findPreview(e.artists[0].name, e.trackName))?.url ?? null;
+            console.log(`  klip YOK: #${e.rank} ${e.artists[0].name} - ${e.trackName} (kapak + ses onizlemesi)`);
+          }
+        }
+        return prepWeeklyClips({ entries: wentries, date: wdate, clips, audioUrls });
       },
     ]);
   }

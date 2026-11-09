@@ -14,6 +14,7 @@
     "check:global": "node src/postGlobalChart.js",
     "weekly:digest": "node src/postWeeklyDigest.js",
     "weekly:clips": "node src/postWeeklyClips.js",
+    "artist:series": "node src/postArtistSeries.js",
     "check:trends": "node src/checkChartTrends.js",
     "post:duel": "node src/postDuel.js"
   },

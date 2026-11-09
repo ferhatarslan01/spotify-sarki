@@ -1445,12 +1445,13 @@ export async function prepWeeklyVariant(template, { entries, date, audioUrl }) {
   });
 }
 
-// ---------------------------------------------------------------- Haftalik liste: arkada ORIJINAL KLIPLER
-// Tam ekran klip arkada, solda 1-10 liste (asagidan yukari dolar). Her sira kendi klibinin (iTunes resmi klip onizlemesi, src/clipSource.js)
-// en enerjik kesitiyle calar; goruntu ve ses ayni anda gelir.
-// Klibi olmayan sarkida kapak + ses onizlemesi kullanilir. #1 sahnesi bitis kartini da tasir.
+// ---------------------------------------------------------------- Klipli liste: haftalik liste ve sanatci serisi
+// Tam ekran klip arkada, solda liste (asagidan yukari dolar). Her sira kendi klibinin (iTunes resmi klip onizlemesi, src/clipSource.js)
+// en enerjik kesitiyle calar; goruntu ve ses ayni anda gelir. Klibi olmayan sarkida kapak + ses onizlemesi kullanilir.
 // Her ses kesiti ayri ayri ayni seviyeye getirilir (klip sesi ile sarki onizlemesinin seviyesi cok farkli).
+// Bulut isleyicisi yavas oldugu icin bulaniklik ve renk ayari Chrome'da CSS filtresiyle degil, ffmpeg/sharp ile onceden uygulanir.
 export const WEEKLY_CLIPS = { N: 10, INTRO: 2.4, STEP: 3.6, HERO_LEN: 7.0, TAIL: 2.4 };
+export const ARTIST_CLIPS = { N: 7, INTRO: 2.4, STEP: 5.0, HERO_LEN: 8.0, TAIL: 2.4 };
 
 const TR_MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 // 'dd.mm.yyyy' (haftalik listenin bitis gunu, persembe) -> "30 Ekim – 5 Kasım 2026" (7 gun: bitis-6 .. bitis)
@@ -1463,12 +1464,13 @@ export function weekRangeText(dateStr) {
   return `${f(start, start.getUTCFullYear() !== end.getUTCFullYear())} – ${f(end, true)}`;
 }
 
-// clips: { [rank]: { buffer } }, audioUrls: { [rank]: url } (klibi olmayan sarkinin ses onizlemesi)
-export async function prepWeeklyClips({ entries, date, clips = {}, audioUrls = {} }) {
-  const { N, INTRO, STEP, HERO_LEN, TAIL } = WEEKLY_CLIPS;
+// entries: rank 1..N (sira, trackName, artists, streams, trackUrl); clips: { [rank]: { buffer } }; audioUrls: { [rank]: url } (klibi olmayan sarki)
+// header: { l1, l2, pill } (yoksa haftalik baslik); describe(e) -> { sub, badge } (yoksa sanatci adi ve haftalik hareket)
+export async function prepWeeklyClips({ entries, date = '', clips = {}, audioUrls = {}, layout = WEEKLY_CLIPS, header = null, describe = null }) {
+  const { N, INTRO, STEP, HERO_LEN, TAIL } = layout;
   const top = entries.slice(0, N);
-  if (top.length < N) throw new Error('Haftalik liste cok kisa');
-  const order = [...top].reverse(); // 5 -> 1
+  if (top.length < N) throw new Error('Liste cok kisa');
+  const order = [...top].reverse(); // N -> 1
   const heroAt = INTRO + (N - 1) * STEP;
   const OUTRO = heroAt + HERO_LEN;
   const DUR = Math.round((OUTRO + TAIL) * 10) / 10;
@@ -1480,13 +1482,15 @@ export async function prepWeeklyClips({ entries, date, clips = {}, audioUrls = {
     for (const [k, e] of order.entries()) {
       const hero = k === N - 1;
       const at = hero ? heroAt : INTRO + k * STEP;
-      const main = hero ? HERO_LEN : STEP; // bitis kartindan onceki sure
+      const main = hero ? HERO_LEN : STEP;
       const len = hero ? HERO_LEN + TAIL : STEP; // klip/ses parcasi suresi
       const coverFile = `wkc-c${e.rank}.jpg`;
       const cover = await squareJpeg(await fetchBuf(await getTrackThumbnail(e.trackUrl)), 720, 88);
       assets.push({ name: coverFile, buffer: cover });
 
       let clipName = null;
+      let ambient = null;
+      let ambientImg = null;
       let src = null;
       if (clips[e.rank]?.buffer) {
         src = join(dir, `clip${e.rank}.m4v`);
@@ -1500,9 +1504,15 @@ export async function prepWeeklyClips({ entries, date, clips = {}, audioUrls = {
         ss = await findHookStart(src, Math.min(len + 0.5, 24));
         if (clips[e.rank]?.buffer) {
           clipName = `wkc-r${e.rank}.mp4`;
+          ambient = `wkc-a${e.rank}.mp4`;
+          const enc = ['-an', '-c:v', 'libx264', '-pix_fmt', 'yuv420p'];
           const seg = join(dir, clipName);
-          await run('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-t', String(len + 0.6), '-i', src, '-an', '-vf', "fps=30,scale=-2:'min(1080,ih)'", '-c:v', 'libx264', '-crf', '21', '-preset', 'veryfast', '-pix_fmt', 'yuv420p', seg]);
+          await run('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-t', String(len + 0.6), '-i', src, '-vf', "fps=30,scale=-2:'min(1080,ih)',eq=contrast=1.04:brightness=0.03:saturation=1.12", ...enc, '-crf', '21', '-preset', 'veryfast', seg]);
           assets.push({ name: clipName, buffer: await readFileBuf(seg) });
+          // ambiyans: kucultulup bulaniklastirilmis, karartilmis tam ekran kopya
+          const amb = join(dir, ambient);
+          await run('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-t', String(len + 0.6), '-i', src, '-vf', 'fps=30,scale=-2:270,gblur=sigma=7,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,eq=brightness=-0.2:saturation=1.3', ...enc, '-crf', '30', '-preset', 'veryfast', amb]);
+          assets.push({ name: ambient, buffer: await readFileBuf(amb) });
         }
         const l = len + 0.35;
         const lead = k === 0 ? 0.45 : 0; // ilk sarki giris basligi bitmeden baslar (ses boslugu olmasin)
@@ -1510,7 +1520,14 @@ export async function prepWeeklyClips({ entries, date, clips = {}, audioUrls = {
         const fadeLen = hero ? 1.6 : 0.4;
         parts.push({ src, graph: `atrim=start=${ss}:duration=${l},asetpts=PTS-STARTPTS,loudnorm=I=-15:TP=-1.5:LRA=9,aformat=sample_rates=44100:channel_layouts=stereo,afade=t=in:d=${lead ? 0.3 : 0.05},afade=t=out:st=${Math.max(0, l - fadeLen)}:d=${fadeLen},adelay=${ms}|${ms}` });
       }
-      items.push({ rank: e.rank, title: e.trackName, artist: wkNames(e), streams: wkFmt(e.streams), change: e.weekChange, weeks: e.weeks, peak: e.peak, peakTimes: e.peakTimes, cover: coverFile, hue: await hueOf(sharp, cover), clip: clipName, at, len, main, hero });
+      if (!clipName) {
+        // klipsiz sira: bulaniklastirilmis, karartilmis kapak (arka plan)
+        ambientImg = `wkc-b${e.rank}.jpg`;
+        const blur = await sharp(cover).resize(270, 270).blur(6).resize(1080, 1920, { fit: 'cover' }).modulate({ brightness: 0.75, saturation: 1.4 }).jpeg({ quality: 82 }).toBuffer();
+        assets.push({ name: ambientImg, buffer: blur });
+      }
+      const d = describe ? describe(e) : {};
+      items.push({ rank: e.rank, title: e.trackName, artist: wkNames(e), sub: d.sub, badge: d.badge, streams: wkFmt(e.streams), change: e.weekChange, weeks: e.weeks, peak: e.peak, peakTimes: e.peakTimes, cover: coverFile, hue: await hueOf(sharp, cover), clip: clipName, ambient, ambientImg, at, len, main, hero });
     }
 
     const music = join(dir, 'music.wav');
@@ -1547,9 +1564,9 @@ export async function prepWeeklyClips({ entries, date, clips = {}, audioUrls = {
 
     return {
       composition: 'WeeklyClips',
-      timeoutMin: 40, // 2 klip katmani x 44 sn: bulut isleyicisi (az cekirdek) yerelden cok yavas olabilir
+      timeoutMin: 40, // bulut isleyicisi (az cekirdek) yerelden cok yavas olabilir
       dataKey: 'wkc',
-      data: { date, range: weekRangeText(date), hue: items[items.length - 1].hue, fps: FPS, durationSeconds: DUR, intro: INTRO, step: STEP, hero: heroAt, outro: OUTRO, tail: TAIL, items, bands },
+      data: { date, range: weekRangeText(date), header, hue: items[items.length - 1].hue, fps: FPS, durationSeconds: DUR, intro: INTRO, step: STEP, hero: heroAt, outro: OUTRO, tail: TAIL, items, bands },
       assets: [...assets, { name: 'wkc-soundtrack.wav', buffer: await readFileBuf(join(dir, 'mix.wav')) }],
     };
   });

@@ -14,7 +14,7 @@ const { fontFamily } = loadOswald("normal", { weights: ["500", "700"], subsets: 
 const { fontFamily: inter } = loadInter("normal", { weights: ["500", "600", "700", "800"], subsets: ["latin", "latin-ext"] });
 const { fontFamily: mono } = loadMono("normal", { weights: ["500", "700"], subsets: ["latin", "latin-ext"] });
 
-type Item = { rank: number; title: string; artist: string; streams: string; change: number | string | null; weeks: number | null; peak: number | null; peakTimes: number; cover: string; hue: number; clip: string | null; at: number; len: number; main: number; hero: boolean };
+type Item = { rank: number; title: string; artist: string; streams: string; change: number | string | null; weeks: number | null; peak: number | null; peakTimes: number; cover: string; hue: number; clip: string | null; ambient: string | null; ambientImg: string | null; sub?: string; badge?: string; at: number; len: number; main: number; hero: boolean };
 const ITEMS = data.items as unknown as Item[]; // gosterim sirasi: 10 -> 1
 const ROWS = [...ITEMS].sort((a, b) => a.rank - b.rank); // listede ustten alta: 1 -> 10
 const BANDS = data.bands as number[][];
@@ -28,8 +28,11 @@ const GREEN = "#2ee59a";
 const DOWN = "#ff6b7a";
 
 const LIST_X = 56;
+const N = ITEMS.length;
 const LIST_Y = 620;
-const ROW_H = 84;
+const ROW_H = Math.min(112, Math.floor(860 / N)); // 10 satir: 84, 7 satir: 112
+const SC = ROW_H / 84; // satir olcegi
+const HEAD = (data as unknown as { header?: { l1: string; l2: string; pill: string } | null }).header ?? null;
 const CARD_X = 150;
 const CARD_W = 700;
 
@@ -84,14 +87,14 @@ const BgSlot: React.FC<{ item: Item }> = ({ item }) => {
     <AbsoluteFill style={{ opacity: fadeIn * fadeOut, background: hsl(item.hue, 50, 8) }}>
       {item.clip ? (
         <>
-          <OffthreadVideo src={staticFile(item.clip)} muted style={{ position: "absolute", inset: 0, width: 1080, height: 1920, objectFit: "cover", filter: "blur(40px) brightness(0.55) saturate(1.3)", transform: "scale(1.25)" }} />
+          {item.ambient ? <OffthreadVideo src={staticFile(item.ambient)} muted style={{ position: "absolute", inset: 0, width: 1080, height: 1920 }} /> : null}
           <div style={{ position: "absolute", left: 0, top: WIN_TOP, width: 1080, height: WIN_H, overflow: "hidden", WebkitMaskImage: MASK, maskImage: MASK }}>
-            <OffthreadVideo src={staticFile(item.clip)} muted style={{ width: 1080, height: WIN_H, objectFit: "cover", objectPosition: `${pan}% 50%`, transform: `scale(${push})`, transformOrigin: `${pan}% 50%`, filter: "brightness(1.08) saturate(1.12)" }} />
+            <OffthreadVideo src={staticFile(item.clip)} muted style={{ width: 1080, height: WIN_H, objectFit: "cover", objectPosition: `${pan}% 50%`, transform: `scale(${push})`, transformOrigin: `${pan}% 50%` }} />
           </div>
         </>
       ) : (
         <>
-          <Img src={staticFile(item.cover)} style={{ position: "absolute", inset: 0, width: 1080, height: 1920, objectFit: "cover", filter: "blur(44px) brightness(0.7) saturate(1.4)", transform: `scale(${1.5 + 0.08 * bass})` }} />
+          {item.ambientImg ? <Img src={staticFile(item.ambientImg)} style={{ position: "absolute", inset: 0, width: 1080, height: 1920, transform: `scale(${1.04 + 0.03 * bass})` }} /> : null}
           <div style={{ position: "absolute", left: 0, top: WIN_TOP, width: 1080, height: WIN_H, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Img src={staticFile(item.cover)} style={{ width: 960, height: 960, borderRadius: 30, boxShadow: `0 40px 120px ${hsl(item.hue, 90, 45, 0.55)}`, transform: `scale(${1 + 0.04 * bass + 0.03 * clamp(t / item.len)})` }} />
           </div>
@@ -102,6 +105,9 @@ const BgSlot: React.FC<{ item: Item }> = ({ item }) => {
 };
 
 // ---------- ust: baslik + tarih araligi ----------
+const L1 = HEAD?.l1 ?? "HAFTANIN EN ÇOK";
+const L2 = HEAD?.l2 ?? "DİNLENEN ŞARKILARI";
+const PILL = HEAD?.pill ?? data.range;
 const Header: React.FC<{ t: number }> = ({ t }) => {
   const pop = easeOutBack((t - 0.1) / 0.5);
   const pill = easeOutBack((t - 0.4) / 0.5);
@@ -109,10 +115,10 @@ const Header: React.FC<{ t: number }> = ({ t }) => {
     <div style={{ position: "absolute", top: 208, left: 0, right: 0, textAlign: "center" }}>
       <div style={{ opacity: clamp(pop), fontFamily: inter, fontWeight: 800, fontSize: 28, letterSpacing: 8, color: "rgba(255,255,255,0.85)", textShadow: "0 3px 14px rgba(0,0,0,0.8)" }}>@YENISARKILARIM</div>
       <div style={{ marginTop: 18, transform: `scale(${0.85 + 0.15 * pop})`, opacity: clamp(pop) }}>
-        <div style={{ fontFamily, fontWeight: 700, fontSize: 108, lineHeight: 1.0, color: "#fff", textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>HAFTANIN EN ÇOK</div>
-        <div style={{ fontFamily, fontWeight: 700, fontSize: 108, lineHeight: 1.0, color: ACCENT, textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>DİNLENEN ŞARKILARI</div>
+        <div style={{ fontFamily, fontWeight: 700, fontSize: fit(L1, 108, 940, 0.43), lineHeight: 1.0, color: "#fff", textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>{L1}</div>
+        <div style={{ fontFamily, fontWeight: 700, fontSize: fit(L2, 108, 940, 0.43), lineHeight: 1.0, color: ACCENT, textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>{L2}</div>
       </div>
-      <div style={{ marginTop: 22, display: "inline-block", transform: `scale(${0.8 + 0.2 * pill})`, opacity: clamp(pill), background: "rgba(10,10,16,0.5)", border: `2px solid ${ACCENT}`, borderRadius: 40, padding: "8px 30px", fontFamily: inter, fontWeight: 800, fontSize: 36, letterSpacing: 1, color: "#fff", backdropFilter: "blur(10px)" }}>{data.range}</div>
+      <div style={{ marginTop: 22, display: "inline-block", transform: `scale(${0.8 + 0.2 * pill})`, opacity: clamp(pill), background: "rgba(10,10,16,0.5)", border: `2px solid ${ACCENT}`, borderRadius: 40, padding: "8px 30px", fontFamily: inter, fontWeight: 800, fontSize: 36, letterSpacing: 1, color: "#fff", }}>{PILL}</div>
     </div>
   );
 };
@@ -124,26 +130,31 @@ const ListRow: React.FC<{ item: Item; t: number; nums: number }> = ({ item, t, n
   const revealed = t >= item.at;
   const current = revealed && t < nextAt;
   const k = easeOutCubic((t - item.at) / 0.35);
-  const numIn = easeOutBack((t - 0.25 - (10 - item.rank) * 0.07) / 0.4);
+  const numIn = easeOutBack((t - 0.25 - (N - item.rank) * 0.07) / 0.4);
   const gold = item.hero;
   const accent = gold ? GOLD : ACCENT;
   const pulse = current ? 1 + 0.025 * Math.exp(-(t - item.at) * 6) : 1;
-  const textW = CARD_W - 20 - 64 - 16 - 96 - 14;
-  const tSize = fit(item.title, 41, textW, 0.52);
-  const aSize = fit(item.artist, 28, textW, 0.54);
+  const thumb = Math.round(64 * SC);
+  const badgeW = item.badge === "" ? 0 : 96;
+  const textW = CARD_W - 20 - thumb - 16 - badgeW - 14;
+  const sub = item.sub ?? item.artist;
+  const tSize = fit(item.title, 41 * SC, textW, 0.52);
+  const aSize = fit(sub, 28 * SC, textW, 0.54);
   return (
     <div style={{ position: "absolute", left: LIST_X, top: y, width: CARD_X + CARD_W - LIST_X, height: ROW_H - 12, opacity: clamp(numIn) * (nums ? 1 : 0), transform: `scale(${pulse})`, transformOrigin: "left center" }}>
-      <div style={{ position: "absolute", left: 0, top: 0, width: 84, height: ROW_H - 12, display: "flex", alignItems: "center", justifyContent: "center", fontFamily, fontWeight: 700, fontSize: 70, color: revealed ? (current ? accent : "#fff") : "rgba(255,255,255,0.5)", textShadow: "0 3px 16px rgba(0,0,0,0.85)" }}>{item.rank}</div>
+      <div style={{ position: "absolute", left: 0, top: 0, width: 84, height: ROW_H - 12, display: "flex", alignItems: "center", justifyContent: "center", fontFamily, fontWeight: 700, fontSize: Math.round(70 * SC), color: revealed ? (current ? accent : "#fff") : "rgba(255,255,255,0.5)", textShadow: "0 3px 16px rgba(0,0,0,0.85)" }}>{item.rank}</div>
       {revealed ? (
-        <div style={{ position: "absolute", left: CARD_X - LIST_X, top: 0, width: CARD_W, height: ROW_H - 12, display: "flex", alignItems: "center", gap: 16, padding: "0 14px 0 10px", borderRadius: 20, background: current ? "rgba(8,8,14,0.7)" : "rgba(8,8,14,0.4)", border: `3px solid ${current ? accent : "rgba(255,255,255,0.0)"}`, boxShadow: current ? `0 0 34px ${accent}77` : "none", opacity: k, transform: `translateX(${(1 - k) * -90}px)`, backdropFilter: "blur(6px)" }}>
-          <Img src={staticFile(item.cover)} style={{ width: 64, height: 64, borderRadius: 12, flexShrink: 0 }} />
+        <div style={{ position: "absolute", left: CARD_X - LIST_X, top: 0, width: CARD_W, height: ROW_H - 12, display: "flex", alignItems: "center", gap: 16, padding: "0 14px 0 10px", borderRadius: 20, background: current ? "rgba(8,8,14,0.7)" : "rgba(8,8,14,0.4)", border: `3px solid ${current ? accent : "rgba(255,255,255,0.0)"}`, boxShadow: current ? `0 0 34px ${accent}77` : "none", opacity: k, transform: `translateX(${(1 - k) * -90}px)` }}>
+          <Img src={staticFile(item.cover)} style={{ width: thumb, height: thumb, borderRadius: 12, flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0, whiteSpace: "nowrap", fontFamily: inter }}>
             <div style={{ fontWeight: 800, color: "#fff", fontSize: tSize, lineHeight: 1.08, textShadow: "0 2px 10px rgba(0,0,0,0.9)" }}>{item.title}</div>
-            <div style={{ fontWeight: 700, color: accent, fontSize: aSize, lineHeight: 1.1, marginTop: 1, textShadow: "0 2px 8px rgba(0,0,0,0.9)" }}>{item.artist}</div>
+            <div style={{ fontWeight: 700, color: accent, fontSize: aSize, lineHeight: 1.1, marginTop: 1, textShadow: "0 2px 8px rgba(0,0,0,0.9)" }}>{sub}</div>
           </div>
-          <div style={{ width: 96, display: "flex", justifyContent: "flex-end" }}>
-            <Move change={item.change} size={32} />
-          </div>
+          {badgeW > 0 ? (
+            <div style={{ width: badgeW, display: "flex", justifyContent: "flex-end" }}>
+              {item.badge ? <span style={{ fontFamily: inter, fontWeight: 800, fontSize: 26, color: "#fff", background: "rgba(255,255,255,0.16)", borderRadius: 14, padding: "4px 12px" }}>{item.badge}</span> : <Move change={item.change} size={32} />}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

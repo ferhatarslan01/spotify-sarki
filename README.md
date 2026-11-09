@@ -134,6 +134,13 @@ Türkiye haftalık listesinin TikTok videosu (`weekly-tr`) üç şablondan birin
 - **Telif uyarısı:** gerçek klip görüntüsü X/TikTok'ta telif iddiasına (sessize alma, kaldırma, strike) yol açabilir; kullanım hesap sahibinin bilerek verdiği karardır. Sorun çıkarsa `WEEKLY_CLIPS=0` ile kapatın.
 - İlk paylaşım elle yapıldı (5 Kasım listesi, 7 Kasım); ilk otomatik paylaşım 15 Kasım Pazarı (12 Kasım listesi).
 
+## Sanatçı serisi: en çok dinlenen 7 şarkı (tek seferlik, 10-17 Kasım 2026)
+- Sırayla UZI, BLOK3, Ati242, Tarkan, cakal, Lvbel C5, Sefo, Batuflex: her gün **20:00 TRT**'de bir sanatçının "en çok dinlenen 7 şarkısı" klipli liste videosu X ve TikTok'a gider (şarkı başına 5 sn, #1 8 sn). Sıralama ve başlangıç tarihi `data/artistSeries.json`, durum `data/artistSeriesState.json`.
+- **Veri:** Spotify'da tüm zamanlar toplam dinlenme (kworb "Spotify Top Songs" sanatçı sayfası, `src/artistTopSongs.js`); remix/sped up/live sürümleri elenir. Videodaki dinlenme sayıları bu toplamlardır.
+- **Klipler:** iTunes resmi klip önizlemesi varsa klip (BLOK3 7/7, cakal 2/7; diğer sanatçılarda yok), yoksa büyük kapak + şarkı önizlemesi. Kompozisyon `WeeklyClips` (haftalık klipli listeyle ortak), hazırlık `prepWeeklyClips` (`layout`, `header`, `describe`).
+- **Akış:** `.github/workflows/artist-series.yml` (20:00 ve yeniden deneme 22:30 TRT), `npm run artist:series` (`src/postArtistSeries.js`). Günde en fazla bir sanatçı; X ve TikTok ayrı takip edilir; 8 sanatçı bitince çalıştırmalar bir şey yapmaz (workflow silinebilir). Kapatmak için repo değişkeni `ARTIST_SERIES=0`.
+- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only ser-uzi` (anahtarlar `ser-<key>`); bulutta denemek için Actions → "TikTok preview" → `only` kutusuna `ser-uzi`.
+
 ## Günlük Top 5 şablonları
 
 > **Günlük Türkiye Top 5 paylaşımı şu an KAPALI** (yalnızca haftalık liste paylaşılır). `daily-chart.yml` içindeki `schedule` zamanlaması kaldırıldı; elle çalıştırma açık. Yeniden açmak için workflow dosyasındaki yorum satırlarındaki `schedule` bloğunu geri ekle. Aşağıdaki şablonlar hazır bekliyor.

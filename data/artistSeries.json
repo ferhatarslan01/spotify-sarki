@@ -1,0 +1,14 @@
+{
+  "_not": "Tek seferlik sanatci serisi: sirayla, gunde bir sanatci. Siralama ve Spotify kimlikleri burada; durum data/artistSeriesState.json'da.",
+  "start": "2026-11-10",
+  "artists": [
+    { "key": "uzi", "name": "UZI", "id": "51DevdOxIJin6DB1FXJpD1" },
+    { "key": "blok3", "name": "BLOK3", "id": "1GMwSpFzrLd12jUX15bHB6" },
+    { "key": "ati242", "name": "Ati242", "id": "6bGOmNBU1AOgttgOjh0ldf" },
+    { "key": "tarkan", "name": "Tarkan", "id": "2yMN0IP20GOaN6q0p0zL5k" },
+    { "key": "cakal", "name": "cakal", "id": "6CPZWzcKiOKkHn4L2XI4i2" },
+    { "key": "lvbelc5", "name": "Lvbel C5", "id": "0V2oXYR7DtrZAEFeILRW2r" },
+    { "key": "sefo", "name": "Sefo", "id": "1ITjgqpqMDJlqZGAK3mlPQ" },
+    { "key": "batuflex", "name": "Batuflex", "id": "15AZJFNrXtIN4Nk8BIOnS2" }
+  ]
+}

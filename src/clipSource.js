@@ -3,11 +3,15 @@
 // Dikkat: gercek klip goruntusu X/TikTok'ta telif iddiasina (sessize alma, kaldirma) yol acabilir; kullanim sahibinin kararidir.
 import { fetchBuf } from './videoAudio.js';
 
+// Turkce karakterler ASCII'ye katlanir (Cakal = Çakal, Yuregime = Yüreğime): iTunes ile Spotify yazimlari farkli olabilir.
 const norm = (s) =>
   String(s ?? '')
-    .toLocaleLowerCase('tr')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/ı/g, 'i')
+    .toLowerCase()
     .replace(/\(.*?\)|\[.*?\]/g, '')
-    .replace(/[^a-z0-9ğüşıöçâîû]/g, '');
+    .replace(/[^a-z0-9]/g, '');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function searchVideos(term, country) {

@@ -1,0 +1,67 @@
+name: Post new releases clips list
+
+# Her Cumartesi 20:00 TRT: "bu hafta çıkan yeni şarkılar" klipli liste videosu (X ve TikTok). Arka plan: Spotify Canvas (SP_DC secret'i varsa) -> resmi klip -> kapak.
+# Aynı gün bir kez paylaşılır (durum data/newReleasesClipsState.json); ikinci zamanlama yalnızca eksik kalanı tamamlar.
+# Pazar özeti (weekly-digest) kaydı Pazar gecesi temizler; bu akış Cumartesi çalıştığı için o haftanın yayınlarını görür. Kapatmak için repo değişkeni NEW_RELEASES_CLIPS=0.
+on:
+  schedule:
+    - cron: '0 17 * * 6' # Cumartesi 20:00 TRT
+    - cron: '30 19 * * 6' # 22:30 TRT (yeniden deneme)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: new-releases-clips
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Remotion dependencies
+        uses: actions/cache@v4
+        with:
+          path: video/node_modules
+          key: remotion-${{ runner.os }}-${{ hashFiles('video/package-lock.json') }}
+
+      - run: npm ci
+
+      - name: Ensure ffmpeg
+        run: |
+          which ffmpeg && exit 0
+          for i in 1 2 3; do
+            if sudo timeout 240 apt-get update -qq -o Acquire::Retries=2 -o Acquire::http::Timeout=30 && sudo timeout 420 apt-get install -y -qq ffmpeg; then exit 0; fi
+            echo "ffmpeg kurulum denemesi $i basarisiz, tekrar deneniyor"; sleep 10
+          done
+          exit 1
+
+      - run: npm run new:clips
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SP_DC: ${{ secrets.SP_DC }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_TIKTOK_CHANNEL_ID: ${{ secrets.BUFFER_TIKTOK_CHANNEL_ID }}
+          TIKTOK_DAILY_MAX: ${{ vars.TIKTOK_DAILY_MAX }}
+          NEW_RELEASES_CLIPS: ${{ vars.NEW_RELEASES_CLIPS }}
+          # Paylaşım penceresi (TRT). Elle (workflow_dispatch) çalıştırmada kapalı; yoksa repo değişkeni POST_WINDOW, o da yoksa 09:00-23:30.
+          POST_WINDOW: ${{ github.event_name == 'workflow_dispatch' && 'off' || vars.POST_WINDOW }}
+
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/newReleasesClipsState.json
+          git diff --staged --quiet || git commit -m "Update new releases clips state [skip ci]"
+          git push || (git pull --rebase && git push)

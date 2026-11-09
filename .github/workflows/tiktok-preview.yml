@@ -43,6 +43,10 @@ jobs:
           # Modul yuklenirken kontrol ediliyor; onizleme Buffer'a hicbir sey gondermez.
           BUFFER_API_KEY: preview-only
           BUFFER_CHANNEL_ID: preview-only
+          # Klip/Canvas onizlemeleri (wk-clips, new-clips, ser-*) icin Spotify erisimi; SP_DC yoksa Canvas atlanir
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SP_DC: ${{ secrets.SP_DC }}
 
       - uses: actions/upload-artifact@v4
         with:

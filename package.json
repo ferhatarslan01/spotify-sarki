@@ -15,6 +15,7 @@
     "weekly:digest": "node src/postWeeklyDigest.js",
     "weekly:clips": "node src/postWeeklyClips.js",
     "artist:series": "node src/postArtistSeries.js",
+    "new:clips": "node src/postNewReleasesClips.js",
     "check:trends": "node src/checkChartTrends.js",
     "post:duel": "node src/postDuel.js"
   },

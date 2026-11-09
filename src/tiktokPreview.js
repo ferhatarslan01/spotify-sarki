@@ -1,10 +1,11 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,wk-clips,ser-uzi,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,era-son10,era-son10b,era-hatira,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,wk-clips,new-clips,ser-uzi,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,era-son10,era-son10b,era-hatira,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
 import { findPreview } from './tiktokVideo.js';
-import { fetchMusicVideo } from './clipSource.js';
-import { loadSeries, prepareArtistVideo } from './artistSeries.js';
+import { fetchBackdrop } from './backdrop.js';
+import { loadSeries, prepareArtistVideo, findSongAudio } from './artistSeries.js';
+import { loadReleaseLog, prepareNewReleasesVideo } from './newReleasesClips.js';
 import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES, prepRiseVariant, RISE_TEMPLATES, prepWeeklyVariant, WEEKLY_TEMPLATES, prepDailyVariant, DAILY_TEMPLATES, prepWeeklyClips, WEEKLY_CLIPS } from './videoPrep.js';
 import { fetchWeeklyChart } from './weeklyChart.js';
 import { pickDuelPair } from './duelPick.js';
@@ -166,6 +167,18 @@ async function main() {
       },
     ]);
   }
+  // Bu hafta cikan yeni sarkilar, klipli liste (Canvas -> klip -> kapak): --only new-clips
+  if (want('new-clips')) {
+    jobs.push([
+      'yeni-cikanlar-klipli',
+      async () => {
+        const r = await prepareNewReleasesVideo(await loadReleaseLog());
+        if (!r) throw new Error('yeterli yeni yayin yok');
+        console.log(`  ${r.picked.length} sarki: ${r.clipCount} resmi klip, ${r.canvasCount} Canvas`);
+        return r.prepared;
+      },
+    ]);
+  }
   // Sanatci serisi (tek seferlik, klipli liste): --only ser-uzi, ser-blok3, ... (ser = hepsi)
   for (const artist of await loadSeries()) {
     if (!want('ser') && !want(`ser-${artist.key}`)) continue;
@@ -180,14 +193,14 @@ async function main() {
         const clips = {};
         const audioUrls = {};
         for (const e of wentries.slice(0, WEEKLY_CLIPS.N)) {
-          const c = await fetchMusicVideo(e.artists[0].name, e.trackName);
+          const c = await fetchBackdrop(e.artists[0].name, e.trackName, e.trackId);
           if (c) {
             clips[e.rank] = c;
-            console.log(`  klip: #${e.rank} ${c.artist} - ${c.title}`);
+            console.log(`  ${c.kind === 'clip' ? 'klip' : 'Canvas'}: #${e.rank} ${e.artists[0].name} - ${e.trackName}`);
           } else {
-            audioUrls[e.rank] = (await findPreview(e.artists[0].name, e.trackName))?.url ?? null;
-            console.log(`  klip YOK: #${e.rank} ${e.artists[0].name} - ${e.trackName} (kapak + ses onizlemesi)`);
+            console.log(`  arka plan YOK: #${e.rank} ${e.artists[0].name} - ${e.trackName} (kapak + onizleme)`);
           }
+          if (!c || c.kind === 'canvas') audioUrls[e.rank] = await findSongAudio(e.artists[0].name, e.trackName);
         }
         return prepWeeklyClips({ entries: wentries, date: wdate, clips, audioUrls });
       },

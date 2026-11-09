@@ -43,8 +43,8 @@ async function main() {
   }
 
   console.log(`Sıradaki sanatçı: ${artist.name}`);
-  const { prepared, songs, clipCount } = await prepareArtistVideo(artist);
-  console.log(`${songs.length} şarkı, ${clipCount} resmi klip.`);
+  const { prepared, songs, clipCount, canvasCount } = await prepareArtistVideo(artist);
+  console.log(`${songs.length} şarkı, ${clipCount} resmi klip, ${canvasCount} Canvas.`);
   const { x: xBase, tiktok: tiktokText } = artistSeriesTexts(artist, songs);
   let xText = await tagText(xBase, [{ id: artist.id, name: artist.name }], { max: 1 });
   if (xText.length > 280) xText = xBase;

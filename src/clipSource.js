@@ -14,15 +14,33 @@ const norm = (s) =>
     .replace(/[^a-z0-9]/g, '');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+// iTunes Search API IP basina yaklasik dakikada 20-60 sorguyla sinirlidir (asilinca bos govdeli 403). Sorgular arasi bosluk birakilir;
+// sinir gelirse beklenip tekrar denenir; hala sinirliysa surec boyunca denenmez (sessizce "klip yok" sanilmasin diye uyari yazilir).
+let lastCall = 0;
+let blocked = false;
 async function searchVideos(term, country) {
-  for (let i = 0; i < 2; i++) {
+  if (blocked) return [];
+  for (let i = 0; i < 3; i++) {
+    const wait = lastCall + 1500 - Date.now();
+    if (wait > 0) await sleep(wait);
+    lastCall = Date.now();
     try {
       const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&country=${country}&entity=musicVideo&limit=25`, { signal: AbortSignal.timeout(15_000) });
       if (res.ok) return (await res.json()).results ?? [];
+      if (res.status === 403 || res.status === 429 || res.status >= 500) {
+        if (i < 2) {
+          console.error(`  iTunes ${res.status} (sorgu sınırı), ${20 * (i + 1)} sn bekleniyor...`);
+          await sleep(20_000 * (i + 1));
+          continue;
+        }
+        blocked = true;
+        console.error('  iTunes sorgu sınırı aşılmış: bu çalıştırmada klip aranmayacak (klipsiz sahneler kapak + önizleme olur).');
+        return [];
+      }
+      return [];
     } catch {
-      /* tekrar dene */
+      await sleep(800);
     }
-    await sleep(800);
   }
   return [];
 }

@@ -1491,34 +1491,48 @@ export async function prepWeeklyClips({ entries, date = '', clips = {}, audioUrl
       let clipName = null;
       let ambient = null;
       let ambientImg = null;
-      let src = null;
-      if (clips[e.rank]?.buffer) {
-        src = join(dir, `clip${e.rank}.m4v`);
-        await writeFile(src, clips[e.rank].buffer);
-      } else if (audioUrls[e.rank]) {
-        src = join(dir, `aud${e.rank}.bin`);
-        await writeFile(src, await fetchBuf(audioUrls[e.rank]));
+      // arka plan: resmi klip (yatay, kesit) ya da Spotify Canvas (dikey dongu); ses her zaman klibin kendisinden ya da sarki onizlemesinden gelir
+      const entry = clips[e.rank];
+      const isCanvas = entry?.kind === 'canvas';
+      let vertical = false;
+      let vsrc = null; // goruntu kaynagi
+      let asrc = null; // ses kaynagi
+      if (entry?.buffer) {
+        vsrc = join(dir, isCanvas ? `canvas${e.rank}.mp4` : `clip${e.rank}.m4v`);
+        await writeFile(vsrc, entry.buffer);
+        if (!isCanvas) asrc = vsrc;
+      }
+      if (!asrc && audioUrls[e.rank]) {
+        asrc = join(dir, `aud${e.rank}.bin`);
+        await writeFile(asrc, await fetchBuf(audioUrls[e.rank]));
       }
       let ss = 0;
-      if (src) {
-        ss = await findHookStart(src, Math.min(len + 0.5, 24));
-        if (clips[e.rank]?.buffer) {
-          clipName = `wkc-r${e.rank}.mp4`;
+      if (asrc) ss = await findHookStart(asrc, Math.min(len + 0.5, 24));
+      if (vsrc) {
+        clipName = `wkc-r${e.rank}.mp4`;
+        const enc = ['-an', '-c:v', 'libx264', '-pix_fmt', 'yuv420p'];
+        const seg = join(dir, clipName);
+        if (isCanvas) {
+          // Canvas: 1080x1920 dikey, tam ekran; 3-8 sn'lik dongu gerekli sureye kadar tekrarlanir
+          vertical = true;
+          await run('ffmpeg', ['-y', '-v', 'error', '-stream_loop', '-1', '-i', vsrc, '-t', String(len + 0.6), '-vf', 'fps=30,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,eq=contrast=1.04:brightness=0.02:saturation=1.1', ...enc, '-crf', '22', '-preset', 'veryfast', seg]);
+          assets.push({ name: clipName, buffer: await readFileBuf(seg) });
+        } else {
           ambient = `wkc-a${e.rank}.mp4`;
-          const enc = ['-an', '-c:v', 'libx264', '-pix_fmt', 'yuv420p'];
-          const seg = join(dir, clipName);
-          await run('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-t', String(len + 0.6), '-i', src, '-vf', "fps=30,scale=-2:'min(1080,ih)',eq=contrast=1.04:brightness=0.03:saturation=1.12", ...enc, '-crf', '21', '-preset', 'veryfast', seg]);
+          await run('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-t', String(len + 0.6), '-i', vsrc, '-vf', "fps=30,scale=-2:'min(1080,ih)',eq=contrast=1.04:brightness=0.03:saturation=1.12", ...enc, '-crf', '21', '-preset', 'veryfast', seg]);
           assets.push({ name: clipName, buffer: await readFileBuf(seg) });
           // ambiyans: kucultulup bulaniklastirilmis, karartilmis tam ekran kopya
           const amb = join(dir, ambient);
-          await run('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-t', String(len + 0.6), '-i', src, '-vf', 'fps=30,scale=-2:270,gblur=sigma=7,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,eq=brightness=-0.2:saturation=1.3', ...enc, '-crf', '30', '-preset', 'veryfast', amb]);
+          await run('ffmpeg', ['-y', '-v', 'error', '-ss', String(ss), '-t', String(len + 0.6), '-i', vsrc, '-vf', 'fps=30,scale=-2:270,gblur=sigma=7,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,eq=brightness=-0.2:saturation=1.3', ...enc, '-crf', '30', '-preset', 'veryfast', amb]);
           assets.push({ name: ambient, buffer: await readFileBuf(amb) });
         }
+      }
+      if (asrc) {
         const l = len + 0.35;
         const lead = k === 0 ? 0.45 : 0; // ilk sarki giris basligi bitmeden baslar (ses boslugu olmasin)
         const ms = Math.round((at - lead) * 1000);
         const fadeLen = hero ? 1.6 : 0.4;
-        parts.push({ src, graph: `atrim=start=${ss}:duration=${l},asetpts=PTS-STARTPTS,loudnorm=I=-15:TP=-1.5:LRA=9,aformat=sample_rates=44100:channel_layouts=stereo,afade=t=in:d=${lead ? 0.3 : 0.05},afade=t=out:st=${Math.max(0, l - fadeLen)}:d=${fadeLen},adelay=${ms}|${ms}` });
+        parts.push({ src: asrc, graph: `atrim=start=${ss}:duration=${l},asetpts=PTS-STARTPTS,loudnorm=I=-15:TP=-1.5:LRA=9,aformat=sample_rates=44100:channel_layouts=stereo,afade=t=in:d=${lead ? 0.3 : 0.05},afade=t=out:st=${Math.max(0, l - fadeLen)}:d=${fadeLen},adelay=${ms}|${ms}` });
       }
       if (!clipName) {
         // klipsiz sira: bulaniklastirilmis, karartilmis kapak (arka plan)
@@ -1527,7 +1541,7 @@ export async function prepWeeklyClips({ entries, date = '', clips = {}, audioUrl
         assets.push({ name: ambientImg, buffer: blur });
       }
       const d = describe ? describe(e) : {};
-      items.push({ rank: e.rank, title: e.trackName, artist: wkNames(e), sub: d.sub, badge: d.badge, streams: wkFmt(e.streams), change: e.weekChange, weeks: e.weeks, peak: e.peak, peakTimes: e.peakTimes, cover: coverFile, hue: await hueOf(sharp, cover), clip: clipName, ambient, ambientImg, at, len, main, hero });
+      items.push({ rank: e.rank, label: d.label, title: e.trackName, artist: wkNames(e), sub: d.sub, badge: d.badge, streams: wkFmt(e.streams), change: e.weekChange, weeks: e.weeks, peak: e.peak, peakTimes: e.peakTimes, cover: coverFile, hue: await hueOf(sharp, cover), clip: clipName, vertical, ambient, ambientImg, at, len, main, hero });
     }
 
     const music = join(dir, 'music.wav');

@@ -5,10 +5,11 @@
 import { postWindowOpen } from './postWindow.js';
 import { fetchWeeklyChart } from './weeklyChart.js';
 import { loadChartState, saveChartState } from './chartState.js';
-import { fetchMusicVideo } from './clipSource.js';
+import { fetchBackdrop } from './backdrop.js';
 import { prepWeeklyClips, WEEKLY_CLIPS } from './videoPrep.js';
 import { renderPrepared } from './remotionRender.js';
-import { hostVideo, postVideoToTikTok, findPreview } from './tiktokVideo.js';
+import { hostVideo, postVideoToTikTok } from './tiktokVideo.js';
+import { findSongAudio } from './artistSeries.js';
 import { tiktokEnabled } from './tiktok.js';
 import { publishPost, waitForPost } from './bufferPost.js';
 import { tagText } from './artistHandles.js';
@@ -42,14 +43,14 @@ async function main() {
   const clips = {};
   const audioUrls = {};
   for (const e of entries.slice(0, WEEKLY_CLIPS.N)) {
-    const c = await fetchMusicVideo(e.artists[0].name, e.trackName);
-    if (c) {
-      clips[e.rank] = c;
-      console.log(`  klip: #${e.rank} ${c.artist} - ${c.title}`);
+    const b = await fetchBackdrop(e.artists[0].name, e.trackName, e.trackId);
+    if (b) {
+      clips[e.rank] = b;
+      console.log(`  ${b.kind === 'clip' ? 'klip' : 'Canvas'}: #${e.rank} ${e.artists[0].name} - ${e.trackName}`);
     } else {
-      audioUrls[e.rank] = (await findPreview(e.artists[0].name, e.trackName))?.url ?? null;
-      console.log(`  klip YOK: #${e.rank} ${e.artists[0].name} - ${e.trackName}`);
+      console.log(`  arka plan YOK: #${e.rank} ${e.artists[0].name} - ${e.trackName}`);
     }
+    if (!b || b.kind === 'canvas') audioUrls[e.rank] = await findSongAudio(e.artists[0].name, e.trackName);
   }
   if (Object.keys(clips).length < MIN_CLIPS) {
     console.error(`Yalnizca ${Object.keys(clips).length} klip bulundu (en az ${MIN_CLIPS} gerekir), video paylasilmayacak.`);

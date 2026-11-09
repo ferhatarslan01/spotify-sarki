@@ -2,7 +2,7 @@
 // Siralama ve kimlikler data/artistSeries.json'da. Klipler iTunes resmi klip onizlemeleridir (src/clipSource.js).
 import { readFile } from 'node:fs/promises';
 import { fetchArtistTopSongs, fmtStreamsTR } from './artistTopSongs.js';
-import { fetchMusicVideo } from './clipSource.js';
+import { fetchBackdrop } from './backdrop.js';
 import { prepWeeklyClips, ARTIST_CLIPS } from './videoPrep.js';
 import { findPreview } from './tiktokVideo.js';
 
@@ -55,16 +55,20 @@ export async function prepareArtistVideo(artist) {
   const clips = {};
   const audioUrls = {};
   for (const s of songs) {
-    const c = await fetchMusicVideo(artist.name, s.trackName);
-    if (c) {
-      clips[s.rank] = c;
-      console.log(`  klip: #${s.rank} ${c.artist} - ${c.title}`);
+    const b = await fetchBackdrop(artist.name, s.trackName, s.trackId);
+    if (b) {
+      clips[s.rank] = b;
+      console.log(`  ${b.kind === 'clip' ? 'klip' : 'Canvas'}: #${s.rank} ${s.trackName}`);
     } else {
+      console.log(`  arka plan YOK: #${s.rank} ${s.trackName}`);
+    }
+    // Canvas'in sesi yok; resmi klibi olmayan her sirada sarki onizlemesi gerekir
+    if (!b || b.kind === 'canvas') {
       audioUrls[s.rank] = await findSongAudio(artist.name, s.trackName);
-      console.log(`  klip YOK: #${s.rank} ${artist.name} - ${s.trackName}${audioUrls[s.rank] ? '' : '  (SES BULUNAMADI)'}`);
+      if (!audioUrls[s.rank]) console.log(`    (SES BULUNAMADI: ${s.trackName})`);
     }
   }
-  const silent = songs.filter((s) => !clips[s.rank] && !audioUrls[s.rank]).map((s) => `#${s.rank} ${s.trackName}`);
+  const silent = songs.filter((s) => clips[s.rank]?.kind !== 'clip' && !audioUrls[s.rank]).map((s) => `#${s.rank} ${s.trackName}`);
   if (silent.length) throw new Error(`${artist.name}: ses bulunamayan sahne var (${silent.join(', ')}); sessiz video paylasilmaz`);
   const prepared = await prepWeeklyClips({
     entries: songs,
@@ -74,7 +78,7 @@ export async function prepareArtistVideo(artist) {
     header: { l1: artist.name.toUpperCase(), l2: `EN ÇOK DİNLENEN ${ARTIST_CLIPS.N} ŞARKI`, pill: 'Spotify · tüm zamanlar' },
     describe: (e) => ({ sub: `${fmtStreamsTR(e.streams)} dinlenme`, badge: '' }),
   });
-  return { prepared, songs, clipCount: Object.keys(clips).length };
+  return { prepared, songs, clipCount: Object.values(clips).filter((c) => c.kind === 'clip').length, canvasCount: Object.values(clips).filter((c) => c.kind === 'canvas').length };
 }
 
 // X: 280 karakter (yalnizca sarki adlari); TikTok: dinlenme sayilariyla.

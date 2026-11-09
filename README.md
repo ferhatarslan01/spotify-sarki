@@ -137,9 +137,19 @@ Türkiye haftalık listesinin TikTok videosu (`weekly-tr`) üç şablondan birin
 ## Sanatçı serisi: en çok dinlenen 7 şarkı (tek seferlik, 10-17 Kasım 2026)
 - Sırayla UZI, BLOK3, Ati242, Tarkan, cakal, Lvbel C5, Sefo, Batuflex: her gün **20:00 TRT**'de bir sanatçının "en çok dinlenen 7 şarkısı" klipli liste videosu X ve TikTok'a gider (şarkı başına 5 sn, #1 8 sn). Sıralama ve başlangıç tarihi `data/artistSeries.json`, durum `data/artistSeriesState.json`.
 - **Veri:** Spotify'da tüm zamanlar toplam dinlenme (kworb "Spotify Top Songs" sanatçı sayfası, `src/artistTopSongs.js`); remix/sped up/live sürümleri elenir. Videodaki dinlenme sayıları bu toplamlardır.
-- **Klipler:** iTunes resmi klip önizlemesi varsa klip (BLOK3 7/7, cakal 2/7; diğer sanatçılarda yok), yoksa büyük kapak + şarkı önizlemesi. Kompozisyon `WeeklyClips` (haftalık klipli listeyle ortak), hazırlık `prepWeeklyClips` (`layout`, `header`, `describe`).
+- **Arka plan sırası:** Spotify Canvas (dikey döngü video, tam ekran; `SP_DC` varsa) → iTunes resmi klip (BLOK3 7/7, cakal 2/7) → büyük kapak. Canvas tercih edilir (daha iyi görünüyor); `SP_DC` yoksa klip/kapakla devam edilir. Ses her zaman klipten ya da şarkı önizlemesinden gelir. Kompozisyon `WeeklyClips` (haftalık klipli listeyle ortak), hazırlık `prepWeeklyClips` (`layout`, `header`, `describe`).
 - **Akış:** `.github/workflows/artist-series.yml` (20:00 ve yeniden deneme 22:30 TRT), `npm run artist:series` (`src/postArtistSeries.js`). Günde en fazla bir sanatçı; X ve TikTok ayrı takip edilir; 8 sanatçı bitince çalıştırmalar bir şey yapmaz (workflow silinebilir). Kapatmak için repo değişkeni `ARTIST_SERIES=0`.
 - Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only ser-uzi` (anahtarlar `ser-<key>`); bulutta denemek için Actions → "TikTok preview" → `only` kutusuna `ser-uzi`.
+
+## Yeni çıkanlar klipli listesi (her Cumartesi 20:00 TRT)
+- "Bu hafta çıkan yeni şarkılar": `data/weeklyReleaseLog.json` içindeki son 7 günün (bugün-6 .. bugün) yayınlarından (remix/sped up/live elenir; iş birlikli şarkılar tek satırda birleşir) en fazla 10 şarkı seçilir; arka planı (klip ya da Canvas) olanlar öncelikli, sonra en yeniler. Sol sütunda sıra yerine **çıkış günü** (PZT, SAL…) ve tarih rozeti görünür; en yeni şarkı en üstte ve sondaki kahraman sahnededir. Satır sayısı yayın sayısına göre 5-10 arasındadır (az şarkıda sahne uzar); 5'ten az uygun yayın varsa o hafta paylaşılmaz.
+- **Arka plan sırası:** Spotify Canvas (`SP_DC`) → iTunes resmi klip → büyük kapak; ses klipten ya da şarkı önizlemesinden (bulunamazsa video paylaşılmaz, sessiz sahne olmaz).
+- **Akış:** `.github/workflows/new-releases-clips.yml` (Cumartesi 20:00 ve yeniden deneme 22:30 TRT), `npm run new:clips` (`src/postNewReleasesClips.js`, hazırlık `src/newReleasesClips.js`). Durum `data/newReleasesClipsState.json` (gün başına bir kez; X ve TikTok ayrı bayrak). Pazar özeti kaydı Pazar gecesi temizlediği için Cumartesi çalıştırması o haftanın yayınlarını görür. Kapatmak için repo değişkeni `NEW_RELEASES_CLIPS=0`.
+- Önizleme: `node --env-file=.env src/tiktokPreview.js preview --only new-clips`; çıktı `preview/yeni-cikanlar-klipli.mp4`.
+
+## Spotify Canvas (isteğe bağlı arka plan)
+- `src/spotifyCanvas.js`: bağımlılıksız, resmi olmayan Canvas istemcisi (Spotify'ın web istemcisinin kullandığı uç noktalar). `SP_DC` ortam değişkeni (open.spotify.com oturum çerezi) gerekir; yerelde `.env`, bulutta GitHub repo secret'ı `SP_DC`. Tanımlı değilse Canvas katmanı sessizce atlanır, video klip/kapakla yapılır.
+- **Riskler:** resmi API değildir ve Spotify kullanım şartlarına aykırı olabilir; çerez süresi dolabilir ya da TOTP parametreleri değişebilir (kimlik hatasında Canvas o çalıştırma için kapanır, akış kapakla devam eder). Hesap riskine karşı ikincil bir Spotify hesabının çerezi önerilir. Canvas görüntüleri de telife tabidir (klipler gibi).
 
 ## Günlük Top 5 şablonları
 

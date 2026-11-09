@@ -14,7 +14,7 @@ const { fontFamily } = loadOswald("normal", { weights: ["500", "700"], subsets: 
 const { fontFamily: inter } = loadInter("normal", { weights: ["500", "600", "700", "800"], subsets: ["latin", "latin-ext"] });
 const { fontFamily: mono } = loadMono("normal", { weights: ["500", "700"], subsets: ["latin", "latin-ext"] });
 
-type Item = { rank: number; title: string; artist: string; streams: string; change: number | string | null; weeks: number | null; peak: number | null; peakTimes: number; cover: string; hue: number; clip: string | null; ambient: string | null; ambientImg: string | null; sub?: string; badge?: string; at: number; len: number; main: number; hero: boolean };
+type Item = { rank: number; title: string; artist: string; streams: string; change: number | string | null; weeks: number | null; peak: number | null; peakTimes: number; cover: string; hue: number; clip: string | null; vertical?: boolean; label?: string; ambient: string | null; ambientImg: string | null; sub?: string; badge?: string; at: number; len: number; main: number; hero: boolean };
 const ITEMS = data.items as unknown as Item[]; // gosterim sirasi: 10 -> 1
 const ROWS = [...ITEMS].sort((a, b) => a.rank - b.rank); // listede ustten alta: 1 -> 10
 const BANDS = data.bands as number[][];
@@ -85,7 +85,9 @@ const BgSlot: React.FC<{ item: Item }> = ({ item }) => {
   const bass = bassAt(Math.round((item.at + t) * fps));
   return (
     <AbsoluteFill style={{ opacity: fadeIn * fadeOut, background: hsl(item.hue, 50, 8) }}>
-      {item.clip ? (
+      {item.clip && item.vertical ? (
+        <OffthreadVideo src={staticFile(item.clip)} muted style={{ position: "absolute", inset: 0, width: 1080, height: 1920, objectFit: "cover", transform: `scale(${1 + 0.04 * clamp(t / item.len)})` }} />
+      ) : item.clip ? (
         <>
           {item.ambient ? <OffthreadVideo src={staticFile(item.ambient)} muted style={{ position: "absolute", inset: 0, width: 1080, height: 1920 }} /> : null}
           <div style={{ position: "absolute", left: 0, top: WIN_TOP, width: 1080, height: WIN_H, overflow: "hidden", WebkitMaskImage: MASK, maskImage: MASK }}>
@@ -135,14 +137,14 @@ const ListRow: React.FC<{ item: Item; t: number; nums: number }> = ({ item, t, n
   const accent = gold ? GOLD : ACCENT;
   const pulse = current ? 1 + 0.025 * Math.exp(-(t - item.at) * 6) : 1;
   const thumb = Math.round(64 * SC);
-  const badgeW = item.badge === "" ? 0 : 96;
+  const badgeW = item.badge === "" ? 0 : item.badge ? 124 : 96; // metin rozeti ("6 Kas") tek satir, hareket oku daha dar
   const textW = CARD_W - 20 - thumb - 16 - badgeW - 14;
   const sub = item.sub ?? item.artist;
   const tSize = fit(item.title, 41 * SC, textW, 0.52);
   const aSize = fit(sub, 28 * SC, textW, 0.54);
   return (
     <div style={{ position: "absolute", left: LIST_X, top: y, width: CARD_X + CARD_W - LIST_X, height: ROW_H - 12, opacity: clamp(numIn) * (nums ? 1 : 0), transform: `scale(${pulse})`, transformOrigin: "left center" }}>
-      <div style={{ position: "absolute", left: 0, top: 0, width: 84, height: ROW_H - 12, display: "flex", alignItems: "center", justifyContent: "center", fontFamily, fontWeight: 700, fontSize: Math.round(70 * SC), color: revealed ? (current ? accent : "#fff") : "rgba(255,255,255,0.5)", textShadow: "0 3px 16px rgba(0,0,0,0.85)" }}>{item.rank}</div>
+      <div style={{ position: "absolute", left: 0, top: 0, width: 84, height: ROW_H - 12, display: "flex", alignItems: "center", justifyContent: "center", fontFamily, fontWeight: 700, fontSize: item.label ? 38 : Math.round(70 * SC), whiteSpace: "nowrap", color: revealed ? (current ? accent : "#fff") : "rgba(255,255,255,0.5)", textShadow: "0 3px 16px rgba(0,0,0,0.85)" }}>{item.label ?? item.rank}</div>
       {revealed ? (
         <div style={{ position: "absolute", left: CARD_X - LIST_X, top: 0, width: CARD_W, height: ROW_H - 12, display: "flex", alignItems: "center", gap: 16, padding: "0 14px 0 10px", borderRadius: 20, background: current ? "rgba(8,8,14,0.7)" : "rgba(8,8,14,0.4)", border: `3px solid ${current ? accent : "rgba(255,255,255,0.0)"}`, boxShadow: current ? `0 0 34px ${accent}77` : "none", opacity: k, transform: `translateX(${(1 - k) * -90}px)` }}>
           <Img src={staticFile(item.cover)} style={{ width: thumb, height: thumb, borderRadius: 12, flexShrink: 0 }} />
@@ -152,7 +154,7 @@ const ListRow: React.FC<{ item: Item; t: number; nums: number }> = ({ item, t, n
           </div>
           {badgeW > 0 ? (
             <div style={{ width: badgeW, display: "flex", justifyContent: "flex-end" }}>
-              {item.badge ? <span style={{ fontFamily: inter, fontWeight: 800, fontSize: 26, color: "#fff", background: "rgba(255,255,255,0.16)", borderRadius: 14, padding: "4px 12px" }}>{item.badge}</span> : <Move change={item.change} size={32} />}
+              {item.badge ? <span style={{ fontFamily: inter, fontWeight: 800, fontSize: 26, color: "#fff", whiteSpace: "nowrap", background: "rgba(255,255,255,0.16)", borderRadius: 14, padding: "4px 12px" }}>{item.badge}</span> : <Move change={item.change} size={32} />}
             </div>
           ) : null}
         </div>

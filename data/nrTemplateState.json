@@ -15,7 +15,8 @@
     "drop",
     "mesaj",
     "bulten",
-    "tahmin"
+    "tahmin",
+    "kilit"
   ],
   "assigned": {
     "dz:1111063802": "radyo",
@@ -33,6 +34,7 @@
     "dz:1137798501": "drop",
     "dz:1137917261": "mesaj",
     "dz:1123409962": "bulten",
-    "dz:1143695211": "tahmin"
+    "dz:1143695211": "tahmin",
+    "dz:1137940131": "kilit"
   }
 }

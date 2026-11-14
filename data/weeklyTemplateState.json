@@ -1,10 +1,12 @@
 {
   "history": [
     "countdown",
-    "board"
+    "board",
+    "rapor"
   ],
   "assigned": {
     "22.10.2026": "countdown",
-    "29.10.2026": "board"
+    "29.10.2026": "board",
+    "12.11.2026": "rapor"
   }
 }

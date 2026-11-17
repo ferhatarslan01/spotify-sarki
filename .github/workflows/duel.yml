@@ -2,11 +2,16 @@ name: Post duel
 
 on:
   schedule:
-    - cron: '0 17 * * *' # 20:00 TRT
+    # Gün içinde dört kez erken çalışır; paylaşım Buffer'da her gün 21:00 TRT'ye zamanlanır (src/slots.js). Aynı liste tarihi bir kez paylaşılır.
+    - cron: '37 3,6,9,12 * * *'
   workflow_dispatch: {}
 
 permissions:
   contents: write
+
+concurrency:
+  group: duel
+  cancel-in-progress: false
 
 jobs:
   post:
@@ -42,6 +47,7 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_TIKTOK_CHANNEL_ID: ${{ secrets.BUFFER_TIKTOK_CHANNEL_ID }}
           TIKTOK_DAILY_MAX: ${{ vars.TIKTOK_DAILY_MAX }}
+          VIDEO_STYLE: ${{ vars.VIDEO_STYLE }} # canvas (varsayilan: Spotify arka videosu) | classic (eski sablonlar)
           # Paylaşım penceresi (TRT). Elle (workflow_dispatch) çalıştırmada kapalı; yoksa repo değişkeni POST_WINDOW, o da yoksa 09:00-23:30.
           POST_WINDOW: ${{ github.event_name == 'workflow_dispatch' && 'off' || vars.POST_WINDOW }}
 

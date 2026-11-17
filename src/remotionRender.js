@@ -69,6 +69,9 @@ const STUBS = {
     diff: 0,
     bands: [],
   },
+  cs: { fps: 30, durationSeconds: 15, label: '', chip: '', title: '', artist: '', hue: 30, bands: [] },
+  gta: { fps: 30, durationSeconds: 27.6, intro: 2, slide: 4.6, reveal: 1.5, outro: 25, updated: '', logo5: false, logo5full: false, logo6: false, items: [], bands: [] },
+  zirve: { fps: 30, durationSeconds: 24, chartDate: '', a: { artist: '', title: '', rank: 1, streams: 0 }, b: { artist: '', title: '', rank: 2, streams: 0 }, gapNow: 0, gapPrev: null, closed: null, shareB: 0.9, copy: { hook: ['', ''], s4: ['', ''], s5: ['', ''], fastest: false, tomorrow: false }, captions: [], bands: [] },
   anniv: { artist: '', title: '', dateText: '', day: 1, monthAbbr: 'OCA', releaseYear: 2000, yearNow: 2026, years: 26, hue: 30, fps: 30, durationSeconds: 18, rewindStart: 1.8, rewindEnd: 6.6, off: 16.4, bg: false, bgSeconds: 0, bands: [] },
 };
 
@@ -121,7 +124,7 @@ async function ensureStubs() {
   }
 }
 
-async function renderOne({ composition, dataKey, data, assets, extras = [], timeoutMin = 15 }) {
+async function renderOne({ composition, dataKey, data, assets, extras = [], timeoutMin = 15, crf = 23 }) {
   await ensureDeps();
   await ensureStubs();
 
@@ -135,7 +138,7 @@ async function renderOne({ composition, dataKey, data, assets, extras = [], time
   const out = join(tmpdir(), `remotion-${composition}-${Date.now()}.mp4`);
   try {
     const t0 = Date.now();
-    await sh(binPath(), ['render', 'src/index.ts', composition, out, '--codec=h264', '--crf=23', '--audio-codec=aac', '--log=warn'], {
+    await sh(binPath(), ['render', 'src/index.ts', composition, out, '--codec=h264', `--crf=${crf}`, '--audio-codec=aac', '--log=warn'], {
       cwd: VIDEO_DIR,
       timeout: timeoutMin * 60_000, // varsayilan 15 dk; agir sahneler (klipli liste) uzun sure ister
     });

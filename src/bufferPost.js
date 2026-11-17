@@ -8,6 +8,17 @@ if (!BUFFER_API_KEY || !BUFFER_CHANNEL_ID) {
   process.exit(1);
 }
 
+// Zamanlanmis paylasim: setPublishSchedule(ISO) cagrilirsa bu surecteki TUM Buffer gonderileri o ana zamanlanir (mode: customScheduled),
+// aksi halde hemen paylasilir (shareNow). GitHub zamanlayicisi saatlerce gecikebildiginden isler erken calisip hedef saate zamanlar.
+let scheduledAt = null;
+export function setPublishSchedule(iso) {
+  scheduledAt = iso ? new Date(iso).toISOString() : null;
+}
+export function getPublishSchedule() {
+  return scheduledAt;
+}
+const modeInput = () => (scheduledAt ? `mode: customScheduled dueAt: "${scheduledAt}"` : 'mode: shareNow');
+
 async function graphql(query, variables = {}) {
   const res = await fetch('https://api.buffer.com', {
     method: 'POST',
@@ -34,7 +45,7 @@ export async function publishPost(text, imageUrl, videoUrl) {
             text: $text
             channelId: $channelId
             schedulingType: automatic
-            mode: shareNow
+            ${modeInput()}
             assets: $assets
           }
         ) {
@@ -75,7 +86,7 @@ export async function publishTikTokPhoto(channelId, { text, imageUrls, title }) 
             text: $text
             channelId: $channelId
             schedulingType: automatic
-            mode: shareNow
+            ${modeInput()}
             assets: $assets
             metadata: { tiktok: { title: $title } }
           }
@@ -114,7 +125,7 @@ export async function publishTikTokVideo(channelId, { text, videoUrl, aiGenerate
             text: $text
             channelId: $channelId
             schedulingType: automatic
-            mode: shareNow
+            ${modeInput()}
             assets: $assets
             metadata: { tiktok: { isAiGenerated: $ai } }
           }
@@ -156,7 +167,7 @@ export async function publishThread(items, { aiGenerated = false } = {}) {
             text: $text
             channelId: $channelId
             schedulingType: automatic
-            mode: shareNow
+            ${modeInput()}
             assets: $assets
             metadata: $meta
           }
@@ -209,6 +220,7 @@ export async function waitForPost(id, { timeoutMs = 150_000, intervalMs = 6_000 
     } catch {
       continue;
     }
+    if (scheduledAt && last?.status === 'scheduled') return last; // zamanlanmis gonderi hedef saatte gidecek; beklemeyiz
     if (last && last.status !== 'sending' && last.status !== 'scheduled' && last.status !== 'queued') return last;
   }
   return last;

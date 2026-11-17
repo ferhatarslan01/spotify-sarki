@@ -5,8 +5,9 @@ name: Post artist series
 # 8 sanatci bitince calistirmalar bir sey yapmaz (workflow dosyasi silinebilir). Kapatmak icin repo degiskeni ARTIST_SERIES=0.
 on:
   schedule:
-    - cron: '0 17 * * *' # her gun 20:00 TRT
-    - cron: '30 19 * * *' # 22:30 TRT (yeniden deneme: ayni sanatci iki kez paylasilmaz)
+    # GitHub cron'u 4-6 saat gecikebiliyor: iş gün içinde dört kez (TRT 06:13/09:13/12:13/15:13) ERKEN çalışır, video hazırlanıp
+    # Buffer'a her gün 20:00 TRT için zamanlanır (src/slots.js). Aynı gün ikinci çalıştırma state yüzünden bir şey yapmaz.
+    - cron: '13 3,6,9,12 * * *'
   workflow_dispatch: {}
 
 permissions:

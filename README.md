@@ -151,6 +151,12 @@ Türkiye haftalık listesinin TikTok videosu (`weekly-tr`) üç şablondan birin
 - `src/spotifyCanvas.js`: bağımlılıksız, resmi olmayan Canvas istemcisi (Spotify'ın web istemcisinin kullandığı uç noktalar). `SP_DC` ortam değişkeni (open.spotify.com oturum çerezi) gerekir; yerelde `.env`, bulutta GitHub repo secret'ı `SP_DC`. Tanımlı değilse Canvas katmanı sessizce atlanır, video klip/kapakla yapılır.
 - **Riskler:** resmi API değildir ve Spotify kullanım şartlarına aykırı olabilir; çerez süresi dolabilir ya da TOTP parametreleri değişebilir (kimlik hatasında Canvas o çalıştırma için kapanır, akış kapakla devam eder). Hesap riskine karşı ikincil bir Spotify hesabının çerezi önerilir. Canvas görüntüleri de telife tabidir (klipler gibi).
 
+## Zamanlama güvenilirliği ve bekçi
+- **Sorun:** GitHub'ın zamanlanmış (cron) çalıştırmaları 4-6 saat gecikebiliyor. Bu yüzden 20:00'ye kurulu işler gece 00:00-05:00 arası başlayıp paylaşım penceresine (09:00-23:30 TRT) takılıyor ve hiçbir şey paylaşmadan bitiyordu (haftalık liste, sanatçı serisi, Cumartesi yeni çıkanlar, Pazar özeti, düello).
+- **Çözüm:** İşler gün içinde dört kez ERKEN çalışır (cron TRT 06:13-15:23 arası), videoyu hazırlayıp **Buffer'a hedef saate zamanlar** (`src/slots.js`, `bufferPost.js` içindeki `setPublishSchedule`). Hedef saatler (TRT): sanatçı serisi her gün 20:00, düello her gün 21:00, haftalık klipli liste Pazar 19:00 (kaçırılırsa Pzt-Çar telafi), Cumartesi yeni çıkanlar 20:00, Pazar özeti 22:00. Hedef saat geçmişse ve pencere açıksa hemen paylaşılır; pencere kapalıysa o gün atlanır.
+- **Bekçi:** `.github/workflows/watchdog.yml` (günde 3 kez, `src/watchdog.js`) beklenen paylaşımların yapılıp yapılmadığına bakar, kaçanı `workflow_dispatch` ile kendisi tetikler; sorun 8 saatten uzun sürerse çalışma kırmızı biter (GitHub sahibine e-posta). `release-check` ve `chart-trends` için ikinci bir tetik de var.
+- **Veriye dayalı notlar (Buffer metrikleri, 1.357 gönderi):** gece 00:00-08:00 TRT paylaşımları gönderi başına ~0,05 etkileşim alıyor (gündüz/akşam 0,5-0,9). X'te günlük/haftalık liste gönderileri medyan 144-182 gösterim alırken sıra atlama ve stream rekoru olayları ~30 alıyor.
+
 ## Günlük Top 5 şablonları
 
 > **Günlük Türkiye Top 5 paylaşımı şu an KAPALI** (yalnızca haftalık liste paylaşılır). `daily-chart.yml` içindeki `schedule` zamanlaması kaldırıldı; elle çalıştırma açık. Yeniden açmak için workflow dosyasındaki yorum satırlarındaki `schedule` bloğunu geri ekle. Aşağıdaki şablonlar hazır bekliyor.

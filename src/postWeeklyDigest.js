@@ -1,4 +1,4 @@
-import { postWindowOpen } from './postWindow.js';
+import { planPost, applyPlan, trtWeekday } from './slots.js';
 import { loadWeeklyLog, clearWeeklyLog } from './weeklyLog.js';
 import { publishThread, publishThreadWithVideo } from './bufferPost.js';
 import { makeDigestVideo, hostVideo, tiktokDigestPostPrepared } from './tiktokVideo.js';
@@ -6,8 +6,14 @@ import { tagText, trackedByName } from './artistHandles.js';
 import { ctaFor } from './cta.js';
 
 async function main() {
-  // Paylaşım penceresi (TRT): pencere dışındaysa hiçbir şey paylaşılmaz, durum dosyalarına dokunulmaz.
-  if (!postWindowOpen('Haftalık özet')) return;
+  if (trtWeekday() !== 0) {
+    console.log('Bugün Pazar değil, haftalık özet atlanıyor.');
+    return;
+  }
+  // GitHub cron'u gecikebildiğinden iş gün içinde erken çalışır; thread Pazar 22:00 TRT'ye Buffer'da zamanlanır.
+  const plan = planPost({ hour: 22, label: 'Haftalık özet' });
+  applyPlan(plan, 'Haftalık özet');
+  if (plan.mode === 'skip') return;
 
   const log = await loadWeeklyLog();
 

@@ -5,6 +5,9 @@ import { RankRise } from "./RankRise";
 import { Anniversary } from "./Anniversary";
 import { CoverPlayer } from "./CoverPlayer";
 import { Duel } from "./Duel";
+import { Zirve } from "./Zirve";
+import { GtaCompare } from "./GtaCompare";
+import { CanvasSong } from "./CanvasSong";
 import { EraIntro } from "./EraIntro";
 import { NRFragman } from "./NRFragman";
 import { NRBulten } from "./NRBulten";
@@ -32,6 +35,9 @@ import rise from "./data-rise.json";
 import anniv from "./data-anniv.json";
 import player from "./data-player.json";
 import duel from "./data-duel.json";
+import zirve from "./data-zirve.json";
+import gta from "./data-gta.json";
+import cs from "./data-cs.json";
 import eraintro from "./data-eraintro.json";
 import nrvar from "./data-nrvar.json";
 import risev from "./data-risev.json";
@@ -258,6 +264,30 @@ export const RemotionRoot: React.FC = () => {
         id="Duel"
         component={Duel}
         durationInFrames={frames(duel.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="Zirve"
+        component={Zirve}
+        durationInFrames={frames(zirve.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="CanvasSong"
+        component={CanvasSong}
+        durationInFrames={frames(cs.durationSeconds)}
+        fps={FPS}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="GtaCompare"
+        component={GtaCompare}
+        durationInFrames={frames(gta.durationSeconds)}
         fps={FPS}
         width={1080}
         height={1920}

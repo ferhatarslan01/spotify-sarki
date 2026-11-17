@@ -2,7 +2,7 @@
 // Arka plan: Spotify Canvas (SP_DC varsa) -> resmi klip önizlemesi -> kapak. Aynı gün bir kez; X ve TikTok ayrı takip edilir.
 // Durum data/newReleasesClipsState.json. Kapatmak için NEW_RELEASES_CLIPS=0. Pazar özeti (weekly-digest) kaydı Pazar gecesi temizler;
 // bu akış Cumartesi çalıştığı için o haftanın yayınlarını görür.
-import { postWindowOpen } from './postWindow.js';
+import { planPost, applyPlan, trtWeekday } from './slots.js';
 import { loadChartState, saveChartState } from './chartState.js';
 import { loadReleaseLog, prepareNewReleasesVideo, newReleasesTexts } from './newReleasesClips.js';
 import { renderPrepared } from './remotionRender.js';
@@ -19,7 +19,10 @@ async function main() {
     console.log('Yeni çıkanlar klipli listesi kapalı (NEW_RELEASES_CLIPS=0).');
     return;
   }
-  if (!postWindowOpen('Yeni çıkanlar klipli liste')) return;
+  if (trtWeekday() !== 6) {
+    console.log('Bugün Cumartesi değil, yeni çıkanlar listesi atlanıyor.');
+    return;
+  }
 
   const today = todayTRT();
   const saved = await loadChartState(STATE_FILE);
@@ -28,6 +31,11 @@ async function main() {
     console.log(`Bugünün (${today}) yeni çıkanlar videosu zaten paylaşılmış, atlanıyor.`);
     return;
   }
+
+  // GitHub cron'u gecikebildiğinden iş erken çalışır; paylaşım Cumartesi 20:00 TRT'ye Buffer'da zamanlanır.
+  const plan = planPost({ hour: 20, label: 'Yeni çıkanlar klipli liste' });
+  applyPlan(plan, 'Yeni çıkanlar klipli liste');
+  if (plan.mode === 'skip') return;
 
   const r = await prepareNewReleasesVideo(await loadReleaseLog(), { today });
   if (!r) {

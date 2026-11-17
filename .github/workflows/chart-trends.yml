@@ -3,10 +3,15 @@ name: Post chart trends
 on:
   schedule:
     - cron: '45 */2 * * *'
+    - cron: '15 1-23/2 * * *' # araya ikinci tetik (GitHub atlama/gecikmesine karşı); concurrency tekrar çalışmaları sıraya koyar
   workflow_dispatch: {}
 
 permissions:
   contents: write
+
+concurrency:
+  group: chart-trends
+  cancel-in-progress: false
 
 jobs:
   post:
@@ -42,6 +47,10 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_TIKTOK_CHANNEL_ID: ${{ secrets.BUFFER_TIKTOK_CHANNEL_ID }}
           TIKTOK_DAILY_MAX: ${{ vars.TIKTOK_DAILY_MAX }}
+          VIDEO_STYLE: ${{ vars.VIDEO_STYLE }} # canvas (varsayilan: Spotify arka videosu) | classic (eski sablonlar)
+          SP_DC: ${{ secrets.SP_DC }} # Spotify Canvas; tanimsizsa video uretilmez
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           # Paylaşım penceresi (TRT). Elle (workflow_dispatch) çalıştırmada kapalı; yoksa repo değişkeni POST_WINDOW, o da yoksa 09:00-23:30.
           POST_WINDOW: ${{ github.event_name == 'workflow_dispatch' && 'off' || vars.POST_WINDOW }}
 

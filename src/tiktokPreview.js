@@ -1,14 +1,16 @@
 // Onizleme: gercek verilerle her Remotion sablonundan bir ornek video uretir, HICBIR YERDE PAYLASMAZ.
-// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,wk-clips,new-clips,ser-uzi,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,era-son10,era-son10b,era-hatira,rise,new,top10,board,digest,duel]
+// Kullanim: node src/tiktokPreview.js [cikti_klasoru] [--only anniv,nr,nr-fragman,nr-bulten,nr-kilit,nr-neon,nr-kaset,nr-tahmin,nr-radyo,nr-mesaj,rv-terminal,rv-yayin,rv-kart,rv-roket,rv-transfer,rv-radar,wk-countdown,wk-rapor,wk-clips,new-clips,zirve,gta,cs,ser-uzi,dy-podyum,dy-gazete,dy-galeri,era70,era80,era90,era2000,era2010,era2020,era-son10,era-son10b,era-hatira,rise,new,top10,board,digest,duel]
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fetchDailyChart, getTrackThumbnail, formatStreams } from './dailyChart.js';
-import { findPreview } from './tiktokVideo.js';
+import { findPreview, prepCanvasEventVideo } from './tiktokVideo.js';
 import { fetchBackdrop } from './backdrop.js';
 import { loadSeries, prepareArtistVideo, findSongAudio } from './artistSeries.js';
 import { loadReleaseLog, prepareNewReleasesVideo } from './newReleasesClips.js';
 import { prepNewRelease, prepAnniversary, prepRankRise, prepTopBoard, prepCoverPlayer, prepDuel, prepAnniversaryAuto, prepNewReleaseVariant, NR_TEMPLATES, prepRiseVariant, RISE_TEMPLATES, prepWeeklyVariant, WEEKLY_TEMPLATES, prepDailyVariant, DAILY_TEMPLATES, prepWeeklyClips, WEEKLY_CLIPS } from './videoPrep.js';
 import { fetchWeeklyChart } from './weeklyChart.js';
 import { pickDuelPair } from './duelPick.js';
+import { prepZirve } from './zirveGece.js';
+import { prepGta } from './gtaCompare.js';
 import { renderPrepared } from './remotionRender.js';
 
 const args = process.argv.slice(2);
@@ -119,6 +121,53 @@ async function main() {
           date,
           dateShort: `${dd}.${mm}.${yyyy.slice(2)}`,
         });
+      },
+    ]);
+  }
+  // Spotify arka videosu (Canvas) stili, tek sarkilik olay videosu: --only cs (2 ornek: liste hareketi + yeni cikti)
+  if (want('cs')) {
+    const used = new Set();
+    const sample = async (build) => {
+      for (const e of entries.slice(0, 40)) {
+        if (used.has(e.trackId)) continue;
+        const r = await prepCanvasEventVideo(build(e));
+        if (r) {
+          used.add(e.trackId);
+          console.log(`  ${names(e)} - ${e.trackName} (Canvas + ${r.source})`);
+          return r.prepared;
+        }
+      }
+      throw new Error('Canvas bulunan sarki yok');
+    };
+    const base = (e) => ({ artist: names(e), title: e.trackName, subtitle: names(e), trackUrl: e.trackUrl });
+    jobs.push(['canvas-yukselis', () => sample((e) => ({ ...base(e), kind: 'trend-jump', label: 'SIRA ATLADI', headline: `+${Math.abs(Number(e.positionChange)) || 3} SIRA`, coverUrl: undefined }))]);
+    jobs.push(['canvas-yeni-cikti', () => sample((e) => ({ ...base(e), kind: 'release', label: 'YENİ ŞARKI', subtitle: today(), headline: names(e) }))]);
+  }
+  // "GTA 5 -> GTA 6": en cok dinlenen 5 rapcinin eski/yeni fotografi (gta-foto/ klasoru); eksik foto yerine kapak + "ORNEK FOTO": --only gta
+  if (want('gta')) {
+    jobs.push([
+      'gta5-gta6',
+      async () => {
+        const r = await prepGta();
+        console.log(`  kworb guncelleme: ${r.updated}`);
+        for (const it of [...r.items].reverse()) console.log(`  #${it.rank} ${it.name}: ${it.streamsText}, ${it.totalText} (kullanilan sarki: ${it.topSong})`);
+        if (r.missing.length) console.log(`  eksik foto (kapakla gosterilir): ${r.missing.join(', ')}`);
+        return r.prepared;
+      },
+    ]);
+  }
+  // "Zirveye Bir Gece Kala" (24 sn, senaryolu): --only zirve; paylasim paketi preview/zirve-paket.txt
+  if (want('zirve')) {
+    jobs.push([
+      'zirve-bir-gece-kala',
+      async () => {
+        const r = await prepZirve({ entries, date });
+        if (!r) throw new Error('zirve cifti bulunamadi');
+        console.log(`  A=#${r.pair.a.rank} ${names(r.pair.a)} - ${r.pair.a.trackName} (${r.pair.a.streams}) | B=#${r.pair.b.rank} ${names(r.pair.b)} - ${r.pair.b.trackName} (${r.pair.b.streams})`);
+        console.log(`  fark ${r.pair.gapNow}, onceki liste farki ${r.pair.gapPrev}, kapanan ${r.pair.closed}; en hizli yukselen=${r.pair.fastest}, yarin degisebilir=${r.pair.tomorrow}`);
+        for (const v of r.voice) console.log(`  ses ${v.start.toFixed(2)}-${v.end.toFixed(2)} (x${v.tempo}): ${v.text}`);
+        await writeFile(`${outDir}/zirve-paket.txt`, r.pack, 'utf8');
+        return r.prepared;
       },
     ]);
   }

@@ -142,6 +142,7 @@ async function main() {
     try {
       const tiktokParams = {
         kind: 'anniversary',
+        albumUrl: release.url,
         artist: artist.name,
         label: 'YIL DÖNÜMÜ',
         headline: `${yearsAgo}. YIL`,
@@ -285,6 +286,7 @@ async function main() {
         try {
           const tiktokParams = {
             kind: 'release',
+            albumUrl: latest.url, // Canvas icin Spotify sarki kimligi bu albumden bulunur
             artist: artist.name,
             label: latest.albumType === 'album' ? 'YENİ ALBÜM' : 'YENİ ŞARKI',
             headline: artist.name,

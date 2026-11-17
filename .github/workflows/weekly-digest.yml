@@ -2,11 +2,16 @@ name: Post weekly digest thread
 
 on:
   schedule:
-    - cron: '0 19 * * 0'
+    # Pazar günü dört kez erken çalışır; thread Buffer'da Pazar 22:00 TRT'ye zamanlanır (src/slots.js).
+    - cron: '41 6,9,12,15 * * 0'
   workflow_dispatch: {}
 
 permissions:
   contents: write
+
+concurrency:
+  group: weekly-digest
+  cancel-in-progress: false
 
 jobs:
   post:
@@ -32,6 +37,7 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_TIKTOK_CHANNEL_ID: ${{ secrets.BUFFER_TIKTOK_CHANNEL_ID }}
           TIKTOK_DAILY_MAX: ${{ vars.TIKTOK_DAILY_MAX }}
+          VIDEO_STYLE: ${{ vars.VIDEO_STYLE }} # canvas (varsayilan: Spotify arka videosu) | classic (eski sablonlar)
           # Paylaşım penceresi (TRT). Elle (workflow_dispatch) çalıştırmada kapalı; yoksa repo değişkeni POST_WINDOW, o da yoksa 09:00-23:30.
           POST_WINDOW: ${{ github.event_name == 'workflow_dispatch' && 'off' || vars.POST_WINDOW }}
 

@@ -1,7 +1,7 @@
 // Gunde bir kez "Duello": gunluk listeden iki sarki, "hangisi daha cok dinlendi?" tahmin videosu.
 // X: video tweet (cevap/kazanan metinde YOK, yalnizca videoda) + ilk yanitta iki Spotify linki.
 // TikTok: ayni video (gunluk sinir icinde).
-import { postWindowOpen } from './postWindow.js';
+import { planPost, applyPlan } from './slots.js';
 import { fetchDailyChart, getTrackThumbnail } from './dailyChart.js';
 import { loadChartState, saveChartState } from './chartState.js';
 import { publishThreadWithVideo } from './bufferPost.js';
@@ -15,9 +15,6 @@ const KEEP_KEYS = 14; // son 14 duello cifti tekrar secilmez
 const names = (e) => e.artists.map((a) => a.name).join(' & ');
 
 async function main() {
-  // Paylaşım penceresi (TRT): pencere dışındaysa hiçbir şey paylaşılmaz, durum dosyalarına dokunulmaz.
-  if (!postWindowOpen('Düello')) return;
-
   const { date, entries } = await fetchDailyChart();
   if (!date || entries.length === 0) {
     console.error('Chart verisi alinamadi, cikiliyor.');
@@ -30,6 +27,11 @@ async function main() {
     console.log(`${date} listesiyle duello zaten paylasilmis, atlaniyor.`);
     return;
   }
+
+  // GitHub cron'u gecikebildiğinden iş erken çalışır; paylaşım her gün 21:00 TRT'ye Buffer'da zamanlanır (sanatçı serisiyle çakışmasın).
+  const plan = planPost({ hour: 21, label: 'Düello' });
+  applyPlan(plan, 'Düello');
+  if (plan.mode === 'skip') return;
 
   const handle = await makeDuelVideo({ date, entries, excludeKeys: state.recentKeys ?? [] });
   if (!handle) {

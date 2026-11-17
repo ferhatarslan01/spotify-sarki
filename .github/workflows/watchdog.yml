@@ -1,0 +1,49 @@
+name: Watchdog
+
+# Günde üç kez: zamanlanmış paylaşımlar yapıldı mı kontrol eder, kaçan işi kendisi tetikler; sorun 8 saatten uzun sürerse
+# çalışma kırmızı biter (GitHub sahibine e-posta gönderir). Ayrıntı: src/watchdog.js. Elle de çalıştırılabilir.
+on:
+  schedule:
+    - cron: '47 6,12,18 * * *' # TRT 09:47, 15:47, 21:47 (GitHub gecikse de kontrol yapılır)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write # eksik işi workflow_dispatch ile tetiklemek için
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm ci
+
+      - name: Check schedules
+        run: node src/watchdog.js
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
+          BUFFER_TIKTOK_CHANNEL_ID: ${{ secrets.BUFFER_TIKTOK_CHANNEL_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEALTH_GRACE_H: ${{ vars.HEALTH_GRACE_H }}
+
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/watchdogState.json
+          git diff --staged --quiet || git commit -m "Update watchdog state [skip ci]"
+          git push || (git pull --rebase && git push)

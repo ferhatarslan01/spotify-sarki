@@ -5,6 +5,7 @@ on:
     # Her saat: yeni yayin tespiti Deezer ile yapildigi icin (Spotify kotasina bagli degil) ucuz; GitHub bir tetigi atlasa/geciktirse
     # bile bir sonrakinde yakalanir. Paylasim penceresi (TRT) disindaki turlar agir adimlari calistirmadan hemen biter.
     - cron: '17 * * * *'
+    - cron: '47 * * * *' # ikinci tetik: GitHub saatlik cron'u atlayabiliyor/geciktirebiliyor; concurrency tekrar çalışmaları sıraya koyar
   workflow_dispatch: {}
 
 permissions:
@@ -71,6 +72,8 @@ jobs:
           BUFFER_CHANNEL_ID: ${{ secrets.BUFFER_CHANNEL_ID }}
           BUFFER_TIKTOK_CHANNEL_ID: ${{ secrets.BUFFER_TIKTOK_CHANNEL_ID }}
           TIKTOK_DAILY_MAX: ${{ vars.TIKTOK_DAILY_MAX }}
+          VIDEO_STYLE: ${{ vars.VIDEO_STYLE }} # canvas (varsayilan: Spotify arka videosu) | classic (eski sablonlar)
+          SP_DC: ${{ secrets.SP_DC }} # Spotify Canvas; tanimsizsa video uretilmez
           # Paylaşım penceresi (TRT). Elle (workflow_dispatch) çalıştırmada kapalı; yoksa repo değişkeni POST_WINDOW, o da yoksa 09:00-23:30.
           POST_WINDOW: ${{ github.event_name == 'workflow_dispatch' && 'off' || vars.POST_WINDOW }}
 

@@ -1,7 +1,7 @@
 // Tek seferlik sanatci serisi: her calistirmada siradaki sanatcinin "en cok dinlenen 7 sarkisi" klipli liste videosu X ve TikTok'a gider.
 // Siralama data/artistSeries.json, durum data/artistSeriesState.json. Gunde en fazla bir sanatci (Turkiye gunu); seri bitince bir sey yapmaz.
 // Klibi olan sarkilarda iTunes resmi klip onizlemesi, olmayanlarda buyuk kapak + sarki onizlemesi. Kapatmak icin ARTIST_SERIES=0.
-import { postWindowOpen } from './postWindow.js';
+import { planPost, applyPlan } from './slots.js';
 import { loadChartState, saveChartState } from './chartState.js';
 import { loadSeriesConfig, prepareArtistVideo, artistSeriesTexts } from './artistSeries.js';
 import { renderPrepared } from './remotionRender.js';
@@ -18,8 +18,6 @@ async function main() {
     console.log('Sanatçı serisi kapalı (ARTIST_SERIES=0).');
     return;
   }
-  if (!postWindowOpen('Sanatçı serisi')) return;
-
   const { start, artists: series } = await loadSeriesConfig();
   const state = await loadChartState(STATE_FILE);
   const items = state.items ?? {};
@@ -41,6 +39,11 @@ async function main() {
     console.log(`Bugün (${today}) zaten bir sanatçı paylaşıldı; sıradaki ${artist.name} yarın.`);
     return;
   }
+
+  // GitHub cron'u saatlerce gecikebildiğinden iş erken çalışır; paylaşım her gün 20:00 TRT'ye Buffer'da zamanlanır (bkz. slots.js).
+  const plan = planPost({ hour: 20, label: 'Sanatçı serisi' });
+  applyPlan(plan, 'Sanatçı serisi');
+  if (plan.mode === 'skip') return;
 
   console.log(`Sıradaki sanatçı: ${artist.name}`);
   const { prepared, songs, clipCount, canvasCount } = await prepareArtistVideo(artist);

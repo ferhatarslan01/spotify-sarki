@@ -12,3 +12,5 @@ pilot/.build/
 pilot/out/
 tools/comfy/out/
 tools/comfy/*.log
+
+gta-foto/

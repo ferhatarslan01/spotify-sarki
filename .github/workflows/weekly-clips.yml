@@ -4,8 +4,8 @@ name: Post weekly clips list
 # ikinci zamanlama yalnizca ilkinde bir sey eksik kaldiysa (ornegin TikTok sinir dolu) tamamlar. Kapatmak icin repo degiskeni WEEKLY_CLIPS=0.
 on:
   schedule:
-    - cron: '0 16 * * 0' # Pazar 19:00 TRT
-    - cron: '30 18 * * 0' # Pazar 21:30 TRT (yeniden deneme)
+    # Pazar-Çarşamba (kaçırılırsa telafi) gün içinde dört kez erken çalışır; paylaşım Buffer'da 19:00 TRT'ye zamanlanır (src/slots.js).
+    - cron: '23 3,6,9,12 * * 0-3'
   workflow_dispatch: {}
 
 permissions:

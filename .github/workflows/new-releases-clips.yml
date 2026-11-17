@@ -5,8 +5,8 @@ name: Post new releases clips list
 # Pazar özeti (weekly-digest) kaydı Pazar gecesi temizler; bu akış Cumartesi çalıştığı için o haftanın yayınlarını görür. Kapatmak için repo değişkeni NEW_RELEASES_CLIPS=0.
 on:
   schedule:
-    - cron: '0 17 * * 6' # Cumartesi 20:00 TRT
-    - cron: '30 19 * * 6' # 22:30 TRT (yeniden deneme)
+    # Cumartesi gün içinde dört kez erken çalışır; paylaşım Buffer'da 20:00 TRT'ye zamanlanır (src/slots.js).
+    - cron: '29 3,6,9,12 * * 6'
   workflow_dispatch: {}
 
 permissions:

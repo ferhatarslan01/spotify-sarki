@@ -21,6 +21,8 @@ import { nextNewReleaseVariant, rememberNewReleaseVariant, nextRiseVariant, reme
 import { pickDuelPair } from './duelPick.js';
 import { renderPrepared } from './remotionRender.js';
 import { tagText } from './artistHandles.js';
+import { canvasStyle } from './videoStyle.js';
+import { fetchSongCanvas, prepCanvasSong } from './canvasSong.js';
 
 // TIKTOK_VIDEO=0 ise hareketli video kapatilir, sadece foto kartlar gider.
 function videoEnabled() {
@@ -295,6 +297,42 @@ async function renderSquare({ artist, title, cover, audioUrl }) {
   return renderPrepared(prepared);
 }
 
+// ---------------------------------------------------------------- Spotify arka videosu (Canvas) stili
+// Olay icin Canvas'li dikey video hazirlar (render etmez). Ses ya da Canvas yoksa null; cagiran (makeEventVideos) eski sisteme gecer.
+export async function prepCanvasEventVideo(params) {
+  const { artist, title } = params;
+  const preview = await findPreview(artist, title);
+  if (!preview) {
+    console.log(`  Ses önizlemesi bulunamadı (${artist} - ${title}); Canvas videosu üretilmedi.`);
+    return null;
+  }
+  const canvas = await fetchSongCanvas({ trackUrl: params.trackUrl, albumUrl: params.albumUrl, artist, title });
+  if (!canvas) {
+    console.log(`  Spotify Canvas bulunamadı (${artist} - ${title}); video üretilmedi.`);
+    return null;
+  }
+  const coverSrc = params.coverUrl ?? (await getTrackThumbnail(params.trackUrl));
+  if (!coverSrc) throw new Error('Kapak gorseli bulunamadi');
+  const chip = params.kind === 'release' ? params.subtitle : params.headline; // yeni cikti: tarih; diger olaylar: "+3 SIRA", "5. YIL"...
+  const prepared = await prepCanvasSong({ label: params.label, chip, title, artist, cover: await fetchBuffer(coverSrc), canvas, audioUrl: preview.url });
+  return { prepared, source: preview.source };
+}
+
+async function makeCanvasEventVideos(params, { needTikTok, needX }) {
+  const none = { tiktok: null, x: null };
+  try {
+    const r = await prepCanvasEventVideo(params);
+    if (!r) return none;
+    const video = await renderPrepared(r.prepared);
+    // ayni video nesnesi iki platformda da kullanilir (tek kez barindirilir)
+    const handle = { kind: params.kind, video, caption: params.caption ?? `${params.artist} - ${params.title}`, artists: [params.artist], note: `canvas, ses: ${r.source}`, aiGenerated: false };
+    return { tiktok: needTikTok ? handle : null, x: needX ? handle : null };
+  } catch (err) {
+    console.error(`  Canvas videosu üretilemedi (${params.kind}): ${String(err.message).split('\n')[0]}`);
+    return none;
+  }
+}
+
 // Bir olay icin iki video: tiktok (dikey sahne) ve x (kare kapak+oynatici). Biri uretilemezse digeri yedek olur.
 // Hicbiri uretilemezse { tiktok: null, x: null }.
 export async function makeEventVideos(params) {
@@ -303,6 +341,12 @@ export async function makeEventVideos(params) {
   const needTikTok = videoEnabled() && tiktokEnabled() && params.wantTikTok !== false && (await tiktokSlotAvailable(params.kind));
   const needX = videoEnabled() && xVideoEnabled();
   if (!(needTikTok || needX) || !(params.scene || params.template)) return none;
+  if (canvasStyle()) {
+    // Once Spotify Canvas; Canvas yoksa (ya da uretilemezse) eski sablon sistemi asagida calisir.
+    const canvas = await makeCanvasEventVideos(params, { needTikTok, needX });
+    if (canvas.tiktok || canvas.x) return canvas;
+    console.log('  Canvas videosu yok: eski şablon sistemiyle devam ediliyor.');
+  }
 
   const { kind, artist, title, caption } = params;
   try {

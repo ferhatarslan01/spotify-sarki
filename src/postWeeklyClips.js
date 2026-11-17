@@ -2,7 +2,7 @@
 // Klipler Apple/iTunes resmi klip onizlemeleridir (src/clipSource.js). Kapatmak icin WEEKLY_CLIPS=0.
 // Durum (data/weeklyClipsState.json) liste tarihine gore tutulur: ayni liste bir kez paylasilir; X basarili olup TikTok olmadiysa
 // sonraki calistirma yalnizca TikTok'u dener.
-import { postWindowOpen } from './postWindow.js';
+import { planPost, applyPlan, trtWeekday } from './slots.js';
 import { fetchWeeklyChart } from './weeklyChart.js';
 import { loadChartState, saveChartState } from './chartState.js';
 import { fetchBackdrop } from './backdrop.js';
@@ -23,8 +23,6 @@ async function main() {
     console.log('Haftalık klipli liste kapalı (WEEKLY_CLIPS=0).');
     return;
   }
-  if (!postWindowOpen('Haftalık klipli liste')) return;
-
   const { date, entries } = await fetchWeeklyChart();
   if (!date || entries.length < WEEKLY_CLIPS.N) {
     console.error('Chart verisi alinamadi, cikiliyor.');
@@ -38,6 +36,16 @@ async function main() {
     console.log(`Bu haftanin klipli listesi (${date}) zaten paylasilmis, atlaniyor.`);
     return;
   }
+
+  // Gün kapısı: Pazar; kaçırılırsa Pzt-Çar telafi (liste Perşembe güncellenene kadar geçerli). Paylaşım 19:00 TRT'ye Buffer'da zamanlanır.
+  const wd = trtWeekday();
+  if (!(wd === 0 || (wd >= 1 && wd <= 3))) {
+    console.log('Bugün haftalık klipli liste günü değil (Pazar; kaçırılırsa Pzt-Çar telafi edilir).');
+    return;
+  }
+  const plan = planPost({ hour: 19, label: 'Haftalık klipli liste' });
+  applyPlan(plan, 'Haftalık klipli liste');
+  if (plan.mode === 'skip') return;
 
   // klipler: klibi olmayan siralarda kapak + sarkinin ses onizlemesi
   const clips = {};

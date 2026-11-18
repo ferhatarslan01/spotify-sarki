@@ -1,1 +1,9 @@
-{ "items": {} }
+{
+  "items": {
+    "uzi": {
+      "x": true,
+      "tiktok": true,
+      "date": "2026-11-18"
+    }
+  }
+}

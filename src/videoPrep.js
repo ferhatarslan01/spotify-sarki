@@ -1513,9 +1513,10 @@ export async function prepWeeklyClips({ entries, date = '', clips = {}, audioUrl
         const enc = ['-an', '-c:v', 'libx264', '-pix_fmt', 'yuv420p'];
         const seg = join(dir, clipName);
         if (isCanvas) {
-          // Canvas: 1080x1920 dikey, tam ekran; 3-8 sn'lik dongu gerekli sureye kadar tekrarlanir
+          // Canvas: 1080x1920 dikey, tam ekran; 3-8 sn'lik dongu gerekli sureye kadar tekrarlanir.
+          // Kaynak dusuk cozunurluklu (720-810 px): Lanczos + hafif keskinlestirme, ara kodlama neredeyse kayipsiz (ust uste sikistirma gorseli bozmasin).
           vertical = true;
-          await run('ffmpeg', ['-y', '-v', 'error', '-stream_loop', '-1', '-i', vsrc, '-t', String(len + 0.6), '-vf', 'fps=30,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,eq=contrast=1.04:brightness=0.02:saturation=1.1', ...enc, '-crf', '22', '-preset', 'veryfast', seg]);
+          await run('ffmpeg', ['-y', '-v', 'error', '-stream_loop', '-1', '-i', vsrc, '-t', String(len + 0.6), '-vf', 'fps=30,scale=1080:1920:flags=lanczos:force_original_aspect_ratio=increase,crop=1080:1920,unsharp=5:5:0.5:5:5:0.0,eq=contrast=1.03:saturation=1.06', ...enc, '-crf', '16', '-preset', 'medium', seg]);
           assets.push({ name: clipName, buffer: await readFileBuf(seg) });
         } else {
           ambient = `wkc-a${e.rank}.mp4`;
@@ -1578,6 +1579,8 @@ export async function prepWeeklyClips({ entries, date = '', clips = {}, audioUrl
 
     return {
       composition: 'WeeklyClips',
+      crf: 20,
+      jpegQuality: 92,
       timeoutMin: 40, // bulut isleyicisi (az cekirdek) yerelden cok yavas olabilir
       dataKey: 'wkc',
       data: { date, range: weekRangeText(date), header, hue: items[items.length - 1].hue, fps: FPS, durationSeconds: DUR, intro: INTRO, step: STEP, hero: heroAt, outro: OUTRO, tail: TAIL, items, bands },

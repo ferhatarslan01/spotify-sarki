@@ -86,7 +86,7 @@ const BgSlot: React.FC<{ item: Item }> = ({ item }) => {
   return (
     <AbsoluteFill style={{ opacity: fadeIn * fadeOut, background: hsl(item.hue, 50, 8) }}>
       {item.clip && item.vertical ? (
-        <OffthreadVideo src={staticFile(item.clip)} muted style={{ position: "absolute", inset: 0, width: 1080, height: 1920, objectFit: "cover", transform: `scale(${1 + 0.04 * clamp(t / item.len)})` }} />
+        <OffthreadVideo src={staticFile(item.clip)} muted style={{ position: "absolute", inset: 0, width: 1080, height: 1920, objectFit: "cover" }} />
       ) : item.clip ? (
         <>
           {item.ambient ? <OffthreadVideo src={staticFile(item.ambient)} muted style={{ position: "absolute", inset: 0, width: 1080, height: 1920 }} /> : null}
@@ -146,7 +146,7 @@ const ListRow: React.FC<{ item: Item; t: number; nums: number }> = ({ item, t, n
     <div style={{ position: "absolute", left: LIST_X, top: y, width: CARD_X + CARD_W - LIST_X, height: ROW_H - 12, opacity: clamp(numIn) * (nums ? 1 : 0), transform: `scale(${pulse})`, transformOrigin: "left center" }}>
       <div style={{ position: "absolute", left: 0, top: 0, width: 84, height: ROW_H - 12, display: "flex", alignItems: "center", justifyContent: "center", fontFamily, fontWeight: 700, fontSize: item.label ? 38 : Math.round(70 * SC), whiteSpace: "nowrap", color: revealed ? (current ? accent : "#fff") : "rgba(255,255,255,0.5)", textShadow: "0 3px 16px rgba(0,0,0,0.85)" }}>{item.label ?? item.rank}</div>
       {revealed ? (
-        <div style={{ position: "absolute", left: CARD_X - LIST_X, top: 0, width: CARD_W, height: ROW_H - 12, display: "flex", alignItems: "center", gap: 16, padding: "0 14px 0 10px", borderRadius: 20, background: current ? "rgba(8,8,14,0.7)" : "rgba(8,8,14,0.4)", border: `3px solid ${current ? accent : "rgba(255,255,255,0.0)"}`, boxShadow: current ? `0 0 34px ${accent}77` : "none", opacity: k, transform: `translateX(${(1 - k) * -90}px)` }}>
+        <div style={{ position: "absolute", left: CARD_X - LIST_X, top: 0, width: CARD_W, height: ROW_H - 12, display: "flex", alignItems: "center", gap: 16, padding: "0 14px 0 10px", borderRadius: 20, background: current ? "rgba(8,8,14,0.62)" : "rgba(8,8,14,0.3)", border: `3px solid ${current ? accent : "rgba(255,255,255,0.0)"}`, boxShadow: current ? `0 0 34px ${accent}77` : "none", opacity: k, transform: `translateX(${(1 - k) * -90}px)` }}>
           <Img src={staticFile(item.cover)} style={{ width: thumb, height: thumb, borderRadius: 12, flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0, whiteSpace: "nowrap", fontFamily: inter }}>
             <div style={{ fontWeight: 800, color: "#fff", fontSize: tSize, lineHeight: 1.08, textShadow: "0 2px 10px rgba(0,0,0,0.9)" }}>{item.title}</div>
@@ -183,14 +183,14 @@ export const WeeklyClips: React.FC = () => {
           <BgSlot item={it} />
         </Sequence>
       ))}
-      {/* okunurluk: ust ve sol karartma + vinyet */}
-      <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.14) 30%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.22) 100%)" }} />
-      <AbsoluteFill style={{ background: "linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 65%)" }} />
+      {/* okunurluk: video on planda kalsin diye karartmalar hafif; yazilar golge ve kart arka planiyla okunur */}
+      <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.36) 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.12) 100%)" }} />
+      <AbsoluteFill style={{ background: "linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 65%)" }} />
       <Header t={t} />
       {ROWS.map((it) => (
         <ListRow key={it.rank} item={it} t={t} nums={1} />
       ))}
-      <AbsoluteFill style={{ background: "radial-gradient(ellipse 85% 75% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.22) 100%)" }} />
+      <AbsoluteFill style={{ background: "radial-gradient(ellipse 85% 75% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.1) 100%)" }} />
       {flash > 0.01 ? <AbsoluteFill style={{ background: `rgba(255,255,255,${flash})` }} /> : null}
       {fadeOut > 0 ? <AbsoluteFill style={{ background: `rgba(0,0,0,${fadeOut})` }} /> : null}
     </AbsoluteFill>

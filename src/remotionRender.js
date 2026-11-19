@@ -124,7 +124,7 @@ async function ensureStubs() {
   }
 }
 
-async function renderOne({ composition, dataKey, data, assets, extras = [], timeoutMin = 15, crf = 23 }) {
+async function renderOne({ composition, dataKey, data, assets, extras = [], timeoutMin = 15, crf = 23, jpegQuality = 80, imageFormat = null }) {
   await ensureDeps();
   await ensureStubs();
 
@@ -138,7 +138,7 @@ async function renderOne({ composition, dataKey, data, assets, extras = [], time
   const out = join(tmpdir(), `remotion-${composition}-${Date.now()}.mp4`);
   try {
     const t0 = Date.now();
-    await sh(binPath(), ['render', 'src/index.ts', composition, out, '--codec=h264', `--crf=${crf}`, '--audio-codec=aac', '--log=warn'], {
+    await sh(binPath(), ['render', 'src/index.ts', composition, out, '--codec=h264', `--crf=${crf}`, `--jpeg-quality=${jpegQuality}`, ...(imageFormat ? [`--image-format=${imageFormat}`] : []), '--audio-codec=aac', '--log=warn'], {
       cwd: VIDEO_DIR,
       timeout: timeoutMin * 60_000, // varsayilan 15 dk; agir sahneler (klipli liste) uzun sure ister
     });

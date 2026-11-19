@@ -70,11 +70,12 @@ export async function fetchSongCanvas(params) {
 export async function prepCanvasSong({ label, chip = '', title, artist, cover, canvas, audioUrl, seconds = SECONDS }) {
   const dir = await mkdtemp(join(tmpdir(), 'cs-'));
   try {
-    // Canvas sureye kadar donguye alinir (1080x1920, 30 fps)
+    // Canvas sureye kadar donguye alinir (1080x1920, 30 fps). Kaynak dusuk cozunurluklu (720-810 px) oldugundan Lanczos + hafif keskinlestirme;
+    // ara kodlama neredeyse kayipsiz (CRF 14) ki ust uste sikistirma gorseli bozmasin.
     const src = join(dir, 'canvas.mp4');
     const loop = join(dir, 'cs-canvas.mp4');
     await writeFile(src, canvas);
-    await run('ffmpeg', ['-y', '-v', 'error', '-stream_loop', '-1', '-i', src, '-t', String(seconds + 0.5), '-vf', `fps=${FPS},scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920`, '-an', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '21', '-preset', 'veryfast', loop]);
+    await run('ffmpeg', ['-y', '-v', 'error', '-stream_loop', '-1', '-i', src, '-t', String(seconds + 0.5), '-vf', `fps=${FPS},scale=1080:1920:flags=lanczos:force_original_aspect_ratio=increase,crop=1080:1920,unsharp=5:5:0.5:5:5:0.0`, '-an', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '14', '-preset', 'medium', loop]);
 
     // ses: onizlemenin nakarat penceresi, -15 LUFS
     const aud = join(dir, 'aud.bin');
@@ -90,7 +91,9 @@ export async function prepCanvasSong({ label, chip = '', title, artist, cover, c
     return {
       composition: 'CanvasSong',
       dataKey: 'cs',
-      crf: 24,
+      crf: 18,
+      jpegQuality: 95,
+      imageFormat: 'png', // Canvas arka plani JPEG karelerinden gecmesin
       data: { fps: FPS, durationSeconds: seconds, label, chip, title, artist, hue: await hueOf(sharp, coverJpg), bands: await analyzeBands(wav, seconds) },
       assets: [
         { name: 'cs-canvas.mp4', buffer: await readFile(loop) },

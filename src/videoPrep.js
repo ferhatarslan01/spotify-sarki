@@ -1579,8 +1579,9 @@ export async function prepWeeklyClips({ entries, date = '', clips = {}, audioUrl
 
     return {
       composition: 'WeeklyClips',
-      crf: 20,
-      jpegQuality: 92,
+      crf: 18,
+      jpegQuality: 95,
+      imageFormat: 'png', // arka plan videosu JPEG karelerinden gecmesin
       timeoutMin: 40, // bulut isleyicisi (az cekirdek) yerelden cok yavas olabilir
       dataKey: 'wkc',
       data: { date, range: weekRangeText(date), header, hue: items[items.length - 1].hue, fps: FPS, durationSeconds: DUR, intro: INTRO, step: STEP, hero: heroAt, outro: OUTRO, tail: TAIL, items, bands },

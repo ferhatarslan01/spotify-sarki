@@ -29,12 +29,12 @@ const DOWN = "#ff6b7a";
 
 const LIST_X = 56;
 const N = ITEMS.length;
-const LIST_Y = 620;
-const ROW_H = Math.min(112, Math.floor(860 / N)); // 10 satir: 84, 7 satir: 112
+const LIST_Y = 500; // liste yukarida ve kompakt: video on planda kalsin
+const ROW_H = Math.min(96, Math.floor(760 / N)); // 10 satir: 76, 7 satir: 96
 const SC = ROW_H / 84; // satir olcegi
 const HEAD = (data as unknown as { header?: { l1: string; l2: string; pill: string } | null }).header ?? null;
 const CARD_X = 150;
-const CARD_W = 700;
+const CARD_W = 640;
 
 const clamp = (x: number, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const easeOutCubic = (x: number) => 1 - (1 - clamp(x)) ** 3;
@@ -114,13 +114,13 @@ const Header: React.FC<{ t: number }> = ({ t }) => {
   const pop = easeOutBack((t - 0.1) / 0.5);
   const pill = easeOutBack((t - 0.4) / 0.5);
   return (
-    <div style={{ position: "absolute", top: 208, left: 0, right: 0, textAlign: "center" }}>
-      <div style={{ opacity: clamp(pop), fontFamily: inter, fontWeight: 800, fontSize: 28, letterSpacing: 8, color: "rgba(255,255,255,0.85)", textShadow: "0 3px 14px rgba(0,0,0,0.8)" }}>@YENISARKILARIM</div>
+    <div style={{ position: "absolute", top: 168, left: 0, right: 0, textAlign: "center", opacity: 0.82 }}>
+      <div style={{ opacity: clamp(pop), fontFamily: inter, fontWeight: 800, fontSize: 24, letterSpacing: 7, color: "rgba(255,255,255,0.85)", textShadow: "0 3px 14px rgba(0,0,0,0.8)" }}>@YENISARKILARIM</div>
       <div style={{ marginTop: 18, transform: `scale(${0.85 + 0.15 * pop})`, opacity: clamp(pop) }}>
-        <div style={{ fontFamily, fontWeight: 700, fontSize: fit(L1, 108, 940, 0.43), lineHeight: 1.0, color: "#fff", textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>{L1}</div>
-        <div style={{ fontFamily, fontWeight: 700, fontSize: fit(L2, 108, 940, 0.43), lineHeight: 1.0, color: ACCENT, textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>{L2}</div>
+        <div style={{ fontFamily, fontWeight: 700, fontSize: fit(L1, 80, 940, 0.43), lineHeight: 1.0, color: "#fff", textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>{L1}</div>
+        <div style={{ fontFamily, fontWeight: 700, fontSize: fit(L2, 80, 940, 0.43), lineHeight: 1.0, color: ACCENT, textShadow: "0 6px 34px rgba(0,0,0,0.75)" }}>{L2}</div>
       </div>
-      <div style={{ marginTop: 22, display: "inline-block", transform: `scale(${0.8 + 0.2 * pill})`, opacity: clamp(pill), background: "rgba(10,10,16,0.5)", border: `2px solid ${ACCENT}`, borderRadius: 40, padding: "8px 30px", fontFamily: inter, fontWeight: 800, fontSize: 36, letterSpacing: 1, color: "#fff", }}>{PILL}</div>
+      <div style={{ marginTop: 16, display: "inline-block", transform: `scale(${0.8 + 0.2 * pill})`, opacity: clamp(pill), background: "rgba(10,10,16,0.25)", border: `2px solid ${ACCENT}`, borderRadius: 40, padding: "5px 24px", fontFamily: inter, fontWeight: 800, fontSize: 28, letterSpacing: 1, color: "#fff", }}>{PILL}</div>
     </div>
   );
 };
@@ -144,9 +144,9 @@ const ListRow: React.FC<{ item: Item; t: number; nums: number }> = ({ item, t, n
   const aSize = fit(sub, 28 * SC, textW, 0.54);
   return (
     <div style={{ position: "absolute", left: LIST_X, top: y, width: CARD_X + CARD_W - LIST_X, height: ROW_H - 12, opacity: clamp(numIn) * (nums ? 1 : 0), transform: `scale(${pulse})`, transformOrigin: "left center" }}>
-      <div style={{ position: "absolute", left: 0, top: 0, width: 84, height: ROW_H - 12, display: "flex", alignItems: "center", justifyContent: "center", fontFamily, fontWeight: 700, fontSize: item.label ? 38 : Math.round(70 * SC), whiteSpace: "nowrap", color: revealed ? (current ? accent : "#fff") : "rgba(255,255,255,0.5)", textShadow: "0 3px 16px rgba(0,0,0,0.85)" }}>{item.label ?? item.rank}</div>
+      <div style={{ position: "absolute", left: 0, top: 0, width: 84, height: ROW_H - 12, display: "flex", alignItems: "center", justifyContent: "center", fontFamily, fontWeight: 700, fontSize: item.label ? 34 : Math.round(58 * SC), whiteSpace: "nowrap", color: revealed ? (current ? accent : "rgba(255,255,255,0.8)") : "rgba(255,255,255,0.4)", textShadow: "0 3px 16px rgba(0,0,0,0.85)" }}>{item.label ?? item.rank}</div>
       {revealed ? (
-        <div style={{ position: "absolute", left: CARD_X - LIST_X, top: 0, width: CARD_W, height: ROW_H - 12, display: "flex", alignItems: "center", gap: 16, padding: "0 14px 0 10px", borderRadius: 20, background: current ? "rgba(8,8,14,0.62)" : "rgba(8,8,14,0.3)", border: `3px solid ${current ? accent : "rgba(255,255,255,0.0)"}`, boxShadow: current ? `0 0 34px ${accent}77` : "none", opacity: k, transform: `translateX(${(1 - k) * -90}px)` }}>
+        <div style={{ position: "absolute", left: CARD_X - LIST_X, top: 0, width: CARD_W, height: ROW_H - 12, display: "flex", alignItems: "center", gap: 16, padding: "0 14px 0 10px", borderRadius: 20, background: current ? "rgba(8,8,14,0.28)" : "rgba(8,8,14,0)", border: `3px solid ${current ? accent : "rgba(255,255,255,0.0)"}`, boxShadow: current ? `0 0 28px ${accent}55` : "none", opacity: k * (current ? 0.96 : 0.74), transform: `translateX(${(1 - k) * -90}px)` }}>
           <Img src={staticFile(item.cover)} style={{ width: thumb, height: thumb, borderRadius: 12, flexShrink: 0 }} />
           <div style={{ flex: 1, minWidth: 0, whiteSpace: "nowrap", fontFamily: inter }}>
             <div style={{ fontWeight: 800, color: "#fff", fontSize: tSize, lineHeight: 1.08, textShadow: "0 2px 10px rgba(0,0,0,0.9)" }}>{item.title}</div>
@@ -184,7 +184,7 @@ export const WeeklyClips: React.FC = () => {
         </Sequence>
       ))}
       {/* okunurluk: video on planda kalsin diye karartmalar hafif; yazilar golge ve kart arka planiyla okunur */}
-      <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.36) 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.12) 100%)" }} />
+      <AbsoluteFill style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.24) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.12) 100%)" }} />
       <AbsoluteFill style={{ background: "linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 65%)" }} />
       <Header t={t} />
       {ROWS.map((it) => (

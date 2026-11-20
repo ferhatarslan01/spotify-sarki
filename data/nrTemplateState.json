@@ -16,7 +16,10 @@
     "mesaj",
     "bulten",
     "tahmin",
-    "kilit"
+    "kilit",
+    "fragman",
+    "radyo",
+    "neon"
   ],
   "assigned": {
     "dz:1111063802": "radyo",
@@ -35,6 +38,9 @@
     "dz:1137917261": "mesaj",
     "dz:1123409962": "bulten",
     "dz:1143695211": "tahmin",
-    "dz:1137940131": "kilit"
+    "dz:1137940131": "kilit",
+    "dz:1145668951": "fragman",
+    "dz:1148386791": "radyo",
+    "dz:1126078922": "neon"
   }
 }

@@ -1,10 +1,8 @@
 {
-  "date": "19.11.2026",
+  "date": "20.11.2026",
   "jumpsAnnounced": [
+    "6lLn2WGrrMXg7VO19hC93c",
     "0IZ2qKKg9xwYrur7N4kjyT",
-    "7iQYp6Fp3xFFatU20GZtLe",
-    "1vCWBRKA0y6lN8iw9J7PFt",
-    "6Ear9bhjbNi2oaqv5qlqlM",
     "6TXH41wtFj3o1dMOp7lKHM"
   ],
   "topTenSeen": [
@@ -44,7 +42,7 @@
     "2GJ2xsbWkrQNOgy45RRKU4"
   ],
   "milestonesSeen": {
-    "1gd1TicErR4bwjR3CYxyra": 50000000,
+    "1gd1TicErR4bwjR3CYxyra": 100000000,
     "24CSPGkF9QB1zW07dgtZhr": 50000000,
     "4uFIhAOi62bRG1OhmQfDB9": 10000000,
     "2cUZpjUvGWtVrMMEUrx1YP": 10000000,
@@ -453,11 +451,13 @@
     "1VWiDyYTrqQhhmnWANWkFa",
     "11hcBLPtbMp4aQI6zGQLub",
     "6hPPwiXH4Y4kmc121v9Fdg",
-    "70cHKK8bHAfJrOGVnfRG9J"
+    "70cHKK8bHAfJrOGVnfRG9J",
+    "4HCOHRCSQelz2GPX8iTamO"
   ],
   "newEntrySeen": [
     "3KTliAku3po0jQOJMf4kXw",
     "0Ns5pFim0IJQyO6xG6Yz1s",
-    "5OvQ70mBHeQiminhMffM3e"
+    "5OvQ70mBHeQiminhMffM3e",
+    "52OzBTrMMPnTxOb71BeaOw"
   ]
 }

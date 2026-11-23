@@ -1,4 +1,7 @@
 {
-  "checkedAt": "2026-11-23T04:54:03.041Z",
-  "problems": {}
+  "checkedAt": "2026-11-23T18:45:52.281Z",
+  "problems": {
+    "calisma-release-check.yml": "2026-11-23T18:45:51.130Z",
+    "canvas": "2026-11-23T18:45:52.281Z"
+  }
 }

@@ -30,7 +30,7 @@ export function makeSfx(durSeconds, seed = 5) {
   const add = (i, v) => {
     if (i >= 0 && i < buf.length) buf[i] += v;
   };
-  return {
+  const api = {
     buf,
     tick(t, amp = 0.5, freq = 1800) {
       const s = Math.round(t * SR);
@@ -175,6 +175,12 @@ export function makeSfx(durSeconds, seed = 5) {
       await writeFile(path, wav);
     },
   };
+  // Ekstra efekt sesleri (patlama, hışırtı, whoosh, ding, tik...) varsayılan KAPALI: videolarda yalnızca şarkının/klibin sesi olur.
+  // Tüm şablonlar efekt çağırır; kapalıyken çağrılar sessizce yok sayılır ve writeWav sessiz bir dosya yazar. VIDEO_SFX=1 ile açılır.
+  if (process.env.VIDEO_SFX === '1') return api;
+  return new Proxy(api, {
+    get: (t, p) => (p === 'buf' || p === 'writeWav' ? t[p] : typeof t[p] === 'function' ? () => {} : t[p]),
+  });
 }
 
 // ---------------------------------------------------------------- nakarat penceresi

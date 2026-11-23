@@ -1529,8 +1529,9 @@ export async function prepWeeklyClips({ entries, date = '', clips = {}, audioUrl
         }
       }
       if (asrc) {
-        const l = len + 0.35;
-        const lead = k === 0 ? 0.45 : 0; // ilk sarki giris basligi bitmeden baslar (ses boslugu olmasin)
+        // Ilk sarki videonun 0.25. saniyesinde baslar (efekt sesleri kaldirildigindan acilista ses boslugu olmasin)
+        const lead = k === 0 ? Math.max(0.45, at - 0.25) : 0;
+        const l = len + 0.35 + Math.max(0, lead - 0.45);
         const ms = Math.round((at - lead) * 1000);
         const fadeLen = hero ? 1.6 : 0.4;
         parts.push({ src: asrc, graph: `atrim=start=${ss}:duration=${l},asetpts=PTS-STARTPTS,loudnorm=I=-15:TP=-1.5:LRA=9,aformat=sample_rates=44100:channel_layouts=stereo,afade=t=in:d=${lead ? 0.3 : 0.05},afade=t=out:st=${Math.max(0, l - fadeLen)}:d=${fadeLen},adelay=${ms}|${ms}` });

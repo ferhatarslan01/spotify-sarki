@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import sharp from 'sharp';
 import { getAccessToken } from './spotify.js';
 import { fetchCanvasVideo, CanvasAuthError } from './spotifyCanvas.js';
+import { ghWarning } from './canvasHealth.js';
 import { run, FPS, fetchBuf, findHookStart, hueOf, analyzeBands } from './videoAudio.js';
 
 const SECONDS = 15;
@@ -59,6 +60,7 @@ export async function fetchSongCanvas(params) {
     if (err instanceof CanvasAuthError) {
       canvasOff = true;
       console.error(`  Canvas devre dışı: ${err.message}`);
+      ghWarning('Canvas devre dışı', err.message);
     } else {
       console.error(`  Canvas hatası: ${String(err.message).split('\n')[0]}`);
     }

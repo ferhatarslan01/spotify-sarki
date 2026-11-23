@@ -12,6 +12,7 @@ import { fetchWeeklyChart } from './weeklyChart.js';
 import { countRecentPosts } from './bufferPost.js';
 import { tiktokEnabled } from './tiktok.js';
 import { trtDate, trtWeekday } from './slots.js';
+import { canvasHealth, ghWarning } from './canvasHealth.js';
 
 const STATE = new URL('../data/watchdogState.json', import.meta.url);
 const GRACE_H = Number(process.env.HEALTH_GRACE_H || 8);
@@ -127,6 +128,16 @@ async function main() {
     } catch (err) {
       console.error(`${wf} kontrolü yapılamadı: ${String(err.message).split('\n')[0]}`);
     }
+  }
+
+  // 8) Canvas sağlığı: SP_DC tanımlı mı, Spotify kabul ediyor mu? Çalışmıyorsa videolar eski usulle (klip/kapak) çıkar.
+  try {
+    const h = await canvasHealth();
+    await writeFile(new URL('../data/canvasHealth.json', import.meta.url), JSON.stringify(h, null, 2) + '\n');
+    checks.push({ key: 'canvas', ok: h.ok, detail: `Canvas: ${h.ok ? 'çalışıyor' : h.error}` });
+    if (!h.ok) ghWarning('Canvas çalışmıyor', h.error);
+  } catch (err) {
+    console.error(`Canvas kontrolü yapılamadı: ${String(err.message).split('\n')[0]}`);
   }
 
   const state = await loadState();

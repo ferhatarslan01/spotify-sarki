@@ -1,0 +1,4811 @@
+{
+  "scannedAt": "2026-11-23T04:05:45.589Z",
+  "source": "https://www.gtabase.com/gta-6/soundtrack",
+  "songs": [
+    {
+      "title": "Starting From Zero",
+      "artist": "Justice (feat. Michael McDonald)",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "1akuT1qSIAoOhpPhUxGpyR",
+      "name": "Starting From Zero (feat. Michael McDonald) [From GTAVI: Original Score]",
+      "artists": [
+        {
+          "id": "1gR0gsQYfi6joyO1dlp76N",
+          "name": "Justice"
+        },
+        {
+          "id": "24hJWbo98sH84tb0nkeaqy",
+          "name": "Michael McDonald"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "That's It",
+      "artist": "Yung Lean (feat. Future & Metro Boomin)",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "45TB2WNxWu2X4MmqmCAJnF",
+      "name": "That's It (feat. Future & Metro Boomin) [from GTAVI: The Album]",
+      "artists": [
+        {
+          "id": "67lytN32YpUxiSeWlKfHJ3",
+          "name": "Yung Lean"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        },
+        {
+          "id": "0iEtIxbK0KxaSlF7G42ZOp",
+          "name": "Metro Boomin"
+        },
+        {
+          "id": "1RyvyyTE3xzB2ZywiAwp0i",
+          "name": "Future"
+        }
+      ],
+      "total": 11032016,
+      "daily": 383887,
+      "status": "ok"
+    },
+    {
+      "title": "Ahh Yea",
+      "artist": "Playboi Carti",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "5tLZfwzwK8KxoBsNwbNFDI",
+      "name": "AHH YEA",
+      "artists": [
+        {
+          "id": "699OTQXzgjhIYAHMy9RyPD",
+          "name": "Playboi Carti"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Rhyno",
+      "artist": "Travis Scott",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "2QrLrUqdSg5njDVEqq5QFp",
+      "name": "RHYNO (from GTAVI: The Album)",
+      "artists": [
+        {
+          "id": "0Y5tJX1MQlPlqiwlOH1tJY",
+          "name": "Travis Scott"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": 24250669,
+      "daily": 863970,
+      "status": "ok"
+    },
+    {
+      "title": "Sexy Magic",
+      "artist": "CA7RIEL & Paco Amoroso,PinkPantheress,Fred again.. & &Eacute;tienne de Cr&eacute;cy",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "5AIwo9vC79ce0A7u3DgB1N",
+      "name": "Sexy Magic",
+      "artists": [
+        {
+          "id": "6I8TDGeUmmLom8auKPzMdX",
+          "name": "CA7RIEL & Paco Amoroso"
+        },
+        {
+          "id": "78rUTD7y6Cy67W1RVzYs7t",
+          "name": "PinkPantheress"
+        },
+        {
+          "id": "4oLeXFyACqeem2VImYeBFe",
+          "name": "Fred again.."
+        },
+        {
+          "id": "78YRbJhMi5kXKruiQGCJo7",
+          "name": "Etienne de Crécy "
+        }
+      ],
+      "total": 20364282,
+      "daily": 323784,
+      "status": "ok"
+    },
+    {
+      "title": "Flower in a Hurricane",
+      "artist": "Justice (feat. Tame Impala,SZA,and King Gizzard & The Lizard Wizard)",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4HCOHRCSQelz2GPX8iTamO",
+      "name": "Flower In A Hurricane (feat. Tame Impala, SZA, King Gizzard & the Lizard Wizard) [From GTAVI: Original Score]",
+      "artists": [
+        {
+          "id": "1gR0gsQYfi6joyO1dlp76N",
+          "name": "Justice"
+        },
+        {
+          "id": "5INjqkS1o8h1imAzPqGZBb",
+          "name": "Tame Impala"
+        },
+        {
+          "id": "7tYKF4w9nC0nq9CsPZTHyP",
+          "name": "SZA"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        },
+        {
+          "id": "6XYvaoDGE0VmRt83Jss9Sn",
+          "name": "King Gizzard & The Lizard Wizard"
+        }
+      ],
+      "total": 66546931,
+      "daily": 5012538,
+      "status": "ok"
+    },
+    {
+      "title": "Go Easy",
+      "artist": "Dua Lipa",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "3SLoSFMLOb9jcMsdgyQnOJ",
+      "name": "Go Easy",
+      "artists": [
+        {
+          "id": "6M2wZ9GZgrQXHCFfjv46we",
+          "name": "Dua Lipa"
+        }
+      ],
+      "total": 4157343,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Last Thing You Need",
+      "artist": "Morgan Wallen",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "5qGziX9216V8hKJjGg8RtH",
+      "name": "Last Thing You Need (from GTAVI: The Album)",
+      "artists": [
+        {
+          "id": "4oUHIQIBe0LHzYfvXNW4QM",
+          "name": "Morgan Wallen"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": 48914229,
+      "daily": 1103969,
+      "status": "ok"
+    },
+    {
+      "title": "X",
+      "artist": "Jhayco",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "1fvVpm1MdyRV0CSZ42UgNf",
+      "name": "X (from GTAVI: The Album)",
+      "artists": [
+        {
+          "id": "6nVcHLIgY5pE2YCl8ubca1",
+          "name": "JHAYCO"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": 1123151,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Suzuki",
+      "artist": "Fuerza Regida",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4DuL1odbViQNnk9o1nol5J",
+      "name": "Suzuki",
+      "artists": [
+        {
+          "id": "0ys2OFYzWYB5hRDLCsBqxt",
+          "name": "Fuerza Regida"
+        }
+      ],
+      "total": 86013940,
+      "daily": 3573284,
+      "status": "ok"
+    },
+    {
+      "title": "Macacoa 2000",
+      "artist": "Rauw Alejandro",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "2oOtzWzQrHPmvtMAzoms7Q",
+      "name": "Macacoa 2000",
+      "artists": [
+        {
+          "id": "1mcTU81TzQhprhouKaTkpq",
+          "name": "Rauw Alejandro"
+        }
+      ],
+      "total": 21884219,
+      "daily": 680419,
+      "status": "ok"
+    },
+    {
+      "title": "Dance With Me",
+      "artist": "A Boogie wit da Hoodie (feat. Elkan)",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "00LibDaYbw8POv6kHo2R1e",
+      "name": "Dance With Me (feat. elkan) [from GTAVI: The Album]",
+      "artists": [
+        {
+          "id": "31W5EY0aAly4Qieq6OFu6I",
+          "name": "A Boogie Wit da Hoodie"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        },
+        {
+          "id": "3WSjliq6LXGZZRYwJd5Jbe",
+          "name": "elkan"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Bigger",
+      "artist": "Burna Boy",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4BDrbdeodpenlrORv4yqnc",
+      "name": "Bigger (from GTAVI: The Album)",
+      "artists": [
+        {
+          "id": "3wcj11K77LjEY1PkEazffa",
+          "name": "Burna Boy"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": 1004198,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Count Up",
+      "artist": "Gunna",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "77er9Mx3nLca8RcfpGrgvv",
+      "name": "COUNT UP",
+      "artists": [
+        {
+          "id": "2hlmm7s2ICUX0LVIhVFlZQ",
+          "name": "Gunna"
+        }
+      ],
+      "total": 1332951,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Let's Rock",
+      "artist": "Kodak Black & Don Toliver",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "3MHXtz0Qu0ksVGcvlp7Mfu",
+      "name": "Let's Rock",
+      "artists": [
+        {
+          "id": "46SHBwWsqBkxI7EeeBEQG7",
+          "name": "Kodak Black"
+        },
+        {
+          "id": "4Gso3d4CscCijv0lmajZWs",
+          "name": "Don Toliver"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Wakin Up Flex",
+      "artist": "Young Thug",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "6OX2yNczMDou6xvQCBmjjl",
+      "name": "WAKIN UP FLEX",
+      "artists": [
+        {
+          "id": "50co4Is1HCEo8bhOyUWKpn",
+          "name": "Young Thug"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "IKYFL",
+      "artist": "Tee Grizzley",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "3ZxGI5giGDjAT2CL2V9p8f",
+      "name": "IKYFL",
+      "artists": [
+        {
+          "id": "6AUl0ykLLpvTktob97x9hO",
+          "name": "Tee Grizzley"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "TF?",
+      "artist": "Don Toliver",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4AUAOxJflfzmblig7NrqGN",
+      "name": "TF?",
+      "artists": [
+        {
+          "id": "4Gso3d4CscCijv0lmajZWs",
+          "name": "Don Toliver"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Don't Chart",
+      "artist": "Cardi B",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4NaBitL0J4PBSODIL1sUg7",
+      "name": "Don’t Chart (from GTAVI: The Album)",
+      "artists": [
+        {
+          "id": "4kYSro6naA4h99UJvo89HB",
+          "name": "Cardi B"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": 8920796,
+      "daily": 368896,
+      "status": "ok"
+    },
+    {
+      "title": "GMA",
+      "artist": "JT",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "0wcHjDyKbllhDc7PpvdtU9",
+      "name": "GMA",
+      "artists": [
+        {
+          "id": "39af15p0feaAOdL9DTRj3m",
+          "name": "JT"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Power Trip",
+      "artist": "Jennie",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "66owIEhGwAjAi2yPmwa2dU",
+      "name": "Power Trip",
+      "artists": [
+        {
+          "id": "250b0Wlc5Vk0CoUsaCY84M",
+          "name": "JENNIE"
+        }
+      ],
+      "total": 1755317,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Blood in Your Eyes",
+      "artist": "Tove Lo",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4h3tY2zV4easaHEAbHVmgj",
+      "name": "Blood In Your Eyes (from GTAVI: The Album)",
+      "artists": [
+        {
+          "id": "4NHQUGzhtTLFvgF5SZesLK",
+          "name": "Tove Lo"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": 11316019,
+      "daily": 1343151,
+      "status": "ok"
+    },
+    {
+      "title": "Fast Emotion",
+      "artist": "Zara Larsson",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "68GADd4qLCU16tgCn2W0F5",
+      "name": "Fast Emotion",
+      "artists": [
+        {
+          "id": "1Xylc3o4UrD53lo9CvFvVg",
+          "name": "Zara Larsson"
+        }
+      ],
+      "total": 1188856,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Sweet Like Candy",
+      "artist": "Camila Cabello",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "1QusS0DZ2KK8ukxsAoFZPK",
+      "name": "Sweet Like Candy",
+      "artists": [
+        {
+          "id": "4nDoRrQiYLoBzwC5BhVJzF",
+          "name": "Camila Cabello"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Only One",
+      "artist": "Fcukers",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "2Df1qZun61Mrj4xo6ndtTy",
+      "name": "Only One",
+      "artists": [
+        {
+          "id": "3UtzOHYm3lQALkKzVD4wyO",
+          "name": "Fcukers"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Sandunguea",
+      "artist": "Arca",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "1Q8z154tjq6WMJALCOM7gE",
+      "name": "Sandunguea",
+      "artists": [
+        {
+          "id": "4SQdUpG4f7UbkJG3cJ2Iyj",
+          "name": "Arca"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "TRDWFE",
+      "artist": "Rina Sawayama",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4XikHdgDDgZT0jDxJXjz9F",
+      "name": "TRDWFE",
+      "artists": [
+        {
+          "id": "2KEqzdPS7M5YwGmiuPTdr5",
+          "name": "Rina Sawayama"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "All Again",
+      "artist": "Rose Gray",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4Fv459S7bhBGbDHJhICbUy",
+      "name": "All Again",
+      "artists": [
+        {
+          "id": "5YYrWH3w4JYijU4JZrOXWA",
+          "name": "Rose Gray"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Crazy for You",
+      "artist": "Lana Del Rey",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "7atOpwxr1aIeRlyGEPNn0C",
+      "name": "Crazy For You",
+      "artists": [
+        {
+          "id": "00FQb4jTyendYWaN8pK0wa",
+          "name": "Lana Del Rey"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Largate",
+      "artist": "Kali Uchis & Helado Negro",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "3g9MD1bGGHDCCB1CbWBhTM",
+      "name": "Largate",
+      "artists": [
+        {
+          "id": "1U1el3k54VvEUzo3ybLPlM",
+          "name": "Kali Uchis"
+        },
+        {
+          "id": "69qhRLDvsWJOhWGXXQ0lQQ",
+          "name": "Helado Negro"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "No Me Busques",
+      "artist": "Omar Apollo",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "4uJTuWY1iJmyXWUtBPEKKt",
+      "name": "NO ME BUSQUES",
+      "artists": [
+        {
+          "id": "5FxD8fkQZ6KcsSYupDVoSO",
+          "name": "Omar Apollo"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Bright Lights,Big City",
+      "artist": "Keith Richards",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "2X67K1KTLBg9EU2dMUQC42",
+      "name": "Bright Lights, Big City (from GTAVI: The Album)",
+      "artists": [
+        {
+          "id": "08avsqaGIlK2x3i2Cu7rKH",
+          "name": "Keith Richards"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Stone Kold Krazy Luuv",
+      "artist": "Jesse Johnson & D&acirc;m-Funk",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "2mLHtW9nUOtZPvYcW1iqFo",
+      "name": "Stone Kold Krazy Luuv",
+      "artists": [
+        {
+          "id": "31h3nKJjsutodtNKRj6Joy",
+          "name": "Jesse Johnson"
+        },
+        {
+          "id": "1AEcpjnSCmm53IBZQo3g9z",
+          "name": "DāM-FunK"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Overtown Lights",
+      "artist": "Stanley Clarke,Yussef Dayes & Robert Glasper",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "2fGCjJeXtoeqEDML2RFhVf",
+      "name": "Overtown Lights",
+      "artists": [
+        {
+          "id": "1lGt9WgdYGpMnmwGkcCm05",
+          "name": "Stanley Clarke"
+        },
+        {
+          "id": "2rspptKP0lPBdlJJAJHqht",
+          "name": "Yussef Dayes"
+        },
+        {
+          "id": "5cM1PvItlR21WUyBnsdMcn",
+          "name": "Robert Glasper"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Love Is a Long Road",
+      "artist": "Tom Petty",
+      "year": 1989,
+      "section": "Various Music",
+      "spotifyId": "4PJEK76V3A1S0XzZJuTWh7",
+      "name": "Love Is A Long Road",
+      "artists": [
+        {
+          "id": "2UZMlIwnkgAEDBsw1Rejkn",
+          "name": "Tom Petty"
+        }
+      ],
+      "total": 121937968,
+      "daily": 171839,
+      "status": "ok"
+    },
+    {
+      "title": "Hot Together",
+      "artist": "The Pointer Sisters",
+      "year": 1986,
+      "section": "Various Music",
+      "spotifyId": "2KWhl75cqqKWEqTIHv1Zsd",
+      "name": "Hot Together",
+      "artists": [
+        {
+          "id": "2kreKea2n96dXjcyAU9j5N",
+          "name": "The Pointer Sisters"
+        }
+      ],
+      "total": 21405032,
+      "daily": 104260,
+      "status": "ok"
+    },
+    {
+      "title": "Thunder Island",
+      "artist": "Jay Ferguson",
+      "year": 1977,
+      "section": "Various Music",
+      "spotifyId": "3FkQN4NyCFlfn7fWzBkWCj",
+      "name": "Thunder Island",
+      "artists": [
+        {
+          "id": "3aahGWIXwvG1fxduXjimtl",
+          "name": "Jay Ferguson"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Child Support",
+      "artist": "Zenglen",
+      "year": 2004,
+      "section": "Various Music",
+      "spotifyId": "1i4AdS3vkcL1qfWP51RHFu",
+      "name": "Child Support",
+      "artists": [
+        {
+          "id": "2yxotUcQyVGm6LGYfPW8Mj",
+          "name": "Zenglen"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Everybody Have Fun Tonight",
+      "artist": "Wang Chung",
+      "year": 1986,
+      "section": "Various Music",
+      "spotifyId": "6qBSGvyUzqNQv8XtnzCr9n",
+      "name": "Everybody Have Fun Tonight",
+      "artists": [
+        {
+          "id": "6Zh3xrWlA0SA9Fsfj9AVwm",
+          "name": "Wang Chung"
+        }
+      ],
+      "total": 59278649,
+      "daily": 41220,
+      "status": "ok"
+    },
+    {
+      "title": "Talkin' to Myself Again",
+      "artist": "Tammy Wynette",
+      "year": 1987,
+      "section": "Various Music",
+      "spotifyId": "5whNhiIyzbPFz11Vq1kfFj",
+      "name": "Talkin' to Myself Again",
+      "artists": [
+        {
+          "id": "1LFKKuzn302wp15dYH28id",
+          "name": "Tammy Wynette"
+        }
+      ],
+      "total": 551064,
+      "daily": 4676,
+      "status": "ok"
+    },
+    {
+      "title": "I Love Rock 'n' Roll",
+      "artist": "The Arrows",
+      "year": 1975,
+      "section": "Various Music",
+      "spotifyId": "4zGBAwjlJ0TP02mHH8Wpmo",
+      "name": "I Love Rock N Roll",
+      "artists": [
+        {
+          "id": "4tqcqE9n9vHWbIT8ryEA1v",
+          "name": "The Arrows"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Smoke On the Water",
+      "artist": "Deep Purple",
+      "year": 1972,
+      "section": "Various Music",
+      "spotifyId": "5SAUIWdZ04OxYfJFDchC7S",
+      "name": "Smoke on the Water",
+      "artists": [
+        {
+          "id": "568ZhdwyaiCyOGJRtNYhWf",
+          "name": "Deep Purple"
+        }
+      ],
+      "total": 483768,
+      "daily": 193,
+      "status": "ok"
+    },
+    {
+      "title": "Impact",
+      "artist": "SG Lewis,Robyn and Channel Tres",
+      "year": 2020,
+      "section": "Various Music",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Get It Poppin",
+      "artist": "Fat Joe feat. Nelly",
+      "year": 2005,
+      "section": "Various Music",
+      "spotifyId": "04FXF9tLQvYzc9ZWnTpaA3",
+      "name": "Get It Poppin' (feat. Nelly) - Serban Main 4/20/05",
+      "artists": [
+        {
+          "id": "3ScY9CQxNLQei8Umvpx5g6",
+          "name": "Fat Joe"
+        },
+        {
+          "id": "2gBjLmx6zQnFGQJCAQpRgw",
+          "name": "Nelly"
+        }
+      ],
+      "total": 26334029,
+      "daily": 12172,
+      "status": "ok"
+    },
+    {
+      "title": "Sports Car",
+      "artist": "Tate McRae",
+      "year": 2025,
+      "section": "Various Music",
+      "spotifyId": "2zOmS55knKWSgScYPTNmGQ",
+      "name": "Sports car",
+      "artists": [
+        {
+          "id": "45dkTj5sMRSjrmBSBeiHym",
+          "name": "Tate McRae"
+        }
+      ],
+      "total": 1009790437,
+      "daily": 1056909,
+      "status": "ok"
+    },
+    {
+      "title": "Just Like Paradise",
+      "artist": "David Lee Roth",
+      "year": 1987,
+      "section": "Various Music",
+      "spotifyId": "5ZY7Gug850kv4heJcWZGHM",
+      "name": "Just Like Paradise",
+      "artists": [
+        {
+          "id": "0KyCXNSa7ZMb5LydfKbLG3",
+          "name": "David Lee Roth"
+        }
+      ],
+      "total": 50866230,
+      "daily": 21506,
+      "status": "ok"
+    },
+    {
+      "title": "Shooting Shark",
+      "artist": "Blue &Ouml;yster Cult",
+      "year": 1984,
+      "section": "Various Music",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Unforgettable",
+      "artist": "French Montana feat. Swae Lee",
+      "year": 2017,
+      "section": "Various Music",
+      "spotifyId": "3B54sVLJ402zGa6Xm4YGNe",
+      "name": "Unforgettable",
+      "artists": [
+        {
+          "id": "6vXTefBL93Dj5IqAWq6OTv",
+          "name": "French Montana"
+        },
+        {
+          "id": "1zNqQNIdeOUZHb8zbZRFMX",
+          "name": "Swae Lee"
+        }
+      ],
+      "total": 3154866175,
+      "daily": 1295793,
+      "status": "ok"
+    },
+    {
+      "title": "Players",
+      "artist": "Coi Leray",
+      "year": 2022,
+      "section": "Various Music",
+      "spotifyId": "6UN73IYd0hZxLi8wFPMQij",
+      "name": "Players",
+      "artists": [
+        {
+          "id": "6AMd49uBDJfhf30Ak2QR5s",
+          "name": "Coi Leray"
+        }
+      ],
+      "total": 585929900,
+      "daily": 100281,
+      "status": "ok"
+    },
+    {
+      "title": "Pound Town",
+      "artist": "Sexyy Redd & Tay Keith",
+      "year": 2023,
+      "section": "Various Music",
+      "spotifyId": "26cQkxTmCeXaKoOLnIMR26",
+      "name": "Pound Town",
+      "artists": [
+        {
+          "id": "3DbwFQlvLxRSi2uX8mf81A",
+          "name": "Sexyy Red"
+        },
+        {
+          "id": "5xkFVS6IwwgHEAaRzXc9U3",
+          "name": "Tay Keith"
+        }
+      ],
+      "total": 46403157,
+      "daily": 43174,
+      "status": "ok"
+    },
+    {
+      "title": "Forever More",
+      "artist": "Moloko",
+      "year": 2003,
+      "section": "Various Music",
+      "spotifyId": "5up40n9vezjnDSylEPDUTK",
+      "name": "Forever More",
+      "artists": [
+        {
+          "id": "4aaBjq7VqqQvpSF69GglvO",
+          "name": "Moloko"
+        }
+      ],
+      "total": 12864830,
+      "daily": 4172,
+      "status": "ok"
+    },
+    {
+      "title": "BILLS PAID",
+      "artist": "DJ Khaled feat. Latto & City Girls",
+      "year": 2022,
+      "section": "Various Music",
+      "spotifyId": "0JiLQRLOeWQdPC9rVpOqqo",
+      "name": "BILLS PAID (feat. Latto & City Girls)",
+      "artists": [
+        {
+          "id": "0QHgL1lAIqAw0HtD7YldmP",
+          "name": "DJ Khaled"
+        },
+        {
+          "id": "3MdXrJWsbVzdn6fe5JYkSQ",
+          "name": "Latto"
+        },
+        {
+          "id": "37hAfseJWi0G3Scife12Il",
+          "name": "City Girls"
+        }
+      ],
+      "total": 14468242,
+      "daily": 4512,
+      "status": "ok"
+    },
+    {
+      "title": "Roller",
+      "artist": "April Wine",
+      "year": 1978,
+      "section": "Various Music",
+      "spotifyId": "35TB5PJWtoCijuPC3GZbU3",
+      "name": "Roller - 2002 Remastered",
+      "artists": [
+        {
+          "id": "1JHzh1ETQTMoFb2CgncnTL",
+          "name": "April Wine"
+        }
+      ],
+      "total": 6907998,
+      "daily": 1524,
+      "status": "ok"
+    },
+    {
+      "title": "Rock 'n' Roll Fantasy",
+      "artist": "Bad Company",
+      "year": 1979,
+      "section": "Various Music",
+      "spotifyId": "71GMl3Q7U4JnrTqI9kfcoN",
+      "name": "Rock 'n' Roll Fantasy - 2009 Remaster",
+      "artists": [
+        {
+          "id": "5AEG63ajney2BoDXi0Vb84",
+          "name": "Bad Company"
+        }
+      ],
+      "total": 52224746,
+      "daily": 23650,
+      "status": "ok"
+    },
+    {
+      "title": "Trouble",
+      "artist": "Lindsey Buckingham",
+      "year": 1981,
+      "section": "Various Music",
+      "spotifyId": "04ijIUVdT4Qy1SBWFUPROY",
+      "name": "Trouble",
+      "artists": [
+        {
+          "id": "3Dzj993UEz8Z5ovxuirzFO",
+          "name": "Lindsey Buckingham"
+        }
+      ],
+      "total": 50499763,
+      "daily": 27412,
+      "status": "ok"
+    },
+    {
+      "title": "Waylon Jennings",
+      "artist": "Waymore's Blues",
+      "year": 1975,
+      "section": "Various Music",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Wanderlust",
+      "artist": "The Weeknd",
+      "year": 2013,
+      "section": "Various Music",
+      "spotifyId": "6V9TlCdwLeQes4FX5zxz3f",
+      "name": "Wanderlust",
+      "artists": [
+        {
+          "id": "1Xyo4u8uXC1ZmMpatF05PJ",
+          "name": "The Weeknd"
+        }
+      ],
+      "total": 85479090,
+      "daily": 104307,
+      "status": "ok"
+    },
+    {
+      "title": "HEAT",
+      "artist": "Tove Lo & SG Lewis",
+      "year": 2024,
+      "section": "Various Music",
+      "spotifyId": "3Du9k9oZz7DJCMZviju2lD",
+      "name": "HEAT",
+      "artists": [
+        {
+          "id": "4NHQUGzhtTLFvgF5SZesLK",
+          "name": "Tove Lo"
+        },
+        {
+          "id": "0GG2cWaonE4JPrjcCCQ1EG",
+          "name": "SG Lewis"
+        }
+      ],
+      "total": 57100829,
+      "daily": 62427,
+      "status": "ok"
+    },
+    {
+      "title": "Big Pimpin'",
+      "artist": "Jay-Z feat. UGK",
+      "year": 2000,
+      "section": "Various Music",
+      "spotifyId": "39lMIe4qlccsam5GRY4NRn",
+      "name": "Big Pimpin'",
+      "artists": [
+        {
+          "id": "3nFkdlSjzX9mRTtwJOzDYB",
+          "name": "JAŸ-Z"
+        },
+        {
+          "id": "6ZhjJOJXXwnPS8PrXdmjLw",
+          "name": "UGK"
+        }
+      ],
+      "total": 254720626,
+      "daily": 122168,
+      "status": "ok"
+    },
+    {
+      "title": "25/8",
+      "artist": "Bad Bunny",
+      "year": 2020,
+      "section": "Various Music",
+      "spotifyId": "4NqQaovM14WR2hNPMFxgjb",
+      "name": "25/8",
+      "artists": [
+        {
+          "id": "4q3ewBCX7sLwd24euuV69X",
+          "name": "Bad Bunny"
+        }
+      ],
+      "total": 375376605,
+      "daily": 188710,
+      "status": "ok"
+    },
+    {
+      "title": "Change",
+      "artist": "Searching",
+      "year": 1980,
+      "section": "Various Music",
+      "spotifyId": "58dqEbKatMoMtma0kULop6",
+      "name": "Change",
+      "artists": [
+        {
+          "id": "4g9rA0IJMuExvk1T16Mpqr",
+          "name": "The Searching"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Caballo Viejo",
+      "artist": "Roberto Torres",
+      "year": 1981,
+      "section": "Various Music",
+      "spotifyId": "1anvIYY3hAtLL72lJA5z44",
+      "name": "Caballo Viejo",
+      "artists": [
+        {
+          "id": "0tMEHta5p06GCSdnSPNS8B",
+          "name": "Roberto Torres"
+        },
+        {
+          "id": "3t9Q6XbDiyu7ilJSZ6QVZ0",
+          "name": "Charanga Vallenata"
+        }
+      ],
+      "total": 30833490,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Runaway",
+      "artist": "Bon Jovi",
+      "year": 1984,
+      "section": "Various Music",
+      "spotifyId": "0X1sqQ652p1sceKM2nJlIJ",
+      "name": "Runaway",
+      "artists": [
+        {
+          "id": "58lV9VcRSjABbAbfWS6skp",
+          "name": "Bon Jovi"
+        }
+      ],
+      "total": 475619894,
+      "daily": 198126,
+      "status": "ok"
+    },
+    {
+      "title": "Pop Bottles",
+      "artist": "Birdman & Lil Wayne",
+      "year": 2007,
+      "section": "Various Music",
+      "spotifyId": "1kEp3Po9RUPm11N5ITOUWx",
+      "name": "Pop Bottles - Main",
+      "artists": [
+        {
+          "id": "35sCXuy5gN6Or69rZ9vqBs",
+          "name": "Birdman"
+        },
+        {
+          "id": "55Aa2cqylxrFIXC767Z865",
+          "name": "Lil Wayne"
+        }
+      ],
+      "total": 48581705,
+      "daily": 35032,
+      "status": "ok"
+    },
+    {
+      "title": "Skrilla",
+      "artist": "Kodak Black",
+      "year": 2015,
+      "section": "Various Music",
+      "spotifyId": "5PyhIVD3WFiEQQTG36Tfch",
+      "name": "Skrilla",
+      "artists": [
+        {
+          "id": "46SHBwWsqBkxI7EeeBEQG7",
+          "name": "Kodak Black"
+        }
+      ],
+      "total": 92663633,
+      "daily": 409047,
+      "status": "ok"
+    },
+    {
+      "title": "Let Your Love Flow",
+      "artist": "The Bellamy Brothers",
+      "year": 1976,
+      "section": "Various Music",
+      "spotifyId": "064SVQsmWl5EF0zahmzkQk",
+      "name": "Let Your Love Flow",
+      "artists": [
+        {
+          "id": "5iB5AWIa7qreioi0AF3Bxa",
+          "name": "The Bellamy Brothers"
+        }
+      ],
+      "total": 296450226,
+      "daily": 139100,
+      "status": "ok"
+    },
+    {
+      "title": "Love Bites",
+      "artist": "Def Leppard",
+      "year": 1987,
+      "section": "Various Music",
+      "spotifyId": "4qWizh4UB8BuSypZ3T1zAz",
+      "name": "Love Bites",
+      "artists": [
+        {
+          "id": "6H1RjVyNruCmrBEWRbD0VZ",
+          "name": "Def Leppard"
+        }
+      ],
+      "total": 744387,
+      "daily": 1139,
+      "status": "ok"
+    },
+    {
+      "title": "People Are People",
+      "artist": "Depeche Mode",
+      "year": 1984,
+      "section": "Various Music",
+      "spotifyId": "4WoKuMjwJXuy9IqX6AH5JE",
+      "name": "People Are People",
+      "artists": [
+        {
+          "id": "762310PdDnwsDxAQxzQkfX",
+          "name": "Depeche Mode"
+        }
+      ],
+      "total": 116859296,
+      "daily": 121678,
+      "status": "ok"
+    },
+    {
+      "title": "But I Think It's a Dream",
+      "artist": "Captain & Tennille",
+      "year": 1980,
+      "section": "Various Music",
+      "spotifyId": "6mM4FYEtBWaosh60vaJTgh",
+      "name": "But I Think It's A Dream",
+      "artists": [
+        {
+          "id": "7BEfMxbaqx6dOpbtlEqScm",
+          "name": "Captain & Tennille"
+        }
+      ],
+      "total": 1025106,
+      "daily": 16610,
+      "status": "ok"
+    },
+    {
+      "title": "Cars and Girls",
+      "artist": "Prefab Sprout",
+      "year": 1988,
+      "section": "Various Music",
+      "spotifyId": "755cKP6z9tywIgQpAc3cVV",
+      "name": "Cars and Girls",
+      "artists": [
+        {
+          "id": "4w3QqrcmBv8dasemwBXmxf",
+          "name": "Prefab Sprout"
+        }
+      ],
+      "total": 23712988,
+      "daily": 7222,
+      "status": "ok"
+    },
+    {
+      "title": "Off The Grid",
+      "artist": "!!! (ft. Meah Pace)",
+      "year": 2019,
+      "section": "Various Music",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Devil Woman",
+      "artist": "Cliff Richard",
+      "year": 1976,
+      "section": "Various Music",
+      "spotifyId": "2oRn0QuaWQ1hragGQ7XZ9s",
+      "name": "Devil Woman",
+      "artists": [
+        {
+          "id": "2nvKpWcP8etYTq4JrRiUiy",
+          "name": "Cliff Richard"
+        }
+      ],
+      "total": 48027987,
+      "daily": 94060,
+      "status": "ok"
+    },
+    {
+      "title": "Se Me Nota",
+      "artist": "Chimbala x Omega",
+      "year": 2021,
+      "section": "Various Music",
+      "spotifyId": "17skcqaIwMeidP4Q70Weiu",
+      "name": "Se Me Nota (Agarrame) - Prod by B-One",
+      "artists": [
+        {
+          "id": "4VVEpEhC8NcR7AqNEds42U",
+          "name": "Chimbala"
+        },
+        {
+          "id": "1UjxAZqzphB1tsMb1aWBj0",
+          "name": "Omega"
+        }
+      ],
+      "total": 41315241,
+      "daily": 261953,
+      "status": "ok"
+    },
+    {
+      "title": "Against All Odds",
+      "artist": "Phil Collins",
+      "year": 1984,
+      "section": "Various Music",
+      "spotifyId": "63CHa6rmamv9OsehkRD8oz",
+      "name": "Against All Odds (Take a Look at Me Now) - 2016 Remaster",
+      "artists": [
+        {
+          "id": "4lxfqrEsLX6N1N4OCSkILp",
+          "name": "Phil Collins"
+        }
+      ],
+      "total": 728250837,
+      "daily": 360192,
+      "status": "ok"
+    },
+    {
+      "title": "Mine O' Mine",
+      "artist": "Aluna & Jayda G",
+      "year": 2023,
+      "section": "Various Music",
+      "spotifyId": "5ZPqHW450bjKLNqSBT9YlA",
+      "name": "Mine O Mine",
+      "artists": [
+        {
+          "id": "5ITI6SEoUZMIXXkzCfr4oE",
+          "name": "Aluna"
+        },
+        {
+          "id": "3NKVm2Jedcf6ibJr6pMUVx",
+          "name": "Jayda G"
+        }
+      ],
+      "total": 11940748,
+      "daily": 11298,
+      "status": "ok"
+    },
+    {
+      "title": "Inner Light",
+      "artist": "Elderbrook & Bob Moses",
+      "year": 2021,
+      "section": "Various Music",
+      "spotifyId": "40tPP3K10yMZxwnT65REKj",
+      "name": "Inner Light",
+      "artists": [
+        {
+          "id": "2vf4pRsEY6LpL5tKmqWb64",
+          "name": "Elderbrook"
+        },
+        {
+          "id": "6LHsnRBUYhFyt01PdKXAF5",
+          "name": "Bob Moses"
+        }
+      ],
+      "total": 157774340,
+      "daily": 471200,
+      "status": "ok"
+    },
+    {
+      "title": "Good Ones",
+      "artist": "Charli xcx",
+      "year": 2022,
+      "section": "Pop",
+      "spotifyId": "2grSOc6HNTXQQXNoRKt9UM",
+      "name": "Good Ones",
+      "artists": [
+        {
+          "id": "25uiPmTg16RbhZWAqwLBy5",
+          "name": "Charli xcx"
+        }
+      ],
+      "total": 150390297,
+      "daily": 51898,
+      "status": "ok"
+    },
+    {
+      "title": "Electric Feel",
+      "artist": "MGMT",
+      "year": 2007,
+      "section": "Pop",
+      "spotifyId": "3FtYbEfBqAlGO46NUDQSAt",
+      "name": "Electric Feel",
+      "artists": [
+        {
+          "id": "0SwO7SWeDHJijQ3XNS7xEE",
+          "name": "MGMT"
+        }
+      ],
+      "total": 1149585113,
+      "daily": 383494,
+      "status": "ok"
+    },
+    {
+      "title": "Midnight Sun (Girls Trip)",
+      "artist": "Zara Larsson & PinkPantheress",
+      "year": 2026,
+      "section": "Pop",
+      "spotifyId": "2FHGYrQEmuWGX24QoQtQ13",
+      "name": "Midnight Sun - Girls Trip",
+      "artists": [
+        {
+          "id": "1Xylc3o4UrD53lo9CvFvVg",
+          "name": "Zara Larsson"
+        },
+        {
+          "id": "78rUTD7y6Cy67W1RVzYs7t",
+          "name": "PinkPantheress"
+        }
+      ],
+      "total": 17489956,
+      "daily": 48443,
+      "status": "ok"
+    },
+    {
+      "title": "Love Sex Magic",
+      "artist": "Ciara ft. Justin Timberlake",
+      "year": 2009,
+      "section": "Pop",
+      "spotifyId": "7xdmTEHRbgQuLR8KpRLLnn",
+      "name": "Love Sex Magic (feat. Justin Timberlake)",
+      "artists": [
+        {
+          "id": "2NdeV5rLm47xAvogXrYhJX",
+          "name": "Ciara"
+        },
+        {
+          "id": "31TPClRtHm23RisEBtV3X7",
+          "name": "Justin Timberlake"
+        }
+      ],
+      "total": 99433890,
+      "daily": 21250,
+      "status": "ok"
+    },
+    {
+      "title": "Spinning Around",
+      "artist": "Kylie Minogue",
+      "year": 2000,
+      "section": "Pop",
+      "spotifyId": "0JcgDliDqDac8iOFFRm7tZ",
+      "name": "Spinning Around",
+      "artists": [
+        {
+          "id": "4RVnAU35WRWra6OZ3CbbMA",
+          "name": "Kylie Minogue"
+        }
+      ],
+      "total": 84659208,
+      "daily": 32301,
+      "status": "ok"
+    },
+    {
+      "title": "Hold On,We're Going Home",
+      "artist": "Drake ft. Majid Jordan",
+      "year": 2013,
+      "section": "Pop",
+      "spotifyId": "2aSC2xhRxOLiiZZVjhbylH",
+      "name": "Hold On, We're Going Home",
+      "artists": [
+        {
+          "id": "3TVXtAsR1Inumwj472S9r4",
+          "name": "Drake"
+        },
+        {
+          "id": "4HzKw8XcD0piJmDrrPRCYk",
+          "name": "Majid Jordan"
+        }
+      ],
+      "total": 1444818233,
+      "daily": 840662,
+      "status": "ok"
+    },
+    {
+      "title": "Lazy",
+      "artist": "X-Press 2 ft. David Byrne",
+      "year": 2002,
+      "section": "Pop",
+      "spotifyId": "2KFg8d03gnWcqAPoA7IrGr",
+      "name": "Lazy (feat. David Byrne) - Mowgli Goes Deep Mix",
+      "artists": [
+        {
+          "id": "1mlZXof4sEGLFspPzlQdFL",
+          "name": "X-Press 2"
+        },
+        {
+          "id": "20vuBdFblWUo2FCOvUzusB",
+          "name": "David Byrne"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Fame Is a Gun",
+      "artist": "Addison Rae",
+      "year": 2025,
+      "section": "Pop",
+      "spotifyId": "7B3BwNecBhKvNwSMOOl7Gk",
+      "name": "Fame is a Gun",
+      "artists": [
+        {
+          "id": "4gvjmrtzydbMpyJaXUtwvP",
+          "name": "Addison Rae"
+        }
+      ],
+      "total": 551089280,
+      "daily": 755097,
+      "status": "ok"
+    },
+    {
+      "title": "Gabriela",
+      "artist": "KATSEYE",
+      "year": 2025,
+      "section": "Pop",
+      "spotifyId": "1xOqGUkyxGQRdCvGpvWKmL",
+      "name": "Gabriela",
+      "artists": [
+        {
+          "id": "3c0gDdb9lhnHGFtP4prQpn",
+          "name": "KATSEYE"
+        }
+      ],
+      "total": 1044767651,
+      "daily": 1121884,
+      "status": "ok"
+    },
+    {
+      "title": "Break Free",
+      "artist": "Ariana Grande ft. Zedd",
+      "year": 2014,
+      "section": "Pop",
+      "spotifyId": "12KUFSHFgT0XCoiSlvdQi4",
+      "name": "Break Free",
+      "artists": [
+        {
+          "id": "66CXWjxzNUsdJxJ2JdwvnR",
+          "name": "Ariana Grande"
+        },
+        {
+          "id": "2qxJFvFYMEDqd7ui6kSAcq",
+          "name": "Zedd"
+        }
+      ],
+      "total": 1357805545,
+      "daily": 692286,
+      "status": "ok"
+    },
+    {
+      "title": "Illegal",
+      "artist": "PinkPantheress",
+      "year": 2025,
+      "section": "Pop",
+      "spotifyId": "1WmBVbFmLt0w6zPP37TeCG",
+      "name": "Illegal",
+      "artists": [
+        {
+          "id": "78rUTD7y6Cy67W1RVzYs7t",
+          "name": "PinkPantheress"
+        }
+      ],
+      "total": 309925415,
+      "daily": 303348,
+      "status": "ok"
+    },
+    {
+      "title": "Hot to Go!",
+      "artist": "Chappell Roan",
+      "year": 2023,
+      "section": "Pop",
+      "spotifyId": "4xdBrk0nFZaP54vvZj0yx7",
+      "name": "HOT TO GO!",
+      "artists": [
+        {
+          "id": "7GlBOeep6PqTfFi59PTUUN",
+          "name": "Chappell Roan"
+        }
+      ],
+      "total": 979868720,
+      "daily": 336872,
+      "status": "ok"
+    },
+    {
+      "title": "Earthquake",
+      "artist": "JISOO",
+      "year": 2025,
+      "section": "Pop",
+      "spotifyId": "10zywlg5b0gQOC3q1A7ADx",
+      "name": "earthquake",
+      "artists": [
+        {
+          "id": "6UZ0ba50XreR4TM8u322gs",
+          "name": "JISOO"
+        }
+      ],
+      "total": 209194328,
+      "daily": 140146,
+      "status": "ok"
+    },
+    {
+      "title": "Houdini",
+      "artist": "Dua Lipa",
+      "year": 2023,
+      "section": "Pop",
+      "spotifyId": "6D8y7Bck8h11byRY88Pt2z",
+      "name": "Houdini",
+      "artists": [
+        {
+          "id": "6M2wZ9GZgrQXHCFfjv46we",
+          "name": "Dua Lipa"
+        }
+      ],
+      "total": 1129888255,
+      "daily": 398671,
+      "status": "ok"
+    },
+    {
+      "title": "Lunch",
+      "artist": "Billie Eilish",
+      "year": 2024,
+      "section": "Pop",
+      "spotifyId": "629DixmZGHc7ILtEntuiWE",
+      "name": "LUNCH",
+      "artists": [
+        {
+          "id": "6qqNVTkY8uBg9cP3Jd7DAH",
+          "name": "Billie Eilish"
+        }
+      ],
+      "total": 1057206125,
+      "daily": 385673,
+      "status": "ok"
+    },
+    {
+      "title": "Sweet Spot",
+      "artist": "Justin Bieber",
+      "year": 2025,
+      "section": "Pop",
+      "spotifyId": "6AX3i1TluzbvpJpKrY7NoD",
+      "name": "SWEET SPOT",
+      "artists": [
+        {
+          "id": "1uNFoZAHBGtllmzznpCI3s",
+          "name": "Justin Bieber"
+        },
+        {
+          "id": "3DbwFQlvLxRSi2uX8mf81A",
+          "name": "Sexyy Red"
+        }
+      ],
+      "total": 46899145,
+      "daily": 23672,
+      "status": "ok"
+    },
+    {
+      "title": "Dare",
+      "artist": "Gorillaz",
+      "year": 2005,
+      "section": "Pop",
+      "spotifyId": "0COEYS1GQabK0jepAmOXM3",
+      "name": "DARE",
+      "artists": [
+        {
+          "id": "3AA28KZvwAUcZuOKwyblJQ",
+          "name": "Gorillaz"
+        }
+      ],
+      "total": 844402795,
+      "daily": 419275,
+      "status": "ok"
+    },
+    {
+      "title": "Crush",
+      "artist": "Jennifer Paige",
+      "year": 1998,
+      "section": "Pop",
+      "spotifyId": "6YXWauQKn5nQVhcC4KVplQ",
+      "name": "Crush",
+      "artists": [
+        {
+          "id": "26PDtWYDJ1KD0brukKsJH1",
+          "name": "Jennifer Paige"
+        }
+      ],
+      "total": 249567186,
+      "daily": 143250,
+      "status": "ok"
+    },
+    {
+      "title": "Around the World",
+      "artist": "Daft Punk",
+      "year": 1997,
+      "section": "Pop",
+      "spotifyId": "1pKYYY0dkg23sQQXi0Q5zN",
+      "name": "Around the World",
+      "artists": [
+        {
+          "id": "4tZwfgrHOc3mvqYlEYSvVi",
+          "name": "Daft Punk"
+        }
+      ],
+      "total": 555636344,
+      "daily": 277700,
+      "status": "ok"
+    },
+    {
+      "title": "Mantra",
+      "artist": "JENNIE",
+      "year": 2024,
+      "section": "Pop",
+      "spotifyId": "2CspwnypzT7rcWI9RfsoSb",
+      "name": "Mantra",
+      "artists": [
+        {
+          "id": "250b0Wlc5Vk0CoUsaCY84M",
+          "name": "JENNIE"
+        }
+      ],
+      "total": 599689320,
+      "daily": 257620,
+      "status": "ok"
+    },
+    {
+      "title": "Sawadika",
+      "artist": "LISA",
+      "year": 2026,
+      "section": "Pop",
+      "spotifyId": "1VWiDyYTrqQhhmnWANWkFa",
+      "name": "SaWaDiKa",
+      "artists": [
+        {
+          "id": "5L1lO4eRHmJ7a0Q6csE5cT",
+          "name": "LISA"
+        }
+      ],
+      "total": 124346753,
+      "daily": 1004849,
+      "status": "ok"
+    },
+    {
+      "title": "Feels",
+      "artist": "Calvin Harris ft. Pharrell Williams,Katy Perry & Big Sean",
+      "year": 2017,
+      "section": "Pop",
+      "spotifyId": "5bcTCxgc7xVfSaMV3RuVke",
+      "name": "Feels (feat. Pharrell Williams, Katy Perry & Big Sean)",
+      "artists": [
+        {
+          "id": "7CajNmpbOovFoOoasH2HaY",
+          "name": "Calvin Harris"
+        },
+        {
+          "id": "2RdwBSPQiwcmiDo9kixcl8",
+          "name": "Pharrell Williams"
+        },
+        {
+          "id": "6jJ0s89eD6GaHleKKya26X",
+          "name": "Katy Perry"
+        },
+        {
+          "id": "0c173mlxpT3dSFRgMO8XPh",
+          "name": "Big Sean"
+        },
+        {
+          "id": "4A0TivfinfALCAMJqqjZIk",
+          "name": "Funk Wav"
+        }
+      ],
+      "total": 1481529766,
+      "daily": 468470,
+      "status": "ok"
+    },
+    {
+      "title": "Give Me All Your Luvin'",
+      "artist": "Madonna ft. Nicki Minaj & M.I.A.",
+      "year": 2012,
+      "section": "Pop",
+      "spotifyId": "51Q6EFkjizQdcNVbdJUY6d",
+      "name": "Give Me All Your Luvin' (feat. Nicki Minaj & M.I.A.)",
+      "artists": [
+        {
+          "id": "6tbjWDEIzxoDsBA1FuhfPW",
+          "name": "Madonna"
+        },
+        {
+          "id": "0QJIPDAEDILuo8AIq3pMuU",
+          "name": "M.I.A."
+        },
+        {
+          "id": "0hCNtLu0JehylgoiP8L4Gh",
+          "name": "Nicki Minaj"
+        }
+      ],
+      "total": 45124692,
+      "daily": 11079,
+      "status": "ok"
+    },
+    {
+      "title": "Lost",
+      "artist": "Frank Ocean",
+      "year": 2012,
+      "section": "Pop",
+      "spotifyId": "3GZD6HmiNUhxXYf8Gch723",
+      "name": "Lost",
+      "artists": [
+        {
+          "id": "2h93pZq0e7k5yf4dywlkpM",
+          "name": "Frank Ocean"
+        }
+      ],
+      "total": 1654323094,
+      "daily": 467858,
+      "status": "ok"
+    },
+    {
+      "title": "Motivation",
+      "artist": "Kelly Rowland ft. Lil Wayne",
+      "year": 2011,
+      "section": "Pop",
+      "spotifyId": "6rbhWExtuchhpLC5fHnB8n",
+      "name": "Motivation",
+      "artists": [
+        {
+          "id": "3AuMNF8rQAKOzjYppFNAoB",
+          "name": "Kelly Rowland"
+        },
+        {
+          "id": "55Aa2cqylxrFIXC767Z865",
+          "name": "Lil Wayne"
+        }
+      ],
+      "total": 363668813,
+      "daily": 170587,
+      "status": "ok"
+    },
+    {
+      "title": "Someday",
+      "artist": "Mariah Carey",
+      "year": 1990,
+      "section": "Pop",
+      "spotifyId": "6TSM5vkz0WzyZsNAKKYDcw",
+      "name": "Someday",
+      "artists": [
+        {
+          "id": "4iHNK0tOyZPYnBU7nGAgpQ",
+          "name": "Mariah Carey"
+        }
+      ],
+      "total": 28540755,
+      "daily": 8768,
+      "status": "ok"
+    },
+    {
+      "title": "Mr. Cool",
+      "artist": "Kenya Grace",
+      "year": 2025,
+      "section": "Pop",
+      "spotifyId": "5vRvTccr05SrSnqVvNAmVX",
+      "name": "Mr. Cool",
+      "artists": [
+        {
+          "id": "7uMDnSZyUYNBPLhPMNuaM2",
+          "name": "Kenya Grace"
+        }
+      ],
+      "total": 5306536,
+      "daily": 6700,
+      "status": "ok"
+    },
+    {
+      "title": "Persuasive",
+      "artist": "Doechii & SZA",
+      "year": 2022,
+      "section": "Pop",
+      "spotifyId": "67v2UHujFruxWrDmjPYxD6",
+      "name": "Persuasive (with SZA)",
+      "artists": [
+        {
+          "id": "4E2rKHVDssGJm2SCDOMMJB",
+          "name": "Doechii"
+        },
+        {
+          "id": "7tYKF4w9nC0nq9CsPZTHyP",
+          "name": "SZA"
+        }
+      ],
+      "total": 94469591,
+      "daily": 41866,
+      "status": "ok"
+    },
+    {
+      "title": "I",
+      "artist": "Black Sabbath",
+      "year": 1992,
+      "section": "Metal",
+      "spotifyId": "4svkPL62HbvyFgf0nHFXAF",
+      "name": "Iron Man",
+      "artists": [
+        {
+          "id": "5M52tdBnJaKSvOpJGz8mfZ",
+          "name": "Black Sabbath"
+        }
+      ],
+      "total": 777389822,
+      "daily": 438290,
+      "status": "ok"
+    },
+    {
+      "title": "I'm Broken",
+      "artist": "Pantera",
+      "year": 1994,
+      "section": "Metal",
+      "spotifyId": "2M5WTwqnkyz7bW6P1CiD6q",
+      "name": "I'm Broken",
+      "artists": [
+        {
+          "id": "14pVkFUHDL207LzLHtSA18",
+          "name": "Pantera"
+        }
+      ],
+      "total": 192745285,
+      "daily": 81453,
+      "status": "ok"
+    },
+    {
+      "title": "Raining Blood",
+      "artist": "Slayer",
+      "year": 1986,
+      "section": "Metal",
+      "spotifyId": "4fiOTntQKr24p07FvQDHZE",
+      "name": "Raining Blood",
+      "artists": [
+        {
+          "id": "1IQ2e1buppatiN1bxUVkrk",
+          "name": "Slayer"
+        }
+      ],
+      "total": 283437571,
+      "daily": 98457,
+      "status": "ok"
+    },
+    {
+      "title": "Symphony of Destruction",
+      "artist": "Megadeth",
+      "year": 1992,
+      "section": "Metal",
+      "spotifyId": "51TG9W3y9qyO8BY5RXKgnZ",
+      "name": "Symphony Of Destruction",
+      "artists": [
+        {
+          "id": "1Yox196W7bzVNZI7RBaPnf",
+          "name": "Megadeth"
+        }
+      ],
+      "total": 467785233,
+      "daily": 174389,
+      "status": "ok"
+    },
+    {
+      "title": "Master of Puppets",
+      "artist": "Metallica",
+      "year": 1986,
+      "section": "Metal",
+      "spotifyId": "54bm2e3tk8cliUz3VSdCPZ",
+      "name": "Master of Puppets (Remastered)",
+      "artists": [
+        {
+          "id": "2ye2Wgw4gimLv2eAKyk1NB",
+          "name": "Metallica"
+        }
+      ],
+      "total": 1345036348,
+      "daily": 500435,
+      "status": "ok"
+    },
+    {
+      "title": "Blood and Thunder",
+      "artist": "Mastodon",
+      "year": 2004,
+      "section": "Metal",
+      "spotifyId": "3jagGO7eHHuaD53ibehkux",
+      "name": "Blood and Thunder",
+      "artists": [
+        {
+          "id": "1Dvfqq39HxvCJ3GvfeIFuT",
+          "name": "Mastodon"
+        }
+      ],
+      "total": 104653407,
+      "daily": 29974,
+      "status": "ok"
+    },
+    {
+      "title": "I Am the Law",
+      "artist": "Anthrax",
+      "year": 1987,
+      "section": "Metal",
+      "spotifyId": "5DlKTTcN9LNisy6x4QuWzs",
+      "name": "I Am The Law",
+      "artists": [
+        {
+          "id": "3JysSUOyfVs1UQ0UaESheP",
+          "name": "Anthrax"
+        }
+      ],
+      "total": 14602472,
+      "daily": 4595,
+      "status": "ok"
+    },
+    {
+      "title": "Battery",
+      "artist": "Metallica",
+      "year": 1986,
+      "section": "Metal",
+      "spotifyId": "7wz8LNfmGZ3C0PwKW9LdDg",
+      "name": "Battery (Remastered)",
+      "artists": [
+        {
+          "id": "2ye2Wgw4gimLv2eAKyk1NB",
+          "name": "Metallica"
+        }
+      ],
+      "total": 239154224,
+      "daily": 82506,
+      "status": "ok"
+    },
+    {
+      "title": "Seek & Destroy",
+      "artist": "Metallica",
+      "year": 1983,
+      "section": "Metal",
+      "spotifyId": "5DrNFzZZZVfXaEZCaceKnp",
+      "name": "Seek & Destroy (Remastered)",
+      "artists": [
+        {
+          "id": "2ye2Wgw4gimLv2eAKyk1NB",
+          "name": "Metallica"
+        }
+      ],
+      "total": 5784508,
+      "daily": 1190,
+      "status": "ok"
+    },
+    {
+      "title": "Territory",
+      "artist": "Sepultura",
+      "year": 1993,
+      "section": "Metal",
+      "spotifyId": "0QRxtcxL31dRAeiUUuENPu",
+      "name": "Territory",
+      "artists": [
+        {
+          "id": "6JW8wliOEwaDZ231ZY7cf4",
+          "name": "Sepultura"
+        }
+      ],
+      "total": 58305258,
+      "daily": 32083,
+      "status": "ok"
+    },
+    {
+      "title": "Sugar",
+      "artist": "System of a Down",
+      "year": 1998,
+      "section": "Metal",
+      "spotifyId": "3TszbgtEGdsJE6vRnyFebO",
+      "name": "Sugar",
+      "artists": [
+        {
+          "id": "5eAWCfyUhZtHHtBdNk56l1",
+          "name": "System Of A Down"
+        }
+      ],
+      "total": 474495883,
+      "daily": 182158,
+      "status": "ok"
+    },
+    {
+      "title": "Sober",
+      "artist": "TOOL",
+      "year": 1993,
+      "section": "Metal",
+      "spotifyId": "6DyywdbmTzlmXBzG9ym7Rt",
+      "name": "Sober",
+      "artists": [
+        {
+          "id": "2yEwvVSSSUkcLeSTNyHKh8",
+          "name": "TOOL"
+        }
+      ],
+      "total": 256853302,
+      "daily": 202214,
+      "status": "ok"
+    },
+    {
+      "title": "Rotten to the Core",
+      "artist": "Overkill",
+      "year": 1985,
+      "section": "Metal",
+      "spotifyId": "1Q9PriUQSxUiFJi6htXBBK",
+      "name": "Rotten to the Core",
+      "artists": [
+        {
+          "id": "0NmYchKQ8JIR9QHYJA0FRe",
+          "name": "Overkill"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Rhinestone Cowboy",
+      "artist": "Glen Campbell",
+      "year": 1975,
+      "section": "Country",
+      "spotifyId": "0VwTeYNjcl30DyQlt3GPe0",
+      "name": "Rhinestone Cowboy",
+      "artists": [
+        {
+          "id": "59hLmB5DrdihCYtNeFeW1U",
+          "name": "Glen Campbell"
+        }
+      ],
+      "total": 452399,
+      "daily": 192,
+      "status": "ok"
+    },
+    {
+      "title": "The Fireman",
+      "artist": "George Strait",
+      "year": 1984,
+      "section": "Country",
+      "spotifyId": "5CwZU4BVFX0dyqG1gKfHHr",
+      "name": "The Fireman",
+      "artists": [
+        {
+          "id": "5vngPClqofybhPERIqQMYd",
+          "name": "George Strait"
+        }
+      ],
+      "total": 86943770,
+      "daily": 33731,
+      "status": "ok"
+    },
+    {
+      "title": "Need a Little Time Off for Bad Behavior",
+      "artist": "David Allan Coe",
+      "year": 1987,
+      "section": "Country",
+      "spotifyId": "2XuG6qXo9WZHn9O2QUxeTM",
+      "name": "Need a Little Time off for Bad Behavior",
+      "artists": [
+        {
+          "id": "6nwh8AhPpbwOUnHZJWrHT6",
+          "name": "David Allan Coe"
+        }
+      ],
+      "total": 24779314,
+      "daily": 15882,
+      "status": "ok"
+    },
+    {
+      "title": "Don't Come Home A-Drinkin' (With Lovin' On Your Mind)",
+      "artist": "Loretta Lynn",
+      "year": 1967,
+      "section": "Country",
+      "spotifyId": "1Ch2cPleHoVVXLVRRrGF6o",
+      "name": "Don't Come Home A-Drinkin' (With Lovin' On Your Mind)",
+      "artists": [
+        {
+          "id": "1FE0rls8gfQT3laAeRYNgl",
+          "name": "Loretta Lynn"
+        }
+      ],
+      "total": 39908920,
+      "daily": 13102,
+      "status": "ok"
+    },
+    {
+      "title": "The Conversation",
+      "artist": "Hank Williams,Jr. & Waylon Jennings",
+      "year": 1979,
+      "section": "Country",
+      "spotifyId": "7GIBwtwVahJvvpot8g4Z4V",
+      "name": "The Conversation",
+      "artists": [
+        {
+          "id": "2dyeCWctcFRt3Pha76ONgb",
+          "name": "Hank Williams, Jr."
+        },
+        {
+          "id": "7wCjDgV6nqBsHguQXPAaIM",
+          "name": "Waylon Jennings"
+        }
+      ],
+      "total": 35711295,
+      "daily": 15709,
+      "status": "ok"
+    },
+    {
+      "title": "Louisiana Saturday Night",
+      "artist": "Mel McDaniel",
+      "year": 1981,
+      "section": "Country",
+      "spotifyId": "50PU05RTGva8laKDwxED9Y",
+      "name": "Louisiana Saturday Night",
+      "artists": [
+        {
+          "id": "1fMdO9vLUd6wW4jbMeNiup",
+          "name": "Mel McDaniel"
+        }
+      ],
+      "total": 219122490,
+      "daily": 83398,
+      "status": "ok"
+    },
+    {
+      "title": "Polk Salad Annie",
+      "artist": "Tony Joe White",
+      "year": 1968,
+      "section": "Country",
+      "spotifyId": "0jtz7Ia3HahOqXWnKad0rn",
+      "name": "Polk Salad Annie",
+      "artists": [
+        {
+          "id": "6QvgWa4x3Ij4tvBpFMo11P",
+          "name": "Tony Joe White"
+        }
+      ],
+      "total": 36487392,
+      "daily": 12413,
+      "status": "ok"
+    },
+    {
+      "title": "Walk Softly on This Heart of Mine",
+      "artist": "The Kentucky Headhunters",
+      "year": 1989,
+      "section": "Country",
+      "spotifyId": "5yma4EpKYJ4r6jXhebUzh2",
+      "name": "Walk Softly On This Heart Of Mine",
+      "artists": [
+        {
+          "id": "2sgj794K3UaW1ApX28ZUhY",
+          "name": "The Kentucky Headhunters"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Like A Pimp",
+      "artist": "David Banner ft. Lil' Flip",
+      "year": 2003,
+      "section": "Hip Hop",
+      "spotifyId": "0DW5anNzTO7h0OlKqFsVQ6",
+      "name": "Like A Pimp",
+      "artists": [
+        {
+          "id": "7jFaoqWPhYLrKzjzlpXmUO",
+          "name": "David Banner"
+        },
+        {
+          "id": "4Q5sPmM8j4SpMqL4UA1DtS",
+          "name": "Lil' Flip"
+        }
+      ],
+      "total": 71808503,
+      "daily": 45036,
+      "status": "ok"
+    },
+    {
+      "title": "Who Dat",
+      "artist": "JT Money ft. Sol&eacute;",
+      "year": 1999,
+      "section": "Hip Hop",
+      "spotifyId": "2rbb3lOMI71NIMbJCS1wQQ",
+      "name": "Who Dat",
+      "artists": [
+        {
+          "id": "1pJhCUTEZhR4nYeemYlkVz",
+          "name": "JT Money"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Born N Raised",
+      "artist": "DJ Khaled ft. Trick Daddy,Rick Ross & Pitbull",
+      "year": 2006,
+      "section": "Hip Hop",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Slow Motion",
+      "artist": "Juvenile ft. Soulja Slim",
+      "year": 2004,
+      "section": "Hip Hop",
+      "spotifyId": "6ihObRBTB8xdSH2mlERtOX",
+      "name": "Slow Motion",
+      "artists": [
+        {
+          "id": "0rG0AZBscc8S8q1ahIsasI",
+          "name": "JUVENILE"
+        },
+        {
+          "id": "6tBnRI3ubWYclKSbGvGtKd",
+          "name": "Soulja Slim"
+        }
+      ],
+      "total": 177069015,
+      "daily": 84097,
+      "status": "ok"
+    },
+    {
+      "title": "Freek-a-Leek",
+      "artist": "Petey Pablo",
+      "year": 2004,
+      "section": "Hip Hop",
+      "spotifyId": "4MeDnO5yA2Zi6IMlVApRci",
+      "name": "Freek-A-Leek",
+      "artists": [
+        {
+          "id": "4Js9eYwAf9rypNtV8pNSw9",
+          "name": "Petey Pablo"
+        }
+      ],
+      "total": 446757811,
+      "daily": 278848,
+      "status": "ok"
+    },
+    {
+      "title": "I'm a Thug",
+      "artist": "Trick Daddy",
+      "year": 2001,
+      "section": "Hip Hop",
+      "spotifyId": "6j2aNuhJJUnRj6UHcvn5PI",
+      "name": "I'm a Thug",
+      "artists": [
+        {
+          "id": "12FHARd9fY0Tu0ila4Ua25",
+          "name": "Trick Daddy"
+        }
+      ],
+      "total": 83172770,
+      "daily": 30741,
+      "status": "ok"
+    },
+    {
+      "title": "Shorty Wanna Ride",
+      "artist": "Young Buck",
+      "year": 2004,
+      "section": "Hip Hop",
+      "spotifyId": "6Y9kdB2O0h9gq9y2vclsWT",
+      "name": "Shorty Wanna Ride",
+      "artists": [
+        {
+          "id": "4pr7J7wzgObkE3DD3Izi7q",
+          "name": "Young Buck"
+        }
+      ],
+      "total": 62318602,
+      "daily": 29396,
+      "status": "ok"
+    },
+    {
+      "title": "Hard Out Here for a Pimp",
+      "artist": "Three 6 Mafia",
+      "year": 2005,
+      "section": "Hip Hop",
+      "spotifyId": "17ZCxegdCt1y0reBkHVmMB",
+      "name": "Hard Out Here for a Pimp (feat. Paula Campbell)",
+      "artists": [
+        {
+          "id": "26s8LSolLfCIY88ysQbIuT",
+          "name": "Three 6 Mafia"
+        },
+        {
+          "id": "2EPYzyk8q2xb7APLZ8c1YA",
+          "name": "Paula Campbell"
+        }
+      ],
+      "total": 28994218,
+      "daily": 25127,
+      "status": "ok"
+    },
+    {
+      "title": "A Milli",
+      "artist": "Lil Wayne",
+      "year": 2008,
+      "section": "Hip Hop",
+      "spotifyId": "6ScJMrlpiLfZUGtWp4QIVt",
+      "name": "A Milli",
+      "artists": [
+        {
+          "id": "55Aa2cqylxrFIXC767Z865",
+          "name": "Lil Wayne"
+        }
+      ],
+      "total": 836372176,
+      "daily": 346990,
+      "status": "ok"
+    },
+    {
+      "title": "Holidae In",
+      "artist": "Chingy ft. Ludacris & Snoop Dogg",
+      "year": 2003,
+      "section": "Hip Hop",
+      "spotifyId": "0FmCLEHfINGqwlyzvklNqy",
+      "name": "Holidae In",
+      "artists": [
+        {
+          "id": "3s2wTjWxK8NOX09dmsvVOh",
+          "name": "Chingy"
+        },
+        {
+          "id": "3ipn9JLAPI5GUEo4y4jcoi",
+          "name": "Ludacris"
+        },
+        {
+          "id": "7hJcb9fa4alzcOq3EaNPoG",
+          "name": "Snoop Dogg"
+        }
+      ],
+      "total": 88242978,
+      "daily": 26623,
+      "status": "ok"
+    },
+    {
+      "title": "Da Baddest Bitch",
+      "artist": "Trina",
+      "year": 1999,
+      "section": "Hip Hop",
+      "spotifyId": "1rBittbf1aWwzeW28dI7Lv",
+      "name": "Da Baddest Bitch",
+      "artists": [
+        {
+          "id": "4PrinKSrmILmo0kERG0Ogn",
+          "name": "Trina"
+        }
+      ],
+      "total": 9758235,
+      "daily": 4220,
+      "status": "ok"
+    },
+    {
+      "title": "Player's Ball",
+      "artist": "OutKast",
+      "year": 1993,
+      "section": "Hip Hop",
+      "spotifyId": "1RXEb6UTxJ05RffnAWfUOE",
+      "name": "Player's Ball",
+      "artists": [
+        {
+          "id": "1G9G7WwrXka3Z1r7aIDjI7",
+          "name": "Outkast"
+        }
+      ],
+      "total": 69989006,
+      "daily": 18912,
+      "status": "ok"
+    },
+    {
+      "title": "Still Ballin'",
+      "artist": "2Pac ft. Trick Daddy",
+      "year": 2002,
+      "section": "Hip Hop",
+      "spotifyId": "5vU53TPzhzovjUL0oXoxZp",
+      "name": "Still Ballin' - Nitty Remix",
+      "artists": [
+        {
+          "id": "1ZwdS5xdxEREPySFridCfh",
+          "name": "2Pac"
+        },
+        {
+          "id": "12FHARd9fY0Tu0ila4Ua25",
+          "name": "Trick Daddy"
+        }
+      ],
+      "total": 61036842,
+      "daily": 32692,
+      "status": "ok"
+    },
+    {
+      "title": "Dey Know",
+      "artist": "Shawty Lo",
+      "year": 2007,
+      "section": "Hip Hop",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Girl",
+      "artist": "Myke Towers",
+      "year": 2020,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "43NqTeL8pgBxKHPMiJKUP5",
+      "name": "Girl",
+      "artists": [
+        {
+          "id": "7iK8PXO48WeuP03g8YR51W",
+          "name": "Myke Towers"
+        }
+      ],
+      "total": 553162135,
+      "daily": 361682,
+      "status": "ok"
+    },
+    {
+      "title": "EoO",
+      "artist": "Bad Bunny",
+      "year": 2025,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "6J5kc12BW5HuP3d7C3vvx8",
+      "name": "EoO",
+      "artists": [
+        {
+          "id": "4q3ewBCX7sLwd24euuV69X",
+          "name": "Bad Bunny"
+        }
+      ],
+      "total": 1405587439,
+      "daily": 1596573,
+      "status": "ok"
+    },
+    {
+      "title": "Si Es Trucho Es Trucho (Remix)",
+      "artist": "Axel Rulay ft. Farruko & El Alfa",
+      "year": 2021,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "79TmKWcU3YfyqkmE34pCRr",
+      "name": "Si Es Trucho Es Trucho (feat. Farruko & El Alfa) - Remix",
+      "artists": [
+        {
+          "id": "7ur9H6w9OqIgWrmM2GUWuB",
+          "name": "Axel Rulay"
+        },
+        {
+          "id": "329e4yvIujISKGKz1BZZbO",
+          "name": "Farruko"
+        },
+        {
+          "id": "2oQX8QiMXOyuqbcZEFsZfm",
+          "name": "El Alfa"
+        }
+      ],
+      "total": 14343835,
+      "daily": 3319,
+      "status": "ok"
+    },
+    {
+      "title": "Canalla",
+      "artist": "Romeo Santos & El Chaval de la Bachata",
+      "year": 2019,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "4XEXrp37kZXpQTB2r5vWbS",
+      "name": "Canalla",
+      "artists": [
+        {
+          "id": "5lwmRuXgjX8xIwlnauTZIP",
+          "name": "Romeo Santos"
+        },
+        {
+          "id": "4RnIr0AAau1SBJMbjJ9poC",
+          "name": "El Chaval de la Bachata"
+        }
+      ],
+      "total": 107955144,
+      "daily": 214079,
+      "status": "ok"
+    },
+    {
+      "title": "Ni Le Cabe",
+      "artist": "Young Miko",
+      "year": 2025,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "6BMO15AObPwSeUzxtF2fep",
+      "name": "Ni le cabe",
+      "artists": [
+        {
+          "id": "3qsKSpcV3ncke3hw52JSMB",
+          "name": "Young Miko"
+        }
+      ],
+      "total": 4570170,
+      "daily": 9214,
+      "status": "ok"
+    },
+    {
+      "title": "Amanece",
+      "artist": "Anuel AA & Haze",
+      "year": 2018,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "1LiN0Z98FkR1t0m8KmLcAH",
+      "name": "Amanece",
+      "artists": [
+        {
+          "id": "2R21vXR83lH98kGeO99Y66",
+          "name": "Anuel AA"
+        },
+        {
+          "id": "77iZVjeYoYSl5P0K9mIiUE",
+          "name": "Haze"
+        }
+      ],
+      "total": 1354483517,
+      "daily": 1243161,
+      "status": "ok"
+    },
+    {
+      "title": "Otra Noche en Miami",
+      "artist": "Bad Bunny",
+      "year": 2018,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "4vCAzANUWDE24URV6wQ4ra",
+      "name": "Otra Noche en Miami",
+      "artists": [
+        {
+          "id": "4q3ewBCX7sLwd24euuV69X",
+          "name": "Bad Bunny"
+        }
+      ],
+      "total": 770879213,
+      "daily": 556871,
+      "status": "ok"
+    },
+    {
+      "title": "Se Me Nota (Ag&aacute;rrame)",
+      "artist": "Chimbala & Omega",
+      "year": 2021,
+      "section": "Latin, Reggaeton",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Intocable",
+      "artist": "Don Omar",
+      "year": 2003,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "5IRgWZTInHCWD4o6jlSJ5r",
+      "name": "Intocable",
+      "artists": [
+        {
+          "id": "33ScadVnbm2X8kkUqOkC6Z",
+          "name": "Don Omar"
+        }
+      ],
+      "total": 14182203,
+      "daily": 48967,
+      "status": "ok"
+    },
+    {
+      "title": "Mojabi Ghost",
+      "artist": "Tainy & Bad Bunny",
+      "year": 2023,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "46YjJXVXWHlQ21odKktg5e",
+      "name": "MOJABI GHOST",
+      "artists": [
+        {
+          "id": "0GM7qgcRCORpGnfcN2tCiB",
+          "name": "Tainy"
+        },
+        {
+          "id": "4q3ewBCX7sLwd24euuV69X",
+          "name": "Bad Bunny"
+        }
+      ],
+      "total": 961488270,
+      "daily": 800616,
+      "status": "ok"
+    },
+    {
+      "title": "Suave (Blass Remix)",
+      "artist": "Calle 13",
+      "year": 2005,
+      "section": "Latin, Reggaeton",
+      "spotifyId": "2I8R6q0jiDVPslenoohZL2",
+      "name": "Suave Mix - Blass Remix",
+      "artists": [
+        {
+          "id": "0yNSzH5nZmHzeE2xn6Xshb",
+          "name": "Calle 13"
+        }
+      ],
+      "total": 22871085,
+      "daily": 10929,
+      "status": "ok"
+    },
+    {
+      "title": "Mariposas en el Est&oacute;mago",
+      "artist": "Rainao & El Laberinto del Coco",
+      "year": 2026,
+      "section": "Latin, Reggaeton",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Joha",
+      "artist": "Asake",
+      "year": 2022,
+      "section": "African music",
+      "spotifyId": "5UwxpuGHkwiojKDaPC5ZNu",
+      "name": "Joha",
+      "artists": [
+        {
+          "id": "3a1tBryiczPAZpgoZN9Rzg",
+          "name": "Asake"
+        }
+      ],
+      "total": 109073169,
+      "daily": 76276,
+      "status": "ok"
+    },
+    {
+      "title": "Gye Wani",
+      "artist": "Pat Thomas ft. Ebo Taylor",
+      "year": 2017,
+      "section": "African music",
+      "spotifyId": "1ydHBt9OC9Uq1CePkbdK6a",
+      "name": "Gye Wani",
+      "artists": [
+        {
+          "id": "6bDPzH0ZXkaMcXYlcQ2yoy",
+          "name": "Pat Thomas"
+        },
+        {
+          "id": "2gR0iQTVBPHDKiNn1Kq8HI",
+          "name": "Ebo Taylor"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Shay'sana",
+      "artist": "DJ Lag & Robot Boii ft. Kamo Mphela",
+      "year": 2024,
+      "section": "African music",
+      "spotifyId": "5RowpzAMP5LGfXRQhBdMFv",
+      "name": "Shay'sana",
+      "artists": [
+        {
+          "id": "1svX5cMlY22N60RxwzeJNO",
+          "name": "DJ Lag"
+        },
+        {
+          "id": "66MEUwWMZWL1PlTEHx8Grp",
+          "name": "Robot Boii"
+        },
+        {
+          "id": "788jOE9HMUy9heDK8EIkon",
+          "name": "Kamo Mphela"
+        }
+      ],
+      "total": 109176,
+      "daily": 106,
+      "status": "ok"
+    },
+    {
+      "title": "No Discrimination",
+      "artist": "Tony Allen & The Afro Messengers",
+      "year": 1979,
+      "section": "African music",
+      "spotifyId": "3YVet92ERXrh3fDvnc0NfT",
+      "name": "No Discrimination",
+      "artists": [
+        {
+          "id": "1cZ7GjkiXns4XmU5XKJ5kp",
+          "name": "Tony Allen & His Afro Messengers"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Assanssan",
+      "artist": "Alafia",
+      "year": 1984,
+      "section": "African music",
+      "spotifyId": "5JfvXFNABme6onXGTavmbk",
+      "name": "Assanssan",
+      "artists": [
+        {
+          "id": "74QtoYI1p16cOVXRWlszUV",
+          "name": "Alafia"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Wadibusa",
+      "artist": "Uncle Waffles ft. Royal MusiQ,OHP Sage & Pcee",
+      "year": 2024,
+      "section": "African music",
+      "spotifyId": "4AWW74UqPDyH7V7S4qtmQx",
+      "name": "Wadibusa (feat. Royal MusiQ, OHP Sage, & Pcee)",
+      "artists": [
+        {
+          "id": "68McnNC9twEtiynOAJRRgZ",
+          "name": "Uncle Waffles"
+        },
+        {
+          "id": "0UDlBvCj6BwV8uYLf8zzKS",
+          "name": "Royal MusiQ"
+        },
+        {
+          "id": "4IZr8UpEiuTNDf9a5atoco",
+          "name": "OHP Sage"
+        },
+        {
+          "id": "22Bl1QCNEZvpqVwRPYscE4",
+          "name": "Pcee"
+        }
+      ],
+      "total": 42092512,
+      "daily": 13129,
+      "status": "ok"
+    },
+    {
+      "title": "Run No More",
+      "artist": "Hugh Masekela",
+      "year": 1985,
+      "section": "African music",
+      "spotifyId": "2W56m0KKnGC9qlBzoJrMQ8",
+      "name": "Run No More (A Vuo Mo)",
+      "artists": [
+        {
+          "id": "1b3F5FI7TX4IWTNA4P1kWp",
+          "name": "Hugh Masekela"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Goro City",
+      "artist": "Manu Dibango",
+      "year": 1980,
+      "section": "African music",
+      "spotifyId": "0tY0DSIGsYHHKHFbQ0ZJwS",
+      "name": "Goro City",
+      "artists": [
+        {
+          "id": "30UIjoCGuL3Fa5BOc3ayNW",
+          "name": "Manu Dibango"
+        }
+      ],
+      "total": 958395,
+      "daily": 210,
+      "status": "ok"
+    },
+    {
+      "title": "For What It's Worth",
+      "artist": "Stevie Nicks",
+      "year": 2022,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "5z5QuOemdCqdUSRqgmXTC6",
+      "name": "For What It's Worth",
+      "artists": [
+        {
+          "id": "7crPfGd2k81ekOoSqQKWWz",
+          "name": "Stevie Nicks"
+        }
+      ],
+      "total": 4320649,
+      "daily": 2161,
+      "status": "ok"
+    },
+    {
+      "title": "Go Insane",
+      "artist": "Lindsey Buckingham",
+      "year": 1984,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "143sH2crBs4fUQyRr8pjUm",
+      "name": "Go Insane",
+      "artists": [
+        {
+          "id": "3Dzj993UEz8Z5ovxuirzFO",
+          "name": "Lindsey Buckingham"
+        }
+      ],
+      "total": 5890085,
+      "daily": 5916,
+      "status": "ok"
+    },
+    {
+      "title": "Emotional Rescue",
+      "artist": "The Rolling Stones",
+      "year": 1980,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "5IATbFZds3cbOx8YxuMuko",
+      "name": "Emotional Rescue - Remastered 2009",
+      "artists": [
+        {
+          "id": "22bE4uQ6baNwSHPVcDxLCe",
+          "name": "The Rolling Stones"
+        }
+      ],
+      "total": 46978768,
+      "daily": 13690,
+      "status": "ok"
+    },
+    {
+      "title": "I Want a New Drug",
+      "artist": "Huey Lewis and the News",
+      "year": 1984,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "0mZNKyrUmsrlDRoYHWsyMu",
+      "name": "I Want A New Drug",
+      "artists": [
+        {
+          "id": "7A9yZMTrFZcgEWAX2kBfK6",
+          "name": "Huey Lewis & The News"
+        }
+      ],
+      "total": 41088641,
+      "daily": 14922,
+      "status": "ok"
+    },
+    {
+      "title": "Panama",
+      "artist": "Van Halen",
+      "year": 1984,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "05RgAMGypEvqhNs5hPCbMS",
+      "name": "Panama - 2015 Remaster",
+      "artists": [
+        {
+          "id": "2cnMpRsOVqtPMfq7YiFE6K",
+          "name": "Van Halen"
+        }
+      ],
+      "total": 573296188,
+      "daily": 194377,
+      "status": "ok"
+    },
+    {
+      "title": "Nothin' but a Good Time",
+      "artist": "Poison",
+      "year": 1988,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "6G09JrmKdDAe29eSH8ZQmR",
+      "name": "Nothin' But A Good Time",
+      "artists": [
+        {
+          "id": "1fBCIkoPOPCDLUxGuWNvyo",
+          "name": "Poison"
+        }
+      ],
+      "total": 296144659,
+      "daily": 98332,
+      "status": "ok"
+    },
+    {
+      "title": "Cocaine",
+      "artist": "Eric Clapton",
+      "year": 1977,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "2c92VFZu2JBd8k16ExLRAm",
+      "name": "Cocaine",
+      "artists": [
+        {
+          "id": "6PAt558ZEZl0DmdXlnjMgD",
+          "name": "Eric Clapton"
+        }
+      ],
+      "total": 610744073,
+      "daily": 152356,
+      "status": "ok"
+    },
+    {
+      "title": "Jump into the Fire",
+      "artist": "Harry Nilsson",
+      "year": 1972,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "3hgHrfMdtnLtH54HYTdNHF",
+      "name": "Jump Into The Fire",
+      "artists": [
+        {
+          "id": "3RTzAwFprBqiskp550eSJX",
+          "name": "Harry Nilsson"
+        }
+      ],
+      "total": 15514848,
+      "daily": 3071,
+      "status": "ok"
+    },
+    {
+      "title": "Bargain",
+      "artist": "The Who",
+      "year": 1971,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "4Vtl42qX97JBj68TKifBHR",
+      "name": "Bargain",
+      "artists": [
+        {
+          "id": "67ea9eGLXYMsO2eYQRui3w",
+          "name": "The Who"
+        }
+      ],
+      "total": 16750894,
+      "daily": 4896,
+      "status": "ok"
+    },
+    {
+      "title": "Take Me Home Tonight",
+      "artist": "Eddie Money",
+      "year": 1986,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "7b4yGtR0rujvLi5EBfKKJ2",
+      "name": "Take Me Home Tonight",
+      "artists": [
+        {
+          "id": "4Tw2N3wdvJPGEU7JqMxFfE",
+          "name": "Eddie Money"
+        }
+      ],
+      "total": 365969436,
+      "daily": 133961,
+      "status": "ok"
+    },
+    {
+      "title": "Jack & Diane",
+      "artist": "John Mellencamp",
+      "year": 1982,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "43btz2xjMKpcmjkuRsvxyg",
+      "name": "Jack & Diane",
+      "artists": [
+        {
+          "id": "3lPQ2Fk5JOwGWAF3ORFCqH",
+          "name": "John Mellencamp"
+        }
+      ],
+      "total": 548055132,
+      "daily": 136786,
+      "status": "ok"
+    },
+    {
+      "title": "Dr. Feelgood",
+      "artist": "M&ouml;tley Cr&uuml;e",
+      "year": 1989,
+      "section": "Hard Rock, Heavy Metal",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Let My Love Open the Door",
+      "artist": "Pete Townshend",
+      "year": 1980,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "0otlwsD3mSogk7VJCTp6Kg",
+      "name": "Let My Love Open The Door",
+      "artists": [
+        {
+          "id": "24Wa5wIZIo1sPkzVGP0B5p",
+          "name": "Pete Townshend"
+        }
+      ],
+      "total": 85313795,
+      "daily": 29015,
+      "status": "ok"
+    },
+    {
+      "title": "Lovin' Every Minute of It",
+      "artist": "Loverboy",
+      "year": 1985,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "1N9KAY1WftAtnTqbf8ULKZ",
+      "name": "Lovin' Every Minute of It",
+      "artists": [
+        {
+          "id": "2CLVPk9FcywjClBcTvWPkT",
+          "name": "Loverboy"
+        }
+      ],
+      "total": 31769706,
+      "daily": 11999,
+      "status": "ok"
+    },
+    {
+      "title": "Sure Know Something",
+      "artist": "KISS",
+      "year": 1979,
+      "section": "Hard Rock, Heavy Metal",
+      "spotifyId": "1HBDWCrQVjrALiOA5rILnE",
+      "name": "Sure Know Something",
+      "artists": [
+        {
+          "id": "07XSN3sPlIlB2L2XNcTwJw",
+          "name": "KISS"
+        }
+      ],
+      "total": 36254418,
+      "daily": 14074,
+      "status": "ok"
+    },
+    {
+      "title": "Overpowered",
+      "artist": "R&oacute;is&iacute;n Murphy",
+      "year": 2007,
+      "section": "Pop",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Million Dollar Baby",
+      "artist": "Tommy Richman",
+      "year": 2024,
+      "section": "Pop",
+      "spotifyId": "5AJ9hqTS2wcFQCELCFRO7A",
+      "name": "MILLION DOLLAR BABY",
+      "artists": [
+        {
+          "id": "1WaFQSHVGZQJTbf0BdxdNo",
+          "name": "Tommy Richman"
+        }
+      ],
+      "total": 1514781392,
+      "daily": 399520,
+      "status": "ok"
+    },
+    {
+      "title": "One Night/All Night",
+      "artist": "Justice & Tame Impala",
+      "year": 2024,
+      "section": "Pop",
+      "spotifyId": "2Oidi4pAbR9X81PBaV71N8",
+      "name": "One Night/All Night",
+      "artists": [
+        {
+          "id": "1gR0gsQYfi6joyO1dlp76N",
+          "name": "Justice"
+        },
+        {
+          "id": "5INjqkS1o8h1imAzPqGZBb",
+          "name": "Tame Impala"
+        }
+      ],
+      "total": 78549265,
+      "daily": 90373,
+      "status": "ok"
+    },
+    {
+      "title": "Emerge",
+      "artist": "Fischerspooner",
+      "year": 2001,
+      "section": "Pop",
+      "spotifyId": "3bI1g9RRpYnrBzLvnaq2pl",
+      "name": "Emerge",
+      "artists": [
+        {
+          "id": "5R7K1GezC0jy24v1R2n4x3",
+          "name": "Fischerspooner"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Paradise",
+      "artist": "ANOTR",
+      "year": 2026,
+      "section": "Pop",
+      "spotifyId": "35zBE6B2fTGuYsFPfnLx1l",
+      "name": "Paradise",
+      "artists": [
+        {
+          "id": "4p5WgeiPSPpqPDs7T6OkWf",
+          "name": "ANOTR"
+        }
+      ],
+      "total": 1699459,
+      "daily": 8534,
+      "status": "ok"
+    },
+    {
+      "title": "Abu Simbel",
+      "artist": "Rampa & WhoMadeWho",
+      "year": 2021,
+      "section": "Pop",
+      "spotifyId": "4WJ4jbkCbsgmeWPGRLJta6",
+      "name": "Abu Simbel",
+      "artists": [
+        {
+          "id": "50Lr1puweM1hFsF1LpIZLM",
+          "name": "WhoMadeWho"
+        },
+        {
+          "id": "08jywfUS0hp8XYlYs0cvz8",
+          "name": "Rampa"
+        }
+      ],
+      "total": 62905943,
+      "daily": 16272,
+      "status": "ok"
+    },
+    {
+      "title": "Symphony No. 5 III. Allegro Molto",
+      "artist": "Jean Sibelius",
+      "year": 1915,
+      "section": "Classical",
+      "spotifyId": "2s7oaW721ExcKoyxzDWD1D",
+      "name": "Symphony No. 5 in E-Flat Major, Op. 82: III. Allegro molto – Misterioso – Un pochettino largamente – Largamente assai",
+      "artists": [
+        {
+          "id": "7jzR5qj8vFnSu5JHaXgFEr",
+          "name": "Jean Sibelius"
+        },
+        {
+          "id": "0K23lQ2hSQAlxSEeZ05bjI",
+          "name": "Boston Symphony Orchestra"
+        },
+        {
+          "id": "0TrG2LSot4KhaXqdf5K2zE",
+          "name": "Sir Colin Davis"
+        }
+      ],
+      "total": 9900969,
+      "daily": 1033,
+      "status": "ok"
+    },
+    {
+      "title": "Symphony No. 6 Allegro Energico",
+      "artist": "Mahler",
+      "year": 1906,
+      "section": "Classical",
+      "spotifyId": "3X4Au5DFWLTbqgLNHAKqs3",
+      "name": "Symphony No. 6 in A minor, \"Tragic\": I. Allegro energico, ma non troppo",
+      "artists": [
+        {
+          "id": "2ANtgfhQkKpsW6EYSDqldz",
+          "name": "Gustav Mahler"
+        },
+        {
+          "id": "0KEL9I60FHUhaPzRxuCHRT",
+          "name": "Dimitri Mitropoulos"
+        },
+        {
+          "id": "3gacryguGmpmCvgPGt2CBI",
+          "name": "New York Philharmonic"
+        }
+      ],
+      "total": 21092516,
+      "daily": 27121,
+      "status": "ok"
+    },
+    {
+      "title": "Messiah",
+      "artist": "George Frideric Handel",
+      "year": 1742,
+      "section": "Classical",
+      "spotifyId": "4gKB2LqyOREl5gUveZC2j4",
+      "name": "Messiah, HWV 56, Pt. 3: No. 45, Aria. I Know That My Redeemer Liveth (Soprano)",
+      "artists": [
+        {
+          "id": "1QL7yTHrdahRMpvNtn6rI2",
+          "name": "George Frideric Handel"
+        },
+        {
+          "id": "2yQfSbh2BQBBtwLUj4QZ9p",
+          "name": "Judith Nelson"
+        },
+        {
+          "id": "60adCptqwRkANTtVja0bvf",
+          "name": "Academy of Ancient Music"
+        },
+        {
+          "id": "0vBafEFOLXtq5mZuhMgsyL",
+          "name": "Christopher Hogwood"
+        }
+      ],
+      "total": 779780,
+      "daily": 477,
+      "status": "ok"
+    },
+    {
+      "title": "Les Pr&eacute;ludes",
+      "artist": "Franz Liszt",
+      "year": 1854,
+      "section": "Classical",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Concerto for Orchestra",
+      "artist": "Witold Lutosławski",
+      "year": 1954,
+      "section": "Classical",
+      "spotifyId": "77FkheCL4OuVbZYbZYraFm",
+      "name": "Concerto for Orchestra: 1. Intrada: Allegro Maestoso",
+      "artists": [
+        {
+          "id": "5Ks8fS8lZJnTFbtvxkDOkM",
+          "name": "Witold Lutosławski"
+        },
+        {
+          "id": "0jJszR81GjA87jeRq0Jgwz",
+          "name": "The Cleveland Orchestra"
+        },
+        {
+          "id": "00Z7CY1UMeGccawHXlZ6Zd",
+          "name": "Christoph von Dohnányi"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Piano Concerto No. 2",
+      "artist": "Sergei Prokofiev",
+      "year": 1913,
+      "section": "Classical",
+      "spotifyId": "0VkDO860QdCtw2T6Gu4pdb",
+      "name": "Piano Concerto No. 2 in G Minor, Op. 16: IV. Finale (Allegro tempestoso) - Live",
+      "artists": [
+        {
+          "id": "4kHtgiRnpmFIV5Tm4BIs8l",
+          "name": "Sergei Prokofiev"
+        },
+        {
+          "id": "7HUNjWo242UAVHZvj9zk4w",
+          "name": "Yuja Wang"
+        },
+        {
+          "id": "5p6H6NoqsMesY9ZvMBg1tu",
+          "name": "Simón Bolívar Symphony Orchestra of Venezuela"
+        },
+        {
+          "id": "0cxXnDhpgxcMMkKddhORHY",
+          "name": "Gustavo Dudamel"
+        }
+      ],
+      "total": 17021491,
+      "daily": 4446,
+      "status": "ok"
+    },
+    {
+      "title": "Nocturnes,L. 91: II. F&ecirc;tes",
+      "artist": "Claude Debussy",
+      "year": 1900,
+      "section": "Classical",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Floral",
+      "artist": "Skream",
+      "year": 2022,
+      "section": "Dance",
+      "spotifyId": "2Dxb8R2sgIGFdVwH1xEQkr",
+      "name": "Floral",
+      "artists": [
+        {
+          "id": "2jbP92oFLWqPqogflK1wlW",
+          "name": "Skream"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Drive",
+      "artist": "The Cars",
+      "year": 1984,
+      "section": "Pop",
+      "spotifyId": "3wfujdbamR3Z46F4xav7LM",
+      "name": "Drive",
+      "artists": [
+        {
+          "id": "6DCIj8jNaNpBz8e5oKFPtp",
+          "name": "The Cars"
+        }
+      ],
+      "total": 632859877,
+      "daily": 358311,
+      "status": "ok"
+    },
+    {
+      "title": "In the Air Tonight",
+      "artist": "Phil Collins",
+      "year": 1981,
+      "section": "Pop",
+      "spotifyId": "18AXbzPzBS8Y3AkgSxzJPb",
+      "name": "In the Air Tonight - 2015 Remaster",
+      "artists": [
+        {
+          "id": "4lxfqrEsLX6N1N4OCSkILp",
+          "name": "Phil Collins"
+        }
+      ],
+      "total": 1136721096,
+      "daily": 676900,
+      "status": "ok"
+    },
+    {
+      "title": "Listen to Your Heart",
+      "artist": "Roxette",
+      "year": 1988,
+      "section": "Pop",
+      "spotifyId": "2MaBAGBIttgv86bYytdx1f",
+      "name": "Listen To Your Heart",
+      "artists": [
+        {
+          "id": "2SHhfs4BiDxGQ3oxqf0UHY",
+          "name": "Roxette"
+        }
+      ],
+      "total": 8930797,
+      "daily": 3927,
+      "status": "ok"
+    },
+    {
+      "title": "Overnite",
+      "artist": "Scritti Politti",
+      "year": 1988,
+      "section": "Pop",
+      "spotifyId": "5G9Vy0SF7a0sBYMRFM6lWN",
+      "name": "Overnite",
+      "artists": [
+        {
+          "id": "59luKpdal8UwxcuLJNoKwS",
+          "name": "Scritti Politti"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Coming Around Again",
+      "artist": "Carly Simon",
+      "year": 1986,
+      "section": "Pop",
+      "spotifyId": "58Ga5VQlZMnCUV6ZRqf76k",
+      "name": "Coming Around Again",
+      "artists": [
+        {
+          "id": "4FtSnMlCVxCswABUmdhwpm",
+          "name": "Carly Simon"
+        }
+      ],
+      "total": 189535589,
+      "daily": 56459,
+      "status": "ok"
+    },
+    {
+      "title": "I Guess That's Why They Call It the Blues",
+      "artist": "Elton John",
+      "year": 1983,
+      "section": "Pop",
+      "spotifyId": "23l1kVpqMVREiwU1YAlcr4",
+      "name": "I Guess That's Why They Call It The Blues",
+      "artists": [
+        {
+          "id": "3PhoLpVuITZKcymswpck5b",
+          "name": "Elton John"
+        }
+      ],
+      "total": 313425864,
+      "daily": 104450,
+      "status": "ok"
+    },
+    {
+      "title": "Stop Draggin' My Heart Around",
+      "artist": "Stevie Nicks ft. Tom Petty",
+      "year": 1981,
+      "section": "Pop",
+      "spotifyId": "66LhCsc06aTa2Ig7iYPDSP",
+      "name": "Stop Draggin' My Heart Around (with Tom Petty and The Heartbreakers) - 2016 Remaster",
+      "artists": [
+        {
+          "id": "7crPfGd2k81ekOoSqQKWWz",
+          "name": "Stevie Nicks"
+        },
+        {
+          "id": "4tX2TplrkIP4v05BNC903e",
+          "name": "Tom Petty and the Heartbreakers"
+        }
+      ],
+      "total": 129681417,
+      "daily": 83500,
+      "status": "ok"
+    },
+    {
+      "title": "When You're in Love with a Beautiful Woman",
+      "artist": "Dr. Hook",
+      "year": 1979,
+      "section": "Pop",
+      "spotifyId": "1UiKUFbCfgbVjwY8W657Pv",
+      "name": "When You're In Love With A Beautiful Woman",
+      "artists": [
+        {
+          "id": "2Mhi3jfuRSdbVZPdjqsnnN",
+          "name": "Dr. Hook"
+        }
+      ],
+      "total": 150165901,
+      "daily": 52304,
+      "status": "ok"
+    },
+    {
+      "title": "Fool (If You Think It's Over)",
+      "artist": "Chris Rea",
+      "year": 1978,
+      "section": "Pop",
+      "spotifyId": "0UHiH4dy1hXULYl8CgNxRV",
+      "name": "Fool (If You Think It's Over)",
+      "artists": [
+        {
+          "id": "5KEG7G8LDYlHgFDqZyEEs2",
+          "name": "Chris Rea"
+        }
+      ],
+      "total": 47353826,
+      "daily": 17556,
+      "status": "ok"
+    },
+    {
+      "title": "Lady",
+      "artist": "D'Angelo",
+      "year": 1995,
+      "section": "Honey FM",
+      "spotifyId": "7AjfklMN4WpQYz5FkT4E66",
+      "name": "Lady",
+      "artists": [
+        {
+          "id": "336vr2M3Va0FjyvB55lJEd",
+          "name": "D'Angelo"
+        }
+      ],
+      "total": 117202804,
+      "daily": 55288,
+      "status": "ok"
+    },
+    {
+      "title": "Optimistic",
+      "artist": "Sounds of Blackness",
+      "year": 1991,
+      "section": "Honey FM",
+      "spotifyId": "7Mb7jOst43wPQELas93ARE",
+      "name": "Optimistic",
+      "artists": [
+        {
+          "id": "0a0l3QVhfMwQNAO4wPAmP9",
+          "name": "Sounds Of Blackness"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Hey Mr. D.J.",
+      "artist": "Zhan&eacute;",
+      "year": 1993,
+      "section": "Honey FM",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Get It On Tonite",
+      "artist": "Montell Jordan",
+      "year": 1999,
+      "section": "Honey FM",
+      "spotifyId": "0AcLrSfAEBQcUnHOTm5pXg",
+      "name": "Get It On Tonite",
+      "artists": [
+        {
+          "id": "0iVrCROxeyon7MZUW3MfzT",
+          "name": "Montell Jordan"
+        }
+      ],
+      "total": 130658621,
+      "daily": 54714,
+      "status": "ok"
+    },
+    {
+      "title": "Buy U a Drank (Shawty Snappin')",
+      "artist": "T-Pain ft. Yung Joc",
+      "year": 2007,
+      "section": "Honey FM",
+      "spotifyId": "1tkMs9wDPknQ3ZHcKDw1ES",
+      "name": "Buy U a Drank (Shawty Snappin') (feat. Yung Joc)",
+      "artists": [
+        {
+          "id": "3aQeKQSyrW4qWr35idm0cy",
+          "name": "T-Pain"
+        },
+        {
+          "id": "23LbwefIODbyGdRbAz3urj",
+          "name": "Yung Joc"
+        }
+      ],
+      "total": 962980996,
+      "daily": 301007,
+      "status": "ok"
+    },
+    {
+      "title": "I Adore Mi Amor",
+      "artist": "Color Me Badd",
+      "year": 1991,
+      "section": "Honey FM",
+      "spotifyId": "05R2lE5g9hnaSmxIrUl3C0",
+      "name": "I Adore Mi Amor",
+      "artists": [
+        {
+          "id": "1QtIfAa6y7w2JhxYJhYeUG",
+          "name": "Color Me Badd"
+        }
+      ],
+      "total": 10045094,
+      "daily": 5412,
+      "status": "ok"
+    },
+    {
+      "title": "Where the Party At",
+      "artist": "Jagged Edge ft. Nelly",
+      "year": 2001,
+      "section": "Honey FM",
+      "spotifyId": "5mNV8Mz59bzyuQ53gTw0c0",
+      "name": "Where the Party At (feat. Nelly)",
+      "artists": [
+        {
+          "id": "7Aq8lpLMSt1Zxu56pe9bmp",
+          "name": "Jagged Edge"
+        },
+        {
+          "id": "2gBjLmx6zQnFGQJCAQpRgw",
+          "name": "Nelly"
+        }
+      ],
+      "total": 247319714,
+      "daily": 52274,
+      "status": "ok"
+    },
+    {
+      "title": "Locked Up",
+      "artist": "Akon ft. Styles P",
+      "year": 2004,
+      "section": "Honey FM",
+      "spotifyId": "0YUrjFy4qFKOO5NhM9tYdV",
+      "name": "Locked Up",
+      "artists": [
+        {
+          "id": "0z4gvV4rjIZ9wHck67ucSV",
+          "name": "Akon"
+        }
+      ],
+      "total": 384767619,
+      "daily": 209800,
+      "status": "ok"
+    },
+    {
+      "title": "Bad Girl",
+      "artist": "Usher",
+      "year": 2004,
+      "section": "Honey FM",
+      "spotifyId": "5rPzPAaOUceS8HiAculegz",
+      "name": "Bad Girl",
+      "artists": [
+        {
+          "id": "23zg3TcAtWQy7J6upgbUnj",
+          "name": "USHER"
+        }
+      ],
+      "total": 140335015,
+      "daily": 54073,
+      "status": "ok"
+    },
+    {
+      "title": "Too Close",
+      "artist": "Next",
+      "year": 1997,
+      "section": "Honey FM",
+      "spotifyId": "5IFCyWplye09HytIP80RCF",
+      "name": "Too Close",
+      "artists": [
+        {
+          "id": "2MGT7CYlixSPxAnnkhLpaA",
+          "name": "Next"
+        }
+      ],
+      "total": 208512,
+      "daily": 55,
+      "status": "ok"
+    },
+    {
+      "title": "Feels Good",
+      "artist": "Tony! Toni! Ton&eacute;!",
+      "year": 1990,
+      "section": "Honey FM",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Dance with Me",
+      "artist": "112",
+      "year": 2001,
+      "section": "Honey FM",
+      "spotifyId": "6uRH1qMz30ZBwwUG0IYE5s",
+      "name": "Dance With Me",
+      "artists": [
+        {
+          "id": "7urq0VfqxEYEEiZUkebXT4",
+          "name": "112"
+        }
+      ],
+      "total": 137427491,
+      "daily": 69630,
+      "status": "ok"
+    },
+    {
+      "title": "Tell Me",
+      "artist": "Groove Theory",
+      "year": 1995,
+      "section": "Honey FM",
+      "spotifyId": "2lp8xjq0WTm3HZKHuDEweg",
+      "name": "Tell Me",
+      "artists": [
+        {
+          "id": "7opRqRgF9lvnVraBFCMvIj",
+          "name": "Groove Theory"
+        }
+      ],
+      "total": 155832762,
+      "daily": 54125,
+      "status": "ok"
+    },
+    {
+      "title": "Skylarking",
+      "artist": "Horace Andy",
+      "year": 1972,
+      "section": "Reggae",
+      "spotifyId": "36MPUMdBhB8E8mdQcsjpUv",
+      "name": "Skylarking",
+      "artists": [
+        {
+          "id": "2ieAXAuLe6qQ3RJsqCxpoC",
+          "name": "Horace Andy"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Dub Inspector",
+      "artist": "Adrian Sherwood",
+      "year": 2025,
+      "section": "Reggae",
+      "spotifyId": "5AIKPghuzPKGMLSY2L8xle",
+      "name": "Dub Inspector",
+      "artists": [
+        {
+          "id": "4vZIz0gG5DD3Qj9MB6kclW",
+          "name": "Adrian Sherwood"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Caught You in a Lie",
+      "artist": "Louisa Mark",
+      "year": 1975,
+      "section": "Reggae",
+      "spotifyId": "44EIYyIQdBgMQZFg3zaIzX",
+      "name": "Caught You in a Lie",
+      "artists": [
+        {
+          "id": "62IjgrtJhqvxVZBBFOz8Bs",
+          "name": "Louisa Mark"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "I'm So Sorry",
+      "artist": "Carroll Thompson",
+      "year": 1981,
+      "section": "Reggae",
+      "spotifyId": "6aeH5GJQ3gu9sgzhlLXm4M",
+      "name": "I'm So Sorry",
+      "artists": [
+        {
+          "id": "1YN1OuUFRoFlnwR97pIRlJ",
+          "name": "Carroll Thompson"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Big Ship",
+      "artist": "Freddie McGregor",
+      "year": 1982,
+      "section": "Reggae",
+      "spotifyId": "6HpjJaxJki9ubKp4aXow8b",
+      "name": "Big Ship",
+      "artists": [
+        {
+          "id": "30R9paG1c5BGtNGle59VPq",
+          "name": "Freddie McGregor"
+        }
+      ],
+      "total": 23237916,
+      "daily": 13571,
+      "status": "ok"
+    },
+    {
+      "title": "Everything I Own",
+      "artist": "Ken Boothe",
+      "year": 1974,
+      "section": "Reggae",
+      "spotifyId": "4PfDS6wcDp7YvikkmbySak",
+      "name": "Everything I Own - 7'' Mix",
+      "artists": [
+        {
+          "id": "6jg1EbpTL27toPdfzveorJ",
+          "name": "Ken Boothe"
+        }
+      ],
+      "total": 39442162,
+      "daily": 14020,
+      "status": "ok"
+    },
+    {
+      "title": "Smile",
+      "artist": "Jamiroquai",
+      "year": 2011,
+      "section": "House, Jazz, Worldbeat",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Don't Send Me Away",
+      "artist": "Garfield Fleming",
+      "year": 1981,
+      "section": "House, Jazz, Worldbeat",
+      "spotifyId": "1VQ4vNasNIrgOKjVpb1aVM",
+      "name": "Don't Send Me Away",
+      "artists": [
+        {
+          "id": "4fFjqMFB94nHDVu5odlDB5",
+          "name": "Garfield Fleming"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Slope VIP",
+      "artist": "Facta ft. Warrior Queen & Killa P",
+      "year": 2026,
+      "section": "House, Jazz, Worldbeat",
+      "spotifyId": "20ljzvUp8huIzKVWABVj72",
+      "name": "SLoPE VIP",
+      "artists": [
+        {
+          "id": "5qdAJ2QyXRasXUmyesONEn",
+          "name": "Facta"
+        },
+        {
+          "id": "6MGlEnPgJhFkC8P8DdKtsT",
+          "name": "Warrior Queen"
+        },
+        {
+          "id": "0yZqTQF0ULKX2gFE6fBHXZ",
+          "name": "Killa P"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Atmosphere Strut",
+      "artist": "Cloud One",
+      "year": 1976,
+      "section": "House, Jazz, Worldbeat",
+      "spotifyId": "1aepkYPqLWGTCLnRGSRkRB",
+      "name": "Atmosphere Strut",
+      "artists": [
+        {
+          "id": "2B9FE4FTPCJ7W8DrF5wkve",
+          "name": "Cloud One"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "The First Time Ever I Saw Your Face",
+      "artist": "Roberta Flack",
+      "year": 1969,
+      "section": "House, Jazz, Worldbeat",
+      "spotifyId": "0SxFyA4FqmEQqZVuAlg8lf",
+      "name": "The First Time Ever I Saw Your Face",
+      "artists": [
+        {
+          "id": "0W498bDDNlJIrYMKXdpLHA",
+          "name": "Roberta Flack"
+        }
+      ],
+      "total": 126587247,
+      "daily": 30384,
+      "status": "ok"
+    },
+    {
+      "title": "Do It for You",
+      "artist": "Moses Ideka & Phil",
+      "year": 2023,
+      "section": "House, Jazz, Worldbeat",
+      "spotifyId": "4ZxdIXCycwS16uEaO4Mlby",
+      "name": "Do It For You",
+      "artists": [
+        {
+          "id": "3wXkwKekKUy1Hfi60sxB8s",
+          "name": "Moses Ideka"
+        },
+        {
+          "id": "7kPw0lfDERbzcrpz39TAMY",
+          "name": "phil"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Star Chasers",
+      "artist": "4hero",
+      "year": 1998,
+      "section": "House, Jazz, Worldbeat",
+      "spotifyId": "5AoOfPXUZpQr7SPWFldB9f",
+      "name": "Star Chasers",
+      "artists": [
+        {
+          "id": "1BlBZ9jQGOjmj6Zykgg43L",
+          "name": "4hero"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Herz Aus Glas",
+      "artist": "Marianne Rosenberg",
+      "year": 1979,
+      "section": "Dance",
+      "spotifyId": "0iBTM6KRZNzdBnovf5MnHP",
+      "name": "Herz aus Glas",
+      "artists": [
+        {
+          "id": "4RVBHXd0cu2qrEyv8jVjQZ",
+          "name": "Marianne Rosenberg"
+        }
+      ],
+      "total": 582587,
+      "daily": 490,
+      "status": "ok"
+    },
+    {
+      "title": "Rokkibaby",
+      "artist": "Rolf Bergstr&ouml;m",
+      "year": 1975,
+      "section": "Dance",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Hai capito o no?",
+      "artist": "Ron",
+      "year": 1982,
+      "section": "Dance",
+      "spotifyId": "1xBMyLQh9cxjwRdwUqdLxC",
+      "name": "Hai capito o no? - Live",
+      "artists": [
+        {
+          "id": "3vuKNU7lgoecqjnArUKom6",
+          "name": "Ron"
+        }
+      ],
+      "total": 1249218,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "La Cartera",
+      "artist": "Orquesta Harlow",
+      "year": 1974,
+      "section": "La Ola",
+      "spotifyId": "1mpKcP8f2gQrInkh2FLb1N",
+      "name": "La Cartera",
+      "artists": [
+        {
+          "id": "7tR38XlRHmElbNAWRiHb9W",
+          "name": "Orquesta Harlow"
+        },
+        {
+          "id": "2PGJmP6AvSCQ7pKBOjrg8J",
+          "name": "Larry Harlow"
+        },
+        {
+          "id": "7cRTfuZ5VJhWfVjuN3XGyY",
+          "name": "Junior Gonzalez"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Descarga Cubana",
+      "artist": "Cachao",
+      "year": 1957,
+      "section": "La Ola",
+      "spotifyId": "7C80SGAXXobenllTBkEQ7Q",
+      "name": "Descarga cubana",
+      "artists": [
+        {
+          "id": "1Qa5p9ajnRIvq7bfsdtzqQ",
+          "name": "Cachao"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "No Hay Cama Pa' Tanta Gente",
+      "artist": "El Gran Combo de Puerto Rico",
+      "year": 1985,
+      "section": "La Ola",
+      "spotifyId": "6InAsgddPjAcuF7mSHDT8K",
+      "name": "No Hay Cama Pa' Tanta Gente",
+      "artists": [
+        {
+          "id": "6nnspeopmJAG07xOxHmqTu",
+          "name": "El Gran Combo De Puerto Rico"
+        }
+      ],
+      "total": 23936793,
+      "daily": 15520,
+      "status": "ok"
+    },
+    {
+      "title": "Mi Tierra",
+      "artist": "Gloria Estefan",
+      "year": 1993,
+      "section": "La Ola",
+      "spotifyId": "41LiGcvaTkXHyPjfsxKvWv",
+      "name": "Mi Tierra",
+      "artists": [
+        {
+          "id": "5IFCkqu9J6xdWeYMk5I889",
+          "name": "Gloria Estefan"
+        }
+      ],
+      "total": 64234136,
+      "daily": 17576,
+      "status": "ok"
+    },
+    {
+      "title": "Sopa de Caracol",
+      "artist": "Banda Blanca",
+      "year": 1991,
+      "section": "La Ola",
+      "spotifyId": "4V8uHuLaBRxQ02H4YNCOO7",
+      "name": "Sopa de Caracol",
+      "artists": [
+        {
+          "id": "1Ykx49KpY0FqIXUwyuD3TJ",
+          "name": "Banda Blanca"
+        }
+      ],
+      "total": 94709521,
+      "daily": 44612,
+      "status": "ok"
+    },
+    {
+      "title": "Soy Guajiro",
+      "artist": "Willy Chirino",
+      "year": 1994,
+      "section": "La Ola",
+      "spotifyId": "0dgsulvzd61MWCBNVjJcdR",
+      "name": "Soy Guajiro",
+      "artists": [
+        {
+          "id": "4dvonCK12HCv1UUryzRppO",
+          "name": "Willy Chirino"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "La Hija de Lola",
+      "artist": "Charlie Palmieri",
+      "year": 1973,
+      "section": "La Ola",
+      "spotifyId": "5xS8g8E2mPuIjCbxQj2Yx4",
+      "name": "La Hija De Lola",
+      "artists": [
+        {
+          "id": "1qNctKAgK8LDV3agmP8ukS",
+          "name": "Charlie Palmieri"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Ligia Elena",
+      "artist": "Willie Col&oacute;n & Rub&eacute;n Blades",
+      "year": 1978,
+      "section": "La Ola",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Pedro Navaja",
+      "artist": "Willie Col&oacute;n & Rub&eacute;n Blades",
+      "year": 1978,
+      "section": "La Ola",
+      "status": "spotify-yok"
+    },
+    {
+      "title": "Pusher",
+      "artist": "Justice (feat. Gesaffelstein)",
+      "year": 2026,
+      "section": "Various Genres",
+      "spotifyId": "6pxjskMHpE4QBmxoOX6O5H",
+      "name": "Pusher (feat. Gesaffelstein) [From GTAVI: Original Score]",
+      "artists": [
+        {
+          "id": "1gR0gsQYfi6joyO1dlp76N",
+          "name": "Justice"
+        },
+        {
+          "id": "3hteYQFiMFbJY7wS0xDymP",
+          "name": "Gesaffelstein"
+        },
+        {
+          "id": "15o7qdDTBzs6xWRUYUtZc1",
+          "name": "Grand Theft Auto VI"
+        }
+      ],
+      "total": 6000113,
+      "daily": 275792,
+      "status": "ok"
+    },
+    {
+      "title": "Wild Heart",
+      "artist": "Stevie Nicks",
+      "year": 1983,
+      "section": "Pop",
+      "spotifyId": "3CI74gtEc999nnrg9pfYJH",
+      "name": "Wild Heart",
+      "artists": [
+        {
+          "id": "7crPfGd2k81ekOoSqQKWWz",
+          "name": "Stevie Nicks"
+        }
+      ],
+      "total": 1587568,
+      "daily": 524,
+      "status": "ok"
+    },
+    {
+      "title": "Lips Like Sugar",
+      "artist": "Echo & the Bunnymen",
+      "year": 1987,
+      "section": "Pop",
+      "spotifyId": "3Oa8vnNXStoOHLbJwwMEDP",
+      "name": "Lips Like Sugar",
+      "artists": [
+        {
+          "id": "0fgYKF9Avljex0L9Wt5b8Z",
+          "name": "Echo & the Bunnymen"
+        }
+      ],
+      "total": 74803489,
+      "daily": 33442,
+      "status": "ok"
+    },
+    {
+      "title": "Name and Number",
+      "artist": "Curiosity Killed the Cat",
+      "year": 1989,
+      "section": "Pop",
+      "spotifyId": "1EagX1pX5Qr8d2opqU6YU7",
+      "name": "Name and Number",
+      "artists": [
+        {
+          "id": "0ZGAYur5k4gJprOffC6LkP",
+          "name": "Curiosity Killed The Cat"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "A Good Heart",
+      "artist": "Feargal Sharkey",
+      "year": 1985,
+      "section": "Pop",
+      "spotifyId": "4umQbcdBF3YVsNBvvnFLiX",
+      "name": "A Good Heart",
+      "artists": [
+        {
+          "id": "3zk5lgbVEre0rKRBqiKt0T",
+          "name": "Feargal Sharkey"
+        }
+      ],
+      "total": 65568244,
+      "daily": 0,
+      "status": "ok"
+    },
+    {
+      "title": "Thieves Like Us",
+      "artist": "New Order",
+      "year": 1984,
+      "section": "Pop",
+      "spotifyId": "0kQTkXqjtWSPCM2D14cGq3",
+      "name": "Thieves like Us",
+      "artists": [
+        {
+          "id": "0yNLKJebCb8Aueb54LYya3",
+          "name": "New Order"
+        }
+      ],
+      "total": 10534520,
+      "daily": 4312,
+      "status": "ok"
+    },
+    {
+      "title": "Kiss and Tell",
+      "artist": "Bryan Ferry",
+      "year": 1987,
+      "section": "Pop",
+      "spotifyId": "0QKMpeUWAGPg8165wmah1T",
+      "name": "Kiss and Tell",
+      "artists": [
+        {
+          "id": "5RNFFojXkPRmlJZIwXeKQC",
+          "name": "Bryan Ferry"
+        }
+      ],
+      "total": 19970864,
+      "daily": 17838,
+      "status": "ok"
+    },
+    {
+      "title": "Loverboy",
+      "artist": "Billy Ocean",
+      "year": 1984,
+      "section": "Pop",
+      "spotifyId": "1rG2EZw9GJuBPleLhS64sn",
+      "name": "Loverboy",
+      "artists": [
+        {
+          "id": "5IDs1CK15HegSAhGEbSYXo",
+          "name": "Billy Ocean"
+        }
+      ],
+      "total": 35914425,
+      "daily": 11878,
+      "status": "ok"
+    },
+    {
+      "title": "Shattered Dreams",
+      "artist": "Johnny Hates Jazz",
+      "year": 1987,
+      "section": "Pop",
+      "spotifyId": "03Y9Gez0KGG8zYY3KWIqdk",
+      "name": "Shattered Dreams",
+      "artists": [
+        {
+          "id": "6zpPKMhpOoG646kJgZ7RKf",
+          "name": "Johnny Hates Jazz"
+        }
+      ],
+      "total": 148998674,
+      "daily": 65649,
+      "status": "ok"
+    },
+    {
+      "title": "We Don't Have to Take Our Clothes Off",
+      "artist": "Jermaine Stewart",
+      "year": 1985,
+      "section": "Pop",
+      "spotifyId": "7o9KG7iQY8KACz7PZXYpyv",
+      "name": "We Don't Have To Take Our Clothes Off",
+      "artists": [
+        {
+          "id": "7FAkzV0YOw0EIXFhmY4RE3",
+          "name": "Jermaine Stewart"
+        }
+      ],
+      "total": 53018806,
+      "daily": 26494,
+      "status": "ok"
+    },
+    {
+      "title": "Miss Me Blind",
+      "artist": "Culture Club",
+      "year": 1983,
+      "section": "Pop",
+      "spotifyId": "5FlOKGuMdqPgssO4L2wG6O",
+      "name": "Miss Me Blind",
+      "artists": [
+        {
+          "id": "6kz53iCdBSqhQCZ21CoLcc",
+          "name": "Culture Club"
+        }
+      ],
+      "total": 28843339,
+      "daily": 10240,
+      "status": "ok"
+    },
+    {
+      "title": "Nokia",
+      "artist": "Drake",
+      "year": 2025,
+      "section": "Hip Hop",
+      "spotifyId": "14QD03EDD6abanZ655Jx0H",
+      "name": "NOKIA",
+      "artists": [
+        {
+          "id": "3TVXtAsR1Inumwj472S9r4",
+          "name": "Drake"
+        }
+      ],
+      "total": 692290499,
+      "daily": 385672,
+      "status": "ok"
+    },
+    {
+      "title": "Bad and Boujee",
+      "artist": "Migos ft. Lil Uzi Vert",
+      "year": 2016,
+      "section": "Hip Hop",
+      "spotifyId": "0M9ydKzuF3oZTfYYPfaGX1",
+      "name": "Bad and Boujee (feat. Lil Uzi Vert)",
+      "artists": [
+        {
+          "id": "6oMuImdp5ZcFhWP0ESe6mG",
+          "name": "Migos"
+        },
+        {
+          "id": "4O15NlyKLIASxsJ0PrXPfz",
+          "name": "Lil Uzi Vert"
+        }
+      ],
+      "total": 1088814688,
+      "daily": 269758,
+      "status": "ok"
+    },
+    {
+      "title": "Help Me",
+      "artist": "Real Boston Richey",
+      "year": 2024,
+      "section": "Hip Hop",
+      "spotifyId": "487JCvAXVblflZyDJn3fSp",
+      "name": "Help Me",
+      "artists": [
+        {
+          "id": "1iwUuIOKYjV7SKIg27v4zi",
+          "name": "Real Boston Richey"
+        }
+      ],
+      "total": 108767779,
+      "daily": 58036,
+      "status": "ok"
+    },
+    {
+      "title": "Nonstop",
+      "artist": "Drake",
+      "year": 2018,
+      "section": "Hip Hop",
+      "spotifyId": "0TlLq3lA83rQOYtrqBqSct",
+      "name": "Nonstop",
+      "artists": [
+        {
+          "id": "3TVXtAsR1Inumwj472S9r4",
+          "name": "Drake"
+        }
+      ],
+      "total": 1362623984,
+      "daily": 263816,
+      "status": "ok"
+    },
+    {
+      "title": "One of Them Ones",
+      "artist": "Mustard ft. Quavo & Rob49",
+      "year": 2024,
+      "section": "Hip Hop",
+      "spotifyId": "0liylYGxm92m9Bz4PnW9xU",
+      "name": "One of Them Ones (feat. Quavo & Rob49)",
+      "artists": [
+        {
+          "id": "0YinUQ50QDB7ZxSCLyQ40k",
+          "name": "Mustard"
+        },
+        {
+          "id": "0VRj0yCOv2FXJNP47XQnx5",
+          "name": "Quavo"
+        },
+        {
+          "id": "1jBoSSrbz9n4ehQWA4cZgB",
+          "name": "Rob49"
+        }
+      ],
+      "total": 4918766,
+      "daily": 14753,
+      "status": "ok"
+    },
+    {
+      "title": "Xanny Family",
+      "artist": "Future",
+      "year": 2016,
+      "section": "Hip Hop",
+      "spotifyId": "0BzDQgmeRdA4V71VhfBvXT",
+      "name": "Xanny Family",
+      "artists": [
+        {
+          "id": "1RyvyyTE3xzB2ZywiAwp0i",
+          "name": "Future"
+        }
+      ],
+      "total": 78620343,
+      "daily": 25690,
+      "status": "ok"
+    },
+    {
+      "title": "Dior",
+      "artist": "Pop Smoke",
+      "year": 2019,
+      "section": "Hip Hop",
+      "spotifyId": "3702l19pLmnSRKFEzDnVeM",
+      "name": "Dior",
+      "artists": [
+        {
+          "id": "0eDvMgVFoNV3TpwtrVCoTj",
+          "name": "Pop Smoke"
+        }
+      ],
+      "total": 1328940857,
+      "daily": 266028,
+      "status": "ok"
+    },
+    {
+      "title": "Mr. Pot Scraper",
+      "artist": "BossMan Dlow",
+      "year": 2024,
+      "section": "Hip Hop",
+      "spotifyId": "6PmqCt2fO80OojY5eGS2X3",
+      "name": "Mr Pot Scraper",
+      "artists": [
+        {
+          "id": "23xFbA9rYgRX8mreqysWPc",
+          "name": "BossMan Dlow"
+        }
+      ],
+      "total": 88850524,
+      "daily": 27251,
+      "status": "ok"
+    },
+    {
+      "title": "Gass",
+      "artist": "Nemzzz ft. Travis Scott",
+      "year": 2026,
+      "section": "Hip Hop",
+      "spotifyId": "4TtFvGGps7haO0XbmhVz2y",
+      "name": "GASS (feat. Travis Scott)",
+      "artists": [
+        {
+          "id": "3DHtfeD4PsmR9YGhCP4VF7",
+          "name": "Nemzzz"
+        },
+        {
+          "id": "0Y5tJX1MQlPlqiwlOH1tJY",
+          "name": "Travis Scott"
+        }
+      ],
+      "total": 26381708,
+      "daily": 220045,
+      "status": "ok"
+    },
+    {
+      "title": "Roll in Peace",
+      "artist": "Kodak Black ft. XXXTentacion",
+      "year": 2017,
+      "section": "Hip Hop",
+      "spotifyId": "40oKW22ZNNkEdZLJTScaQI",
+      "name": "Roll in Peace (feat. XXXTENTACION)",
+      "artists": [
+        {
+          "id": "46SHBwWsqBkxI7EeeBEQG7",
+          "name": "Kodak Black"
+        },
+        {
+          "id": "15UsOTVnJzReFVN1VCnxy4",
+          "name": "XXXTENTACION"
+        }
+      ],
+      "total": 839045866,
+      "daily": 217551,
+      "status": "ok"
+    },
+    {
+      "title": "Whatchu Kno About Me",
+      "artist": "GloRilla ft. Sexyy Red",
+      "year": 2024,
+      "section": "Hip Hop",
+      "spotifyId": "4VI2Y5xg4gYynQqNQNQbTN",
+      "name": "WHATCHU KNO ABOUT ME (with Sexyy Red)",
+      "artists": [
+        {
+          "id": "2qoQgPAilErOKCwE2Y8wOG",
+          "name": "GloRilla"
+        },
+        {
+          "id": "3DbwFQlvLxRSi2uX8mf81A",
+          "name": "Sexyy Red"
+        }
+      ],
+      "total": 330265435,
+      "daily": 217916,
+      "status": "ok"
+    },
+    {
+      "title": "Digits",
+      "artist": "Young Thug",
+      "year": 2016,
+      "section": "Hip Hop",
+      "spotifyId": "4cg1yakyRSIOjxKM2I7J1q",
+      "name": "Digits",
+      "artists": [
+        {
+          "id": "50co4Is1HCEo8bhOyUWKpn",
+          "name": "Young Thug"
+        }
+      ],
+      "total": 396794853,
+      "daily": 217237,
+      "status": "ok"
+    },
+    {
+      "title": "Type Shit",
+      "artist": "Future,Metro Boomin,Travis Scott & Playboi Carti",
+      "year": 2024,
+      "section": "Hip Hop",
+      "spotifyId": "28drn6tQo95MRvO0jQEo5C",
+      "name": "Type Shit",
+      "artists": [
+        {
+          "id": "1RyvyyTE3xzB2ZywiAwp0i",
+          "name": "Future"
+        },
+        {
+          "id": "0iEtIxbK0KxaSlF7G42ZOp",
+          "name": "Metro Boomin"
+        },
+        {
+          "id": "0Y5tJX1MQlPlqiwlOH1tJY",
+          "name": "Travis Scott"
+        },
+        {
+          "id": "699OTQXzgjhIYAHMy9RyPD",
+          "name": "Playboi Carti"
+        }
+      ],
+      "total": 787685991,
+      "daily": 294294,
+      "status": "ok"
+    },
+    {
+      "title": "Trouble in Mind",
+      "artist": "Ella Fitzgerald",
+      "year": 1963,
+      "section": "Blues",
+      "spotifyId": "32pngFraOqrDQs89J1jhuD",
+      "name": "Trouble In Mind",
+      "artists": [
+        {
+          "id": "5V0MlUE1Bft0mbLlND7FJz",
+          "name": "Ella Fitzgerald"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Me and My Chauffeur Blues",
+      "artist": "Memphis Minnie",
+      "year": 1941,
+      "section": "Blues",
+      "spotifyId": "061ECBK9FQKLIKsOEdr1tP",
+      "name": "Me And My Chauffeur Blues",
+      "artists": [
+        {
+          "id": "2WGyRLosdDgGJTLijIPpNC",
+          "name": "Memphis Minnie"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "That's All Right",
+      "artist": "Jimmy Rogers",
+      "year": 1950,
+      "section": "Blues",
+      "spotifyId": "5MU3vcXv3EUpW6Ig2Lwsvs",
+      "name": "That's All Right - 1950 Single Version",
+      "artists": [
+        {
+          "id": "20k4RFKXyboeDSz9bjumx0",
+          "name": "Jimmy Rogers"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Boogie Chillen'",
+      "artist": "John Lee Hooker",
+      "year": 1948,
+      "section": "Blues",
+      "spotifyId": "4Ra0IrmzAPudI6QMvNF8cg",
+      "name": "Boogie Chillen'",
+      "artists": [
+        {
+          "id": "1yNOfXGQNGjAynk77wv85x",
+          "name": "John Lee Hooker"
+        }
+      ],
+      "total": 28297000,
+      "daily": 4955,
+      "status": "ok"
+    },
+    {
+      "title": "I Got What It Takes",
+      "artist": "Koko Taylor",
+      "year": 1964,
+      "section": "Blues",
+      "spotifyId": "7eHmvVFIPHGhTx9HMAPlIx",
+      "name": "I Got What It Takes",
+      "artists": [
+        {
+          "id": "04qIJRFjTmvW5I1DMyGE1R",
+          "name": "Koko Taylor"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Blue Guitar",
+      "artist": "Earl Hooker",
+      "year": 1961,
+      "section": "Blues",
+      "spotifyId": "302TFw9xPEEwflzVvAA4w6",
+      "name": "Blue Guitar",
+      "artists": [
+        {
+          "id": "3Ev1WS21x5Jav9j214A19O",
+          "name": "Earl Hooker"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Yonder Wall",
+      "artist": "Freddie King",
+      "year": 1970,
+      "section": "Blues",
+      "spotifyId": "2vKadnRjDi4F56pHspv9u1",
+      "name": "Yonder Wall",
+      "artists": [
+        {
+          "id": "5dCuFngSPyOOnTAvrC7v2s",
+          "name": "Freddie King"
+        }
+      ],
+      "total": 3061788,
+      "daily": 799,
+      "status": "ok"
+    },
+    {
+      "title": "Sorceress",
+      "artist": "Return to Forever",
+      "year": 1976,
+      "section": "Jazz",
+      "spotifyId": "5JrWS26keJ7AqXydk6g6ls",
+      "name": "Sorceress - Instrumental",
+      "artists": [
+        {
+          "id": "1txWOvvuItlRlkB4rM0cUK",
+          "name": "Return To Forever"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "Night Crawler",
+      "artist": "Bob James",
+      "year": 1977,
+      "section": "Jazz",
+      "spotifyId": "0mjtynXq4kFi38Xa7KmFAS",
+      "name": "Night Crawler",
+      "artists": [
+        {
+          "id": "6ryjbFyWBZho9KGXqKZdqQ",
+          "name": "Bob James"
+        }
+      ],
+      "total": null,
+      "daily": null,
+      "status": "kworb-yok"
+    },
+    {
+      "title": "School Days",
+      "artist": "Stanley Clarke",
+      "year": 1976,
+      "section": "Jazz",
+      "spotifyId": "0fuLT4IyhmLbbrKPqJqE80",
+      "name": "School Days",
+      "artists": [
+        {
+          "id": "1lGt9WgdYGpMnmwGkcCm05",
+          "name": "Stanley Clarke"
+        }
+      ],
+      "total": 4667916,
+      "daily": 847,
+      "status": "ok"
+    }
+  ]
+}

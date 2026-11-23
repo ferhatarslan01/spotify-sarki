@@ -30,8 +30,11 @@ export const CanvasSong: React.FC = () => {
   // 0 -> 1 girer, tut, 1 -> 0 cikar
   const inP = easeOutCubic((t - SHOW_START) / 0.5);
   const outP = easeInCubic((t - SHOW_END) / 0.55);
-  const vis = clamp(inP) * (1 - clamp(outP));
-  const slide = (1 - clamp(inP)) * 40 + clamp(outP) * 40;
+  // Bilgi bloğu başta kısa süre ve son 2.4 sn'de görünür: TikTok kapak karesi sondan 1.5 sn önce alınır, kapakta şarkı adı olsun
+  const introVis = clamp(inP) * (1 - clamp(outP));
+  const endVis = clamp(easeOutCubic((t - (DUR - 2.4)) / 0.45));
+  const vis = Math.max(introVis, endVis);
+  const slide = endVis > introVis ? (1 - endVis) * 40 : (1 - clamp(inP)) * 40 + clamp(outP) * 40;
   const fadeOut = clamp((t - (DUR - 0.25)) / 0.25);
   const title = String(data.title);
   const artist = String(data.artist);

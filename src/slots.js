@@ -24,6 +24,13 @@ export function slotAt(hour, minute = 0, now = new Date()) {
   return new Date(Date.UTC(y, m - 1, d, hour - TRT_OFFSET_H, minute));
 }
 
+// Bugunden itibaren bir sonraki hh:mm TRT ani (bugunku saat henuz `minLeadMin` dakikadan fazla ilerideyse bugun, degilse yarin).
+export function nextSlotAt(hour, minute = 0, now = new Date(), minLeadMin = 3) {
+  const today = slotAt(hour, minute, now);
+  if (today.getTime() - now.getTime() >= minLeadMin * 60e3) return today;
+  return new Date(today.getTime() + 24 * 3600e3);
+}
+
 export function planPost({ hour, minute = 0, now = new Date(), label = 'Paylaşım', minLeadMin = 3 }) {
   const target = slotAt(hour, minute, now);
   const hhmm = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;

@@ -1,3 +1,7 @@
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { run } from './videoAudio.js';
 import { hostMedia } from './mediaHost.js';
 import { publishTikTokVideo } from './bufferPost.js';
 import { getTrackThumbnail, formatStreams } from './dailyChart.js';
@@ -197,21 +201,50 @@ export function hostVideo(handle) {
   return handle.url;
 }
 
+// TikTok kapağı (profil ızgarasındaki küçük resim): TikTok varsayılan olarak ilk kareyi seçer; o kare çoğu videoda giriş/yükleme karesidir.
+// Bunun yerine videonun sondan TIKTOK_COVER_FROM_END sn (varsayılan 1.5) önceki karesi seçilir: orada başlık/kapak/liste tam görünür.
+// TIKTOK_COVER_FROM_END=0 ile kapatılır (TikTok kendi seçer).
+const COVER_FROM_END_S = Number(process.env.TIKTOK_COVER_FROM_END ?? 1.5);
+
+async function videoDurationMs(buffer) {
+  const dir = await mkdtemp(join(tmpdir(), 'dur-'));
+  try {
+    const f = join(dir, 'v.mp4');
+    await writeFile(f, buffer);
+    const { stdout } = await run('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]);
+    const s = Number(String(stdout).trim());
+    return Number.isFinite(s) && s > 0 ? Math.round(s * 1000) : null;
+  } catch {
+    return null;
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+}
+
+// Kapak karesinin ms konumu; süre okunamazsa null (TikTok varsayılanı)
+export async function coverOffsetMs(buffer) {
+  if (!(COVER_FROM_END_S > 0)) return null;
+  const dur = await videoDurationMs(buffer);
+  return dur ? Math.max(0, dur - Math.round(COVER_FROM_END_S * 1000)) : null;
+}
+
 // TikTok'a gonder. Hata verirse false doner.
 export async function postVideoToTikTok(handle) {
   if (!handle || !tiktokEnabled()) return false;
   if (!(await tiktokSlotAvailable(handle.kind))) return false;
   try {
+    const coverMs = await coverOffsetMs(handle.video);
     const result = await publishTikTokVideo(process.env.BUFFER_TIKTOK_CHANNEL_ID, {
       text: withHashtags(stripUrls(handle.caption), { kind: handle.kind, artists: handle.artists }),
       videoUrl: hostVideo(handle),
+      coverMs,
       // yapay zeka (ComfyUI) goruntusu iceren videolarda TikTok etiketi; TIKTOK_AI_LABEL=0 ile kapatilir
       aiGenerated: Boolean(handle.aiGenerated) && process.env.TIKTOK_AI_LABEL !== '0',
     });
     if (result.message) throw new Error(result.message);
     noteTikTokSent();
     console.log(
-      `  TikTok videosu gönderildi (post id: ${result.post.id}, ${handle.note}, ${(handle.video.length / 1024).toFixed(0)} KB)`
+      `  TikTok videosu gönderildi (post id: ${result.post.id}, ${handle.note}, ${(handle.video.length / 1024).toFixed(0)} KB${coverMs != null ? `, kapak ${(coverMs / 1000).toFixed(1)}. sn` : ''})`
     );
     return true;
   } catch (err) {

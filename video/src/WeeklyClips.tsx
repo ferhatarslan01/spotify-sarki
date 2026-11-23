@@ -140,7 +140,7 @@ const ListRow: React.FC<{ item: Item; t: number; nums: number }> = ({ item, t, n
   const badgeW = item.badge === "" ? 0 : item.badge ? 124 : 96; // metin rozeti ("6 Kas") tek satir, hareket oku daha dar
   const textW = CARD_W - 20 - thumb - 16 - badgeW - 14;
   const sub = item.sub ?? item.artist;
-  const tSize = fit(item.title, 41 * SC, textW, 0.52);
+  const tSize = fit(item.title, 41 * SC, textW, 0.6); // kalin buyuk harfler genis: rozete tasmasin
   const aSize = fit(sub, 28 * SC, textW, 0.54);
   return (
     <div style={{ position: "absolute", left: LIST_X, top: y, width: CARD_X + CARD_W - LIST_X, height: ROW_H - 12, opacity: clamp(numIn) * (nums ? 1 : 0), transform: `scale(${pulse})`, transformOrigin: "left center" }}>

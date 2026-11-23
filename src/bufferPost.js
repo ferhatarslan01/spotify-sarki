@@ -116,7 +116,14 @@ export async function publishTikTokPhoto(channelId, { text, imageUrls, title }) 
 
 // TikTok video gonderisi: tek MP4 (herkese acik URL) + aciklama (text)
 // aiGenerated: true ise TikTok'ta "AI ile uretildi" etiketi acilir (Buffer metadata.tiktok.isAiGenerated).
-export async function publishTikTokVideo(channelId, { text, videoUrl, aiGenerated = false }) {
+// coverMs: kapak (thumbnail) karesinin videodaki konumu, milisaniye (Buffer metadata.thumbnailOffset). Verilmezse TikTok ilk kareyi seçer.
+export function tikTokVideoAssets(videoUrl, coverMs = null) {
+  const video = { url: videoUrl };
+  if (Number.isFinite(coverMs)) video.metadata = { thumbnailOffset: Math.max(0, Math.round(coverMs)) };
+  return [{ video }];
+}
+
+export async function publishTikTokVideo(channelId, { text, videoUrl, aiGenerated = false, coverMs = null }) {
   const data = await graphql(
     `
       mutation CreateTikTokVideo($text: String!, $channelId: ChannelId!, $assets: [AssetInput!], $ai: Boolean) {
@@ -142,7 +149,7 @@ export async function publishTikTokVideo(channelId, { text, videoUrl, aiGenerate
         }
       }
     `,
-    { text, channelId, assets: [{ video: { url: videoUrl } }], ai: Boolean(aiGenerated) }
+    { text, channelId, assets: tikTokVideoAssets(videoUrl, coverMs), ai: Boolean(aiGenerated) }
   );
 
   return data.createPost;

@@ -19,7 +19,8 @@
     "kilit",
     "fragman",
     "radyo",
-    "neon"
+    "neon",
+    "kaset"
   ],
   "assigned": {
     "dz:1111063802": "radyo",
@@ -41,6 +42,7 @@
     "dz:1137940131": "kilit",
     "dz:1145668951": "fragman",
     "dz:1148386791": "radyo",
-    "dz:1126078922": "neon"
+    "dz:1126078922": "neon",
+    "dz:1154145011": "kaset"
   }
 }

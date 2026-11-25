@@ -2,5 +2,5 @@
   "ok": false,
   "hasSecret": true,
   "error": "Spotify erişim anahtarı alınamadı (HTTP 401); çerez geçersiz/süresi dolmuş olabilir ya da Spotify yöntemi değiştirmiş olabilir.",
-  "checkedAt": "2026-11-25T02:47:58.947Z"
+  "checkedAt": "2026-11-25T17:38:48.214Z"
 }

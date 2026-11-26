@@ -21,7 +21,8 @@
     "radyo",
     "neon",
     "kaset",
-    "drop"
+    "drop",
+    "mesaj"
   ],
   "assigned": {
     "dz:1111063802": "radyo",
@@ -45,6 +46,7 @@
     "dz:1148386791": "radyo",
     "dz:1126078922": "neon",
     "dz:1154145011": "kaset",
-    "dz:1155682331": "drop"
+    "dz:1155682331": "drop",
+    "dz:1154569531": "mesaj"
   }
 }

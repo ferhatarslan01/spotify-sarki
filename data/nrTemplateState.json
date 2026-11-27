@@ -22,7 +22,10 @@
     "neon",
     "kaset",
     "drop",
-    "mesaj"
+    "mesaj",
+    "bulten",
+    "tahmin",
+    "kilit"
   ],
   "assigned": {
     "dz:1111063802": "radyo",
@@ -47,6 +50,9 @@
     "dz:1126078922": "neon",
     "dz:1154145011": "kaset",
     "dz:1155682331": "drop",
-    "dz:1154569531": "mesaj"
+    "dz:1154569531": "mesaj",
+    "dz:1155411641": "bulten",
+    "dz:1153716511": "tahmin",
+    "dz:1139306251": "kilit"
   }
 }
